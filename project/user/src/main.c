@@ -7,6 +7,7 @@
 #include "math.h"
 #include "imu660ra.h"
 uint8 data_buffer[32];
+uint8 dat;
 int16 Target_Speed=0;
 int16 Slope ;
 char send_data[10]={0};
@@ -14,66 +15,22 @@ float angle=0;                //数据融合后的角度
 uint16 count=0;
 float tra_acc_x, tra_acc_y, tra_acc_z, tra_gyro_x,tra_gyro_y, tra_gyro_z;
 
-#define CH_COUNT 4
-struct justfloat_struct 
-{
-    float fdata[CH_COUNT];	//JustFloat格式只能发送float类型的数据
-    unsigned char tail[4];	//帧尾
-	
-} vofa;
 
-#define		IMG_ID			0
-#define 		IMG_SIZE			188*120
-#define 		IMG_WIDTH		188	
-#define 		IMG_HEIGHT		120
-#define		IMG_FORMAT		24
-// 先发送前导帧
-int preFrame[7] = {
-    IMG_ID, 
-    IMG_SIZE, 
-    IMG_WIDTH, 
-    IMG_HEIGHT, 
-    IMG_FORMAT, 
-    0x7F800000, 
-    0x7F800000
-};
 
 void pit_handler_1()
 {           
-//	vofa.fdata[0] = Kp_T;
-//	vofa.fdata[1] = Kd_T;
-//	vofa.fdata[2] = 0;
-//	vofa.fdata[3] = 0;
-//	wireless_uart_send_buffer((const uint8*)vofa.fdata, sizeof(float) * CH_COUNT);
-//	wireless_uart_send_buffer(vofa.tail, 4);
-
-	sprintf(send_data, "%d", Pwm[0]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", Pwm[1]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", Pwm[2]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", Pwm[3]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", encoder_data[0]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", encoder_data[1]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", encoder_data[2]);
-	wireless_uart_send_string(send_data);
-	wireless_uart_send_string(",");
-	sprintf(send_data, "%d", encoder_data[3]);
-	wireless_uart_send_string(send_data);
-	
-
-	wireless_uart_send_string("\n");
-	
+//	JF_Data.data[0] = Kp_T;
+//	JF_Data.data[1] = Kd_T;
+//	JF_Data.data[2] = 0.45;
+//	JF_Data.data[3] = -3.36;
+//	JustFloat_Send();
+//FW_Data[0].type = 'd';
+//FW_Data[1].type = 'd';
+//FW_Data[2].type = 'f';
+//FW_Data[0].int_data   = v_y;
+//FW_Data[1].int_data   = -34;
+//FW_Data[2].float_data = 1.657;
+//FireWater_Send();
     //均值滤波
 //    float min=0, max=0, temp_angle;
 //	for(uint8 i=0; i<10; i++)
@@ -126,31 +83,29 @@ int main(void)
 	
 	//ips200_show_float(0,240,Gyro_Bias.Zdata,6,3);
 	//timer_init(GPT_TIM_1,TIMER_US);
-	pit_ms_init(PIT_CH1, 5);
+	uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
+	pit_ms_init(PIT_CH1, 25);
 	
-	interrupt_set_priority(LPUART8_IRQn,0);
+	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 1);
 	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 	
-
-	vofa.tail[0] = 0x00;
-	vofa.tail[1] = 0x00;
-	vofa.tail[2] = 0x80;
-	vofa.tail[3] = 0x7f;
-
     while(1)
     {
+		//printf("fdsf");
+		//dat = uart_read_byte(UART_4);printf("is:%d",dat);
+		//if(uart_read_byte(UART_4, data_buffer))printf("data is: %d", data_buffer);
+			
 		//printf("%d, %d, %d, %d\n", Pwm[0],Pwm[1], Pwm[2], Pwm[3]);
-// 		uint8 data_len = wireless_uart_read_buffer(data_buffer, 32);  
+ 		//uint8 data_len = wireless_uart_read_buffer(data_buffer, 32);  
 // 		if(data_len != 0)                                                       // 收到了消息 读取函数会返回实际读取到的数据个数
 //         {
-//             //wireless_uart_send_buffer(data_buffer, data_len);                     // 将收到的消息发送回去
+//			 //printf(data_buffer);
+//             wireless_uart_send_buffer(data_buffer, data_len);                     // 将收到的消息发送回去
 //             //memset(data_buffer, 0, 32);
-// //			removeFirstNChars((char*)data_buffer, 2) ;
-// //            func_str_to_int((char *)data_buffer);
-// 			sscanf((const char*)data_buffer, "@:%d,%d",&v_x, &v_y);
-// 			memset(data_buffer, 0, 32);
+//// 			sscanf((const char*)data_buffer, "@:%d,%d",&v_x, &v_y);
+//// 			memset(data_buffer, 0, 32);
 //         }
 		//printf("%d,%d, %d\n",v_x, v_y, w);
 		//system_delay_ms(1500);
@@ -169,16 +124,16 @@ int main(void)
 //			wireless_uart_send_buffer(&image_copy[0][0], MT9V03X_IMAGE_SIZE);
 
 //		}
-
+		
 		if(mt9v03x_finish_flag)
         {
 		 	mt9v03x_finish_flag = 0;
 			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
 		 	//image_process();
          	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
- 			ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+ 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
 //			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-			//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
   			
 			//start _finish_line_find();
 			

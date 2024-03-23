@@ -120,4 +120,5 @@
   ..\..\libraries\rt-thread\include\rtservice.h \
   ..\..\libraries\rt-thread\include\rtm.h \
   ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
-  ..\code\my_moter.h ..\code\my_encoder.h ..\user\inc\isr.h
+  ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h \
+  ..\user\inc\isr.h

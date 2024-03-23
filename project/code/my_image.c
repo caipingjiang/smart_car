@@ -51,6 +51,7 @@ uint8 find_white_point(uint8 image_array[][188])
 			total+=image_array[90+i][90+j];
 		}
 	}
+ips114_show_uint(90,70,total/45  ,3);
 //	ips114_draw_point(90,80,RGB565_BLUE);
 //	ips114_draw_point(91,80,RGB565_BLUE);
 //	ips114_draw_point(90,81,RGB565_BLUE);
@@ -64,7 +65,7 @@ void find_longest(uint8* longest, uint8* index)
 {
 	uint8 high_l, high_r;
 	*longest = MT9V03X_H-10;
-	uint8 white_value = find_white_point(mt9v03x_image);
+	uint8 white_value = 0.5*220+0.5*find_white_point(mt9v03x_image);
 	ips114_show_uint(90,90,white_value,3);
 	for(uint8 i=10; i<MT9V03X_W; i+=2)		//+=5
 	{
@@ -244,6 +245,11 @@ uint8 otsu(uint8 *image, uint16 width, uint16 height)
 
 }    
 
+//»Ò¶È°ËÁìÓò
+#define DISTANCE 3
+uint8 l_edge[MT9V03X_H] = {0};
+uint8 r_edge[MT9V03X_H] = {0};
+//void find_start_point(uint8 )
 //ÌÝ¶ÈÍ¼Ïñ
 uint8 t_b=30, k=1;
 uint8 x_operator[8][2] = {{0,1}, {-1,1}, {-1,0}, {0,-1}, {1,-1}, {1,0}, {1,1}};
@@ -254,7 +260,10 @@ void Image_change(uint8* image[0], uint16 width, uint16 height)
 	{
 		for(uint8 j = 1; j<=MT9V03X_H-2; j++)
 		{
-			image_changed[j-1][i-1] = k*(image[j][i+1] - image[j][i-1] + image[j+1][i] - image[j-1][i] + t_b);
+			//[j-1][i-1] = k*(image[j][i+1] - image[j][i-1] + image[j+1][i] - image[j-1][i] + t_b);
+			int16 x_diff = (image[j][i+1] - image[j][i-1]);
+			int16 y_diff = (image[j+1][i] - image[j-1][i]);
+			image_changed[j-1][i-1] =  (uint8)sqrt(x_diff*x_diff + y_diff*y_diff);
 		}
 	}
 }

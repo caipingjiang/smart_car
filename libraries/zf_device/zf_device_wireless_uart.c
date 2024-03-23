@@ -219,10 +219,10 @@ int16 vx=0,vy=0;
 void wireless_uart_callback (void)
 {
 	
-//    if(uart_query_byte(WIRELESS_UART_INDEX, &wireless_uart_data) != 0)
-//    {
-//        
-//        fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data,1 );
+    if(uart_query_byte(WIRELESS_UART_INDEX, &wireless_uart_data) != 0)
+    {
+        
+        fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data,1 );
 //        if     (wireless_uart_data == 'a') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]+=1;};    }
 //        else if(wireless_uart_data == 'b') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]-=1;};    }
 //        else if(wireless_uart_data == 'c') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]+=0.05;}; }
@@ -259,7 +259,7 @@ void wireless_uart_callback (void)
 //        else if(wireless_uart_data == '-') {y_threshold -= 1;}
 //        else if(wireless_uart_data == ')') {x_threshold += 1;}
 //        else if(wireless_uart_data == '(') {x_threshold -= 1;}
-//		
+		
 //		else if(wireless_uart_data == 'z') 
 //		{
 //            clock_init(SYSTEM_CLOCK_600M);  // 不可删除
@@ -298,9 +298,9 @@ void wireless_uart_callback (void)
 
         //wireless_uart_send_buffer(wireless_uart_buffer,len);
         //第三个参数为字节数，如这里为uint8的数据，那么直接设为1就行，不要超出可能会有问题
-//        memset(&wireless_uart_data, 0, 1);
+        memset(&wireless_uart_data, 0, 1);
 //    
-//    }
+    }
 #if WIRELESS_UART_AUTO_BAUD_RATE                                                // 开启自动波特率
     if(WIRELESS_UART_AUTO_BAUD_RATE_START == wireless_auto_baud_flag && 3 == fifo_used(&wireless_uart_fifo))
     {

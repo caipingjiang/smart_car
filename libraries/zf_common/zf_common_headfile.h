@@ -128,6 +128,8 @@
 
 #include "my_moter.h"
 #include "my_encoder.h"
+#include "vofa.h"
+
 //±àÂëÆ÷Ïà¹Ø
 extern int16 encoder_data[4];
 extern int16 encoder_data_last[4];

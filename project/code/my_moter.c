@@ -9,7 +9,7 @@ float Inc_Kp[4]={6.5, 6.5, 6.5, 6.5};//10
 float Inc_Ki[4]={0.65, 0.65, 0.65, 0.65};
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
 int16 v_w[4]={0};       //四个轮子的转速
-int16 v_x=0, v_y=34, w=0;  //x、 y轴分速度,车绕几何中心的角速度
+int16 v_x=0, v_y=40, w=0;  //x、 y轴分速度,车绕几何中心的角速度
 int16 Pwm[4]={0};
 int16 bias;
 int16 motor_bias_last[4];
@@ -32,7 +32,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 3000);
+	duty = func_limit(duty, 5000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_LOW); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -88,7 +88,7 @@ void Turn_Left()
 	car_omni(v_x, v_y, w);
 }
 
-float Kp_T=2.2, Kd_T=15;
+float Kp_T=2.6, Kd_T=15;
 void Turn(float Target_slope, float actual_slope)
 {
 	static float err, err_last;
