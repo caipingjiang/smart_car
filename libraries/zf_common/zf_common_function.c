@@ -928,3 +928,8 @@ uint32 zf_sprintf (int8 *buff, const int8 *format, ...)
 }
 
 
+//自定义函数----------------
+void removeFirstNChars(char *str, int n) 
+{
+    memmove(str, str + n, strlen(str) - n + 1); // 移动字符串起始位置
+}

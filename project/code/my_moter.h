@@ -17,7 +17,7 @@
 
 
 void my_motor_init();
-void motor_set_duty(uint8 motor_num, int32 duty);
+void motor_set_duty(uint8 motor_num, int16 duty);
 void motor_control();
 int16 Incremental_PI (uint8 motor_num, int16 Encoder, int16 Target);
 void Turn_Left();

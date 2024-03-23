@@ -9,7 +9,7 @@ void find_longest(uint8* longest, uint8* index);
 void find_middle();
 int16 slope();
 uint8 otsu(uint8 *image, uint16 width, uint16 height);
-
+void Image_change(uint8* image[0], uint16 width, uint16 height);
 
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114

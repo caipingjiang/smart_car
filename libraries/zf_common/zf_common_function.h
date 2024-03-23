@@ -91,5 +91,6 @@ void        func_hex_to_str                     (char *str, uint32 number);
 
 uint32      zf_sprintf                          (int8 *buff, const int8 *format, ...);
 //=====================================================常规函数区=====================================================
-
+//自定义
+void removeFirstNChars(char *str, int n) ;
 #endif

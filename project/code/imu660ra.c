@@ -5,14 +5,14 @@ gyro_zero_param_t Gyro_Bias;
 void imu660_zeroBias(void)//陀螺仪零漂
 {
 	Gyro_Bias.Zdata = 0;//初始化
-		for (uint16_t i = 0; i < 1000; i++)
+		for (uint16_t i = 0; i < 500; i++)
 		{
 			imu660ra_get_gyro();//获取角速度
 			Gyro_Bias.Zdata += (imu660ra_gyro_transition(imu660ra_gyro_z)*0.005);//累加陀螺仪
 			system_delay_ms(5);
 		}
 		
-		Gyro_Bias.Zdata /= 1000;//取平均数
+		Gyro_Bias.Zdata /= 500;//取平均数
 }
 
 #define WINDOW_SIZE 10

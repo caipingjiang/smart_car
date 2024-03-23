@@ -132,7 +132,7 @@
 extern int16 encoder_data[4];
 extern int16 encoder_data_last[4];
 
-//电机相关
+//电机&运动 相关
 extern int16 bias;
 extern int16 motor_bias_last[4];
 extern int16 motor_bias_last2[4];
@@ -141,9 +141,16 @@ extern float Inc_Kp[4];
 extern float Inc_Ki[4];
 extern float Inc_Kd[4];
 
+//全向运动
+extern int16 v_x, v_y;
+extern int16 Target_Speed;
+
 //图像相关
 extern int16 Slope;
 extern float Kp_T, Kd_T;
+extern uint8 t_b, k;
+extern uint8 image_changed[MT9V03X_H-1][MT9V03X_W-1];
+extern uint8 y_threshold, x_threshold;
 
 //陀螺仪相关
 extern float angle;
@@ -155,7 +162,7 @@ void imu660_zeroBias(void);
 extern float Kp_A,Kd_A,Ki_A;
 
 
-extern int16 v_x, v_y;
+
 //===================================================用户自定义文件===================================================
 
 #endif

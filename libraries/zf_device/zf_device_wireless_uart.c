@@ -54,6 +54,7 @@
 #include "zf_device_type.h"
 
 #include "zf_device_wireless_uart.h"
+#include <stdlib.h>
 
 static  fifo_struct         wireless_uart_fifo;
 static  uint8               wireless_uart_buffer[WIRELESS_UART_BUFFER_SIZE];    // 数据存放数组
@@ -212,61 +213,94 @@ uint32 wireless_uart_read_buffer (uint8 *buff, uint32 len)
 //              由串口中断服务函数调用 wireless_module_uart_handler() 函数
 //              再由 wireless_module_uart_handler() 函数调用本函数
 //-------------------------------------------------------------------------------------------------------------------
+int16 status = 0, control_flag = 0;
+int16 temp=0;
+int16 vx=0,vy=0;
 void wireless_uart_callback (void)
 {
-    char send_temp[16]={0};
-    if(uart_query_byte(WIRELESS_UART_INDEX, &wireless_uart_data) != 0){
-    fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data,1 );
-    //uint32 len = wireless_uart_read_buffer(wireless_uart_buffer, 5);
-    if     (wireless_uart_data == 'a') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]+=1;};     sprintf(send_temp, "%f", Inc_Kp[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'b') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]-=1;};     sprintf(send_temp, "%f", Inc_Kp[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'c') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]+=0.05;};  sprintf(send_temp, "%f", Inc_Ki[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'd') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]-=0.05;};  sprintf(send_temp, "%f", Inc_Ki[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'e') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]+=0.05;};  sprintf(send_temp, "%f", Inc_Kd[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'f') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]-=0.05;};  sprintf(send_temp, "%f", Inc_Kd[1]);wireless_uart_send_string(send_temp);}
-    else if(wireless_uart_data == 'g') { Ki_w+=0.005; sprintf(send_temp, "%f", Ki_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'h') { Ki_w-=0.005; sprintf(send_temp, "%f", Ki_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'i') { Kp_w+=0.05; sprintf(send_temp, "%f", Kp_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'j') { Kp_w-=0.05; sprintf(send_temp, "%f", Kp_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'k') { Kd_w+=0.01; sprintf(send_temp, "%f", Kd_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'l') { Kd_w-=0.01; sprintf(send_temp, "%f", Kd_w); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'm') { Kp_A+=0.5; sprintf(send_temp, "%f", Kp_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'n') { Kp_A-=0.5; sprintf(send_temp, "%f", Kp_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'o') { Kd_A+=1; sprintf(send_temp, "%f", Kd_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'p') { Kd_A-=1; sprintf(send_temp, "%f", Kd_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 'r') { Ki_A+=0.02; sprintf(send_temp, "%f", Ki_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 's') { Ki_A-=0.02; sprintf(send_temp, "%f", Ki_A); wireless_uart_send_string(send_temp);wireless_uart_send_string("\n");}
-	else if(wireless_uart_data == 't') { Kp_T+=0.2; }
-	else if(wireless_uart_data == 'u') { Kp_T-=0.2; }
-	else if(wireless_uart_data == 'v') { Kd_T+=0.2; }
-	else if(wireless_uart_data == 'w') { Kd_T-=0.2; }
-	else if(wireless_uart_data == 'x') { v_y+=2; }
-	else if(wireless_uart_data == 'y') { v_y-=2; }
 	
-	else if(wireless_uart_data == 'z') //模拟断电重启(有bug)
-	{
-		
-		clock_init(SYSTEM_CLOCK_600M);  // 不可删除
-		debug_init();
-		my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
-		my_encoder_init();	//对屏幕显示可能也有影响
+//    if(uart_query_byte(WIRELESS_UART_INDEX, &wireless_uart_data) != 0)
+//    {
+//        
+//        fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data,1 );
+//        if     (wireless_uart_data == 'a') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]+=1;};    }
+//        else if(wireless_uart_data == 'b') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]-=1;};    }
+//        else if(wireless_uart_data == 'c') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]+=0.05;}; }
+//        else if(wireless_uart_data == 'd') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]-=0.05;}; }
+//        else if(wireless_uart_data == 'e') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]+=0.05;}; }
+//        else if(wireless_uart_data == 'f') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]-=0.05;}; }
+//        else if(wireless_uart_data == 'g') { Ki_w+=0.005;   }
+//        else if(wireless_uart_data == 'h') { Ki_w-=0.005;   }
+//        else if(wireless_uart_data == 'i') { Kp_w+=0.05;    }
+//        else if(wireless_uart_data == 'j') { Kp_w-=0.05;    }
+//        else if(wireless_uart_data == 'k') { Kd_w+=0.01;    }
+//        else if(wireless_uart_data == 'l') { Kd_w-=0.01;    }
+//        else if(wireless_uart_data == 'm') { Kp_A+=0.5;     }
+//        else if(wireless_uart_data == 'n') { Kp_A-=0.5;     }
+//        else if(wireless_uart_data == 'o') { Kd_A+=1;       }
+//        else if(wireless_uart_data == 'p') { Kd_A-=1;       }
+//        else if(wireless_uart_data == 'r') { Ki_A+=0.02;    }
+//        else if(wireless_uart_data == 's') { Ki_A-=0.02;    }
+//        else if(wireless_uart_data == 't') { Kp_T+=0.2;     }
+//        else if(wireless_uart_data == 'u') { Kp_T-=0.2;     }
+//        else if(wireless_uart_data == 'v') { Kd_T+=0.2;     }
+//        else if(wireless_uart_data == 'w') { Kd_T-=0.2;     }
+//        else if(wireless_uart_data == 'x') { v_y+=2;        }
+//        else if(wireless_uart_data == 'y') { v_y-=2;        }
+//          
+//		else if(wireless_uart_data == '@') {;}
 
-		wireless_uart_init();
-		imu660ra_init();
+//        else if(wireless_uart_data == '>') {t_b += 5;}
+//        else if(wireless_uart_data == '<') {t_b -= 5;}
+//        else if(wireless_uart_data == '[') {k += 0;}
+//        else if(wireless_uart_data == ']') {k += 1;}
+//		
+//		else if(wireless_uart_data == '+') {y_threshold += 1;}
+//        else if(wireless_uart_data == '-') {y_threshold -= 1;}
+//        else if(wireless_uart_data == ')') {x_threshold += 1;}
+//        else if(wireless_uart_data == '(') {x_threshold -= 1;}
+//		
+//		else if(wireless_uart_data == 'z') 
+//		{
+//            clock_init(SYSTEM_CLOCK_600M);  // 不可删除
+//            debug_init();
+//            my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
+//            my_encoder_init();	//对屏幕显示可能也有影响
 
-		pit_ms_init(PIT_CH1, 5);
-		interrupt_set_priority(LPUART8_IRQn,0);
-		interrupt_set_priority(PIT_IRQn, 1);
-		interrupt_global_enable(0);
-		
-		gpio_init(B11, GPO, GPIO_LOW, GPO_PUSH_PULL);system_delay_ms(100); gpio_toggle_level(B11);system_delay_ms(100); gpio_toggle_level(B11);
-	}
-	
-		//wireless_uart_send_buffer(wireless_uart_buffer,len);
-    //第三个参数为字节数，如这里为uint8的数据，那么直接设为1就行，不要超出可能会有问题
-	memset(&wireless_uart_data, 0, 1);
+//            wireless_uart_init();
+//            imu660ra_init();
 
-    }
+//            pit_ms_init(PIT_CH1, 5);
+//            interrupt_set_priority(LPUART8_IRQn,0);
+//            interrupt_set_priority(PIT_IRQn, 1);
+//            interrupt_global_enable(0);
+//            
+//            gpio_init(B11, GPO, GPIO_LOW, GPO_PUSH_PULL);system_delay_ms(100); gpio_toggle_level(B11);system_delay_ms(100); gpio_toggle_level(B11);
+//        }
+        
+//        //接收二维遥杆数据的状态机
+//        if(status == 0 && wireless_uart_data == ':' ) {status = 1;}                  //即将发数据vx
+//        if(status == 1 && wireless_uart_data != '-' ) {status = 2;}                  //vx为正数
+//        if(status == 1 && wireless_uart_data == '-' ) {status = 3;}                  //vx为负数
+//        if((status == 2||status == 3) && wireless_uart_data == ',' ) {status = 4;}   //vx发完，即将发vy
+//        if(status == 4 && wireless_uart_data != '-' ) {status = 5;}                  //vy为正数
+//        if(status == 4 && wireless_uart_data == '-' ) {status = 6;}                  //vy为负数
+//        if((status == 5||status == 6) && wireless_uart_data == '\n' ) {v_x = vx; v_y = vy; status = 0;control_flag=1;}  //v发完回到状态0
+
+//        //atoi()函数只能将不带小数点和负号的字符串转换为整数
+//		const char *data_str = (const char *)&wireless_uart_data;  // 将无符号字符型变量转换为const char *类型指针
+//		temp = (int16)atoi(data_str);
+//        //temp = atoi((const char*)&wireless_uart_data);
+//        if(status == 2){vx = vx*10 + temp;}
+//        if(status == 3){vx = vx*10 - temp;}
+//        if(status == 5){vy = vy*10 + temp;}
+//        if(status == 6){vy = vy*10 - temp;}
+
+        //wireless_uart_send_buffer(wireless_uart_buffer,len);
+        //第三个参数为字节数，如这里为uint8的数据，那么直接设为1就行，不要超出可能会有问题
+//        memset(&wireless_uart_data, 0, 1);
+//    
+//    }
 #if WIRELESS_UART_AUTO_BAUD_RATE                                                // 开启自动波特率
     if(WIRELESS_UART_AUTO_BAUD_RATE_START == wireless_auto_baud_flag && 3 == fifo_used(&wireless_uart_fifo))
     {

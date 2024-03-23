@@ -608,17 +608,17 @@ if (get_start_point(image_h - 2))//找到起点了，再执行八领域，没找
 
 //显示图像   改成你自己的就行 等后期足够自信了，显示关掉，显示屏挺占资源的
 	//ips154_displayimage032_zoom(bin_image[0], image_w, image_h, image_w, image_h,0,0);
-	ips200_show_gray_image(0,0,bin_image[0],image_w,image_h, image_w, image_h,0);
+	//ips200_show_gray_image(0,0,bin_image[0],image_w,image_h, image_w, image_h,0);
 	//根据最终循环次数画出边界点
 	for (i = 0; i < data_stastics_l; i++)
 	{
 		//ips154_drawpoint(points_l[i][0]+2, points_l[i][1], uesr_BLUE);//显示起点
-		ips200_draw_point(points_l[i][0]+2, points_l[i][1], RGB565_BLUE);
+		//ips200_draw_point(points_l[i][0]+2, points_l[i][1], RGB565_BLUE);
 	}
 	for (i = 0; i < data_stastics_r; i++)
 	{
 		//ips154_drawpoint(points_r[i][0]-2, points_r[i][1], uesr_RED);//显示起点
-		ips200_draw_point(points_r[i][0]-2, points_r[i][1], RGB565_RED);
+		//ips200_draw_point(points_r[i][0]-2, points_r[i][1], RGB565_RED);
 	}
 
 	for (i = hightest; i < image_h-1; i++)
@@ -629,20 +629,20 @@ if (get_start_point(image_h - 2))//找到起点了，再执行八领域，没找
 		//ips154_drawpoint(center_line[i], i, uesr_GREEN);//显示起点 显示中线	
 		//ips154_drawpoint(l_border[i], i, uesr_GREEN);//显示起点 显示左边线
 		//ips154_drawpoint(r_border[i], i, uesr_GREEN);//显示起点 显示右边线
-		ips200_draw_point(center_line[i], i, RGB565_GREEN);
-		ips200_draw_point(l_border[i], i, RGB565_GREEN);
-		ips200_draw_point(r_border[i], i, RGB565_GREEN);
+		//ips200_draw_point(center_line[i], i, RGB565_GREEN);
+		//ips200_draw_point(l_border[i], i, RGB565_GREEN);
+		//ips200_draw_point(r_border[i], i, RGB565_GREEN);
 	}
 
 
-	int16 sum1 = 0, sum2 = 0, result;
+	int16 sum1 = 0, sum2 = 0;
 	for(uint8 i=hightest;i<=MT9V03X_H-10;i++)
 	{
 		sum1 += (int16)(center_line[i]-center_line[MT9V03X_H-10]);
 		sum2 += (int16)(MT9V03X_H-10-i);
 	}
-	result = 30*sum1/sum2;
-	ips200_show_int(50,80,(const int32)result,3);
+	Slope = 40*sum1/sum2;
+	//ips200_show_int(50,80,(const int32)Slope,3);
 	
 }
 
