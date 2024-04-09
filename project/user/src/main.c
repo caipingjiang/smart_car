@@ -139,7 +139,7 @@ int main(void)
 			
  			find_middle();
 			Slope= slope();
-			//ips114_clear();
+		
  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 		}
 
@@ -155,7 +155,6 @@ int main(void)
 //                }
 //            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
 
-        // 此处编写需要循环执行的代码
 		
     }
 
