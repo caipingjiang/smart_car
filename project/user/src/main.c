@@ -81,7 +81,7 @@ int main(void)
     wireless_uart_init();
 	//ImagePerspective_Init();
 	
-	//ips200_show_float(0,240,Gyro_Bias.Zdata,6,3);
+	
 	//timer_init(GPT_TIM_1,TIMER_US);
 	uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
 	pit_ms_init(PIT_CH1, 25);
