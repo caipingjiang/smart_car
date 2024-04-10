@@ -2,18 +2,18 @@
 #define __MY_MOTOR_H__
 
 #include "zf_common_headfile.h"
-//#define MAX_DUTY                 (100 )                                               // ÊúÄÂ§? MAX_DUTY% Âç†Á©∫ÊØ?
-#define MOTOR1_DIR               C7//(D0 )
-#define MOTOR1_PWM               PWM2_MODULE0_CHA_C6//(PWM2_MODULE3_CHA_D2)
+//#define MAX_DUTY                 (100 )                                               // ???? MAX_DUTY% ?????
+#define MOTOR1_DIR               (D0 )//C7//
+#define MOTOR1_PWM               (PWM2_MODULE3_CHA_D2)//PWM2_MODULE0_CHA_C6//
 
-#define MOTOR2_DIR               C9//(D1 )
-#define MOTOR2_PWM               PWM2_MODULE1_CHA_C8//(PWM2_MODULE3_CHB_D3)
+#define MOTOR2_DIR               (D1 )//C9//
+#define MOTOR2_PWM               (PWM2_MODULE3_CHB_D3)//PWM2_MODULE1_CHA_C8//
 
-#define MOTOR3_DIR               D2//(D15 )
-#define MOTOR3_PWM               PWM2_MODULE3_CHB_D3//(PWM1_MODULE0_CHB_D13)
+#define MOTOR3_DIR               (D15)//D2//
+#define MOTOR3_PWM               (PWM1_MODULE0_CHB_D13)//PWM2_MODULE3_CHB_D3
 
-#define MOTOR4_DIR               C10//(D14 )
-#define MOTOR4_PWM               PWM2_MODULE2_CHB_C11//(PWM1_MODULE0_CHA_D12)
+#define MOTOR4_DIR              (D14 )//C10//
+#define MOTOR4_PWM               (PWM1_MODULE0_CHA_D12)//PWM2_MODULE2_CHB_C11//
 
 
 void my_motor_init();

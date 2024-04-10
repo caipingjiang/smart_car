@@ -1,20 +1,20 @@
-#ifndef _IMAGE_H
-#define _IMAGE_H
+#ifndef _IMAGE_GB2_H
+#define _IMAGE_GB2_H
 
-//å®å®šä¹‰
-#define image_h	120//å›¾åƒé«˜åº¦
-#define image_w	188//å›¾åƒå®½åº¦
+// ¶¨ÒåÍ¼Ïñ²ÎÊı
+#define image_h 120                         // Í¼Ïñ¸ß¶È
+#define image_w 188                         // Í¼Ïñ¿í¶È
 
-#define white_pixel	255
-#define black_pixel	0
+#define white_pixel 255
+#define black_pixel 0
 
-#define bin_jump_num	1//è·³è¿‡çš„ç‚¹æ•°
-#define border_max	image_w-2 //è¾¹ç•Œæœ€å¤§å€¼
-#define border_min	1	//è¾¹ç•Œæœ€å°å€¼	
+#define bin_jump_num 1                      // Ìø¹ıµÄÏñËØÊı
+#define border_max image_w - 2              // ×î´ó±ß½ç
+#define border_min 1                        // ×îĞ¡±ß½ç
 extern uint8 original_image[image_h][image_w];
-extern uint8 bin_image[image_h][image_w];//å›¾åƒæ•°ç»„
+extern uint8 bin_image[image_h][image_w];   // Í¼ÏñÊı×é
 
-extern void image_process(void); //ç›´æ¥åœ¨ä¸­æ–­æˆ–å¾ªç¯é‡Œè°ƒç”¨æ­¤ç¨‹åºå°±å¯ä»¥å¾ªç¯æ‰§è¡Œäº†
+extern void image_process(void);            // ÔÚº¯ÊıÖĞÖ±½Ó´¦ÀíÍ¼Ïñ£¬»òÔÚÖ÷º¯ÊıÖĞµ÷ÓÃ¸Ãº¯Êı
 
-#endif /*_IMAGE_H*/
+#endif /* _IMAGE_GB2_H */
 
