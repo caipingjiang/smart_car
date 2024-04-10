@@ -1,15 +1,15 @@
 #include "zf_common_headfile.h"
 
-#define SERVO_MOTOR_PWM1             (PWM4_MODULE2_CHA_C30)   //机械臂舵机1                     // 定义主板上舵机对应引脚
+#define SERVO_MOTOR_PWM1             (PWM4_MODULE2_CHA_C30)  //机械臂舵机1                     // 定义主板上舵机对应引脚
 #define SERVO_MOTOR_PWM2             (PWM2_MODULE1_CHA_C8)   //机械臂舵机2
 #define SERVO_MOTOR_PWM3             (PWM2_MODULE0_CHB_C7)   //储物舱舵机
-#define magnet_PWM             		 (PWM1_MODULE3_CHA_B10)   //储物舱舵机
+#define magnet_PWM             		 (PWM1_MODULE3_CHA_B10)  //储物舱舵机
 
 
-#define SERVO_MOTOR_FREQ            (50 )                                           // 定义主板上舵机频率  请务必注意范围 50-300
-#define SERVO_MOTOR_MaxRange1       (180)   //180度舵机
-#define SERVO_MOTOR_MaxRange2       (320)    //320度舵机  (储物舱的舵机)
-#define SERVO_MOTOR_MaxRange3       (360)    //360度舵机(可控制角度)  (机械臂上面的舵机)
+#define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
+#define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
+#define SERVO_MOTOR_MaxRange2       (320)                   //320度舵机  (储物舱的舵机)
+#define SERVO_MOTOR_MaxRange3       (360)                   //360度舵机(可控制角度)  (机械臂上面的舵机)
 
 #if (SERVO_MOTOR_FREQ<50 || SERVO_MOTOR_FREQ>300)
     #error "SERVO_MOTOR_FREQ ERROE!"
@@ -69,6 +69,8 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     }
 }
 
+//初始状态：
+//servo_1: 90°    servo_2:100°
 void arm_down()
 {
     for(uint8 i = 0; i<118; i++)
@@ -84,22 +86,24 @@ void arm_down()
     magnet_set(1);
 }
 
+//初始状态：
+//servo_1: 22°    servo_2:218°
 void arm_up()
 {
 
-    // for(uint8 i = 0; i<118; i++)
-    // {
+    for(uint8 i = 0; i<118; i++)
+    {
         
-    //     if(i>=0&&i<=68)
-    //     {
-    //         Servo_SetAngle(1, 22+i);
-    //     }
-    //     if(i>68)
-    //     {
-    //         Servo_SetAngle(2, 218-i);
-    //     }
-    //     system_delay_ms(10);
-    // }
+        if(i>=0&&i<=68)
+        {
+            Servo_SetAngle(1, 22+i);
+        }
+        if(i>68)
+        {
+            Servo_SetAngle(2, 218-i);
+        }
+        system_delay_ms(10);
+    }
     
     magnet_set(1);
 }

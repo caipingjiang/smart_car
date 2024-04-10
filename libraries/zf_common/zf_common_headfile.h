@@ -151,7 +151,7 @@ extern int16 Target_Speed;
 extern int16 Slope;
 extern float Kp_T, Kd_T;
 extern uint8 t_b, k;
-extern uint8 image_changed[MT9V03X_H-1][MT9V03X_W-1];
+extern uint8 image_changed[MT9V03X_H - 2][MT9V03X_W - 2];
 extern uint8 y_threshold, x_threshold;
 
 //ÍÓÂİÒÇÏà¹Ø

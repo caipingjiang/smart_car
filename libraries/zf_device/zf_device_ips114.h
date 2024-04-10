@@ -155,4 +155,7 @@ void    ips114_show_chinese             (uint16 x, uint16 y, uint8 size, const u
 
 void    ips114_init                     (void);
 
+
+//自定义函数
+void ips114_draw_circle(uint16 x0, uint16 y0, uint16 radius, const uint16 color) ;
 #endif

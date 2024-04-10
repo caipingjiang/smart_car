@@ -21,6 +21,7 @@ void motor_set_duty(uint8 motor_num, int16 duty);
 void motor_control();
 int16 Incremental_PI (uint8 motor_num, int16 Encoder, int16 Target);
 void Turn_Left();
+void move(int16 angle, int8 speed);
 
 float w_PID(float Target_w, float w);
 
