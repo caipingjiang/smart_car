@@ -138,8 +138,13 @@ int main(void)
 			//start _finish_line_find();
 			
  			find_middle();
+<<<<<<< HEAD
 			Slope = slope();
 			//ips114_clear();
+=======
+			Slope= slope();
+		
+>>>>>>> 9083993ade817b5e1e1163635f77af77d013b3f3
  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 		}
 
@@ -155,7 +160,6 @@ int main(void)
 //                }
 //            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
 
-        // 此处编写需要循环执行的代码
 		
     }
 
