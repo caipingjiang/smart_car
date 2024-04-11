@@ -8,10 +8,10 @@
 #define ENCODER_2_B                 (QTIMER1_ENCODER2_CH2_C24)
 #define ENCODER_3                   (QTIMER2_ENCODER1)
 #define ENCODER_3_A                 (QTIMER2_ENCODER1_CH1_C3)
-#define ENCODER_3_B                 QTIMER2_ENCODER1_CH2_C4//(QTIMER2_ENCODER1_CH2_C25)
-#define ENCODER_4                   (QTIMER2_ENCODER2)		//>>>>>>>>>>切换时要改
-#define ENCODER_4_A                 QTIMER2_ENCODER2_CH1_C5//(QTIMER3_ENCODER2_CH1_B18)
-#define ENCODER_4_B                 QTIMER2_ENCODER2_CH2_C25//(QTIMER3_ENCODER2_CH2_B19)
+#define ENCODER_3_B                 (QTIMER2_ENCODER1_CH2_C25)//QTIMER2_ENCODER1_CH2_C4
+#define ENCODER_4                   (QTIMER3_ENCODER2)			//>>>>>>>>>>切换时要改
+#define ENCODER_4_A                 (QTIMER3_ENCODER2_CH1_B18)//QTIMER2_ENCODER2_CH1_C5
+#define ENCODER_4_B                 (QTIMER3_ENCODER2_CH2_B19)//QTIMER2_ENCODER2_CH2_C25//
 
 #define PIT_CH                      (PIT_CH0 )                                 // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
 int16 encoder_data[4];

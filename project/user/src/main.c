@@ -76,7 +76,7 @@ int main(void)
 	//imu660_zeroBias();
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
 	my_encoder_init();	//对屏幕显示可能也有影响
-	//my_servo_init();
+	my_servo_init();
 	my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
@@ -90,7 +90,7 @@ int main(void)
 	interrupt_set_priority(PIT_IRQn, 1);
 	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
-	
+	arm_down();
     while(1)
     {
 		//printf("fdsf");
@@ -138,7 +138,7 @@ int main(void)
 			//start _finish_line_find();
 			
  			find_middle();
-			Slope= slope();
+			Slope = slope();
 			//ips114_clear();
  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 		}

@@ -29,8 +29,10 @@
 #define Arm_Servo2_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange3))
 #define Box_Servo_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange2))
 	
-
-void servo_init(void)
+//舵机姿态对应角度：
+//向上：servo_1:96°， servo_2:12°
+//向下：servo_1:22°， servo_2:218°
+void my_servo_init(void)
 {  
     pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, 0);
     pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, 0);
@@ -42,8 +44,8 @@ void servo_init(void)
 	
 	//电磁铁初始化
 	pwm_init(magnet_PWM, 1000, 0);
-	
-	system_delay_ms(1000);
+
+	system_delay_ms(100);
 }
 //电磁铁， 0关闭， 1开启
 void magnet_set(uint8 state)
@@ -69,64 +71,41 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     }
 }
 
-//初始状态：
-//servo_1: 90°    servo_2:100°
 void arm_down()
 {
-    for(uint8 i = 0; i<118; i++)
-    {
-        Servo_SetAngle(2, 100+i);
-        if(i>=0&&i<=68)
-        {
-            Servo_SetAngle(1, 90-i);
-        }
-        system_delay_ms(10);
-    }
-      
+    Servo_SetAngle(1, 96);
+    Servo_SetAngle(2, 12);
     magnet_set(1);
-}
-
-//初始状态：
-//servo_1: 22°    servo_2:218°
-void arm_up()
-{
-
-    for(uint8 i = 0; i<118; i++)
-    {
-        
-        if(i>=0&&i<=68)
-        {
-            Servo_SetAngle(1, 22+i);
-        }
-        if(i>68)
-        {
-            Servo_SetAngle(2, 218-i);
-        }
-        system_delay_ms(10);
-    }
-    
-    magnet_set(1);
-}
-void arm_hang()
-{
-    Servo_SetAngle(1, 90);
-    Servo_SetAngle(2, 100);
-    system_delay_ms(100);
-    magnet_set(1);
-}
-void arm_unload()       //搬完卸货
-{
-    Servo_SetAngle(1, 90);
-    Servo_SetAngle(2, 100);
-    system_delay_ms(100);
-    magnet_set(1);
+    system_delay_ms(1000);
+    Servo_SetAngle(1, 84);
+    system_delay_ms(1000);
+    Servo_SetAngle(2, 218);
     system_delay_ms(500);
-    Servo_SetAngle(1, 0);
-    Servo_SetAngle(2, 18);
+    Servo_SetAngle(1, 32);
+    system_delay_ms(500);
     magnet_set(0);
 }
 
-
+void arm_up()
+{
+    Servo_SetAngle(2, 218);
+    Servo_SetAngle(1, 22);
+    magnet_set(1);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 84);
+    system_delay_ms(1000);
+    Servo_SetAngle(2, 12);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 96);
+    magnet_set(0);
+}
+void arm_hang()
+{
+    magnet_set(0);
+    system_delay_ms(100);
+    Servo_SetAngle(1, 80);
+    Servo_SetAngle(2, 40);
+}
 
 
 // 储物舱全局记录------------------------------------------->
