@@ -51,8 +51,8 @@ void motor_set_duty(uint8 motor_num, int16 duty)
         if(motor_num == 4) { gpio_set_level(MOTOR4_DIR, GPIO_HIGH); pwm_set_duty(MOTOR4_PWM, (uint32_t)abs_duty);}
     }   
 }
-void car_omni(int16 v_x, int16 v_y, int16 w);
 
+void car_omni(int16 v_x, int16 v_y, int16 w);
 
 //增量式PI速度环
 
@@ -111,7 +111,16 @@ void backward()
     w = 0;
 	car_omni(v_x, v_y, w);
 }
+void move(int16 angle, int8 speed)
+{
+    v_x = speed*cos(angle*3.14/180);
+    v_y = speed*sin(angle*3.14/180);
+}
 
+void roundabout_move(int16 sideline_err,  int16 sideline_distance)
+{
+    
+}
 
 //角度环---外环    串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
 float Kp_A=20,Kd_A=95,Ki_A=0;

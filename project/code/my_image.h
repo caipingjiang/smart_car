@@ -4,12 +4,15 @@
 
 
 void my_image_init();
-uint8 start_finish_line_find();
+uint8 find_white_point(uint8 image_array[][188]);
 void find_longest(uint8* longest, uint8* index);
 void find_middle();
 int16 slope();
-uint8 otsu(uint8 *image, uint16 width, uint16 height);
-void Image_change(uint8* image[0], uint16 width, uint16 height);
+void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance);
+void find_start_point(uint8 image[][188]);
+void roundabout(); //环岛
+void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
+uint8 otsu(uint8* image, uint16 width, uint16 height);
 
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114

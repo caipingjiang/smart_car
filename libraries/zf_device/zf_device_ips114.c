@@ -1008,3 +1008,33 @@ void ips114_init (void)
     ips114_clear();
     ips114_debug_init();
 }
+
+
+
+//自定义函数
+void ips114_draw_circle(uint16 x0, uint16 y0, uint16 radius, const uint16 color) 
+{
+    int x = radius;
+    int y = 0;
+    int err = 0;
+
+    while (x >= y) {
+        ips114_draw_point(x0 + x, y0 + y, color);
+        ips114_draw_point(x0 + y, y0 + x, color);
+        ips114_draw_point(x0 - y, y0 + x, color);
+        ips114_draw_point(x0 - x, y0 + y, color);
+        ips114_draw_point(x0 - x, y0 - y, color);
+        ips114_draw_point(x0 - y, y0 - x, color);
+        ips114_draw_point(x0 + y, y0 - x, color);
+        ips114_draw_point(x0 + x, y0 - y, color);
+
+        if (err <= 0) {
+            y += 1;
+            err += 2*y + 1;
+        }
+        if (err > 0) {
+            x -= 1;
+            err -= 2*x + 1;
+        }
+    }
+}
