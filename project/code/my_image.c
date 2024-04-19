@@ -314,8 +314,8 @@ void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_di
 	// double average_slope = total_slope ; // 计算平均斜率
 	// *sideline_err = average_slope; // 将平均斜率存储在sideline_err中
 
-	//ips114_show_int(120, 20, *sideline_err, 5);
-	//ips114_show_int(120, 40, *sideline_distance, 4);
+	ips114_show_int(120, 20, *sideline_err, 5);
+	ips114_show_int(120, 40, *sideline_distance, 4);
 }
 
 

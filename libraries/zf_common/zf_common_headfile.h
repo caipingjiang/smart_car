@@ -146,6 +146,7 @@ extern float Inc_Kd[4];
 //全向运动
 extern int16 v_x, v_y;
 extern int16 Target_Speed;
+extern float Kp_correct1, Kd_correct1, Kp_correct2, Kd_correct2; 
 
 //图像相关
 extern int16 Slope;
@@ -153,6 +154,7 @@ extern float Kp_T, Kd_T;
 extern uint8 t_b, k;
 extern uint8 image_changed[MT9V03X_H - 2][MT9V03X_W - 2];
 extern uint8 y_threshold, x_threshold;
+extern int16 sideline_err, sideline_distance;
 
 //陀螺仪相关
 extern float angle;

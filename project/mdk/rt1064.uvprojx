@@ -484,6 +484,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\vofa.h</FilePath>
             </File>
+            <File>
+              <FileName>my_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\my_key.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\my_key.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

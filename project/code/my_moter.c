@@ -5,8 +5,8 @@
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
 
-float Inc_Kp[4]={6.5, 6.5, 6.5, 6.5};//10
-float Inc_Ki[4]={0.65, 0.65, 0.65, 0.65};
+float Inc_Kp[4]={50, 50, 50, 50};//10//6.5/100
+float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
 int16 v_w[4]={0};       //四个轮子的转速
 int16 v_x=0, v_y=40, w=0;  //x、 y轴分速度,车绕几何中心的角速度
@@ -32,7 +32,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 5000);
+	duty = func_limit(duty, 8000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_LOW); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -61,7 +61,7 @@ int16 Incremental_PI (uint8 motor_num, int16 Encoder, int16 Target)
     int16 bias = Target - Encoder ;
 	Pwm[motor_num-1] += ( Inc_Kp[motor_num-1]*(bias-motor_bias_last[motor_num-1]) 
                         + Inc_Ki[motor_num-1]*bias
-                        + Inc_Kd[motor_num-1]*(bias-2*motor_bias_last[motor_num-1]) + motor_bias_last2[motor_num-1] );
+                        + Inc_Kd[motor_num-1]*(bias-2*motor_bias_last[motor_num-1] + motor_bias_last2[motor_num-1] ));
     motor_bias_last2[motor_num-1] = motor_bias_last[motor_num-1];
     motor_bias_last[motor_num-1] = bias;
     
@@ -88,7 +88,7 @@ void Turn_Left()
 	car_omni(v_x, v_y, w);
 }
 
-float Kp_T=2.6, Kd_T=15;
+float Kp_T=2.0, Kd_T=15; //2.6， 1.5
 void Turn(float Target_slope, float actual_slope)
 {
 	static float err, err_last;
@@ -117,13 +117,27 @@ void move(int16 angle, int8 speed)
     v_y = speed*sin(angle*3.14/180);
 }
 
-void roundabout_move(int16 sideline_err,  int16 sideline_distance)
+float Kp_correct1=2.5, Kd_correct1=0.2; //0.5 0.2
+float Kp_correct2=0.10, Kd_correct2=0.1;
+static int16 out1, out2;
+void roundabout_move(int16* sideline_err,  int16* sideline_distance)
 {
+    //使用两个并级PID，第一个：车身倾斜角度修正， 第二个：车身与正前方赛道边界距离修正
+    static int16 err1=0, err_last1=0, err2 = 0, err_last2=0;
     
+    err1 = *sideline_err;
+    out1 =Kp_correct1*err1 + Kd_correct1*(err1-err_last1);
+	err_last1 = err1;
+    out1 = func_limit(out1, 50); //限幅
+
+    err2 = (500-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）
+    out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
+    err_last2 = err2;
+    out2 = func_limit(out2, 60); //限幅
 }
 
 //角度环---外环    串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
-float Kp_A=20,Kd_A=95,Ki_A=0;
+float Kp_A=1.5,Kd_A=10,Ki_A=0; // 20/95/0
 float Angle_PID(float Target_Angle, float Angle)
 {	
 	Angle = slidingFilter(Angle);
@@ -159,11 +173,16 @@ float w_PID(float Target_w, float w)
 extern int16 control_flag;
 void motor_control()
 {
-    if(control_flag == 0)Turn(0,Slope);
-	
-	//w = (int16)w_PID(Angle_PID(Target_Speed, angle), tra_gyro_z);
+    //if(control_flag == 0)Turn(0,Slope);
+    // roundabout_move(&sideline_err, &sideline_distance);
+	// w = out1;
+    // v_y = out2;
+
+	//ips114_show_int(0,0,w,3);
+	//w = (int16)w_PID(Angle_PID(0, angle), tra_gyro_z);
     //w = (int16)w_PID(20, tra_gyro_z);
 
+    //w = Angle_PID(0, angle);
 	car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
     motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));

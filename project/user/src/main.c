@@ -3,6 +3,7 @@
 #include "my_servo.h"
 #include "my_encoder.h"
 #include "my_image.h"
+#include "my_key.h"
 #include "image.h"
 #include "math.h"
 #include "imu660ra.h"
@@ -24,13 +25,27 @@ void pit_handler_1()
 //	JF_Data.data[2] = 0.45;
 //	JF_Data.data[3] = -3.36;
 //	JustFloat_Send();
-//FW_Data[0].type = 'd';
-//FW_Data[1].type = 'd';
-//FW_Data[2].type = 'f';
-//FW_Data[0].int_data   = v_y;
-//FW_Data[1].int_data   = -34;
-//FW_Data[2].float_data = 1.657;
-//FireWater_Send();
+FW_Data[0].type = 'd';
+FW_Data[1].type = 'd';
+//FW_Data[2].type = 'd';
+//FW_Data[3].type = 'd';
+
+ FW_Data[4].type = 'f';
+ FW_Data[5].type = 'f';
+
+//FW_Data[6].type = 'd';
+//FW_Data[7].type = 'd';
+
+FW_Data[0].int_data = encoder_data[0];
+FW_Data[1].int_data = encoder_data[1];
+// FW_Data[2].int_data = encoder_data[2];
+// FW_Data[3].int_data = encoder_data[3];
+
+ FW_Data[4].float_data = Inc_Kp[0];
+ FW_Data[5].float_data = Inc_Ki[0];
+// FW_Data[6].int_data = Pwm[0];
+// FW_Data[7].int_data = Pwm[1];
+FireWater_Send();
     //均值滤波
 //    float min=0, max=0, temp_angle;
 //	for(uint8 i=0; i<10; i++)
@@ -44,10 +59,10 @@ void pit_handler_1()
 //        temp_angle += tra_gyro_z;
 //	}
 //    tra_gyro_z = (temp_angle - min - max)/8;
-	//imu660ra_get_acc();
-	//imu660ra_get_gyro();
-	//tra_gyro_z = (imu660ra_gyro_transition(imu660ra_gyro_z)+0.0160  );
-	
+	imu660ra_get_acc();
+	imu660ra_get_gyro();      
+	// //tra_gyro_z = (imu660ra_gyro_transition(imu660ra_gyro_z)+0.0160  );
+    tra_gyro_z = imu660ra_gyro_transition(imu660ra_gyro_z);
 	angle += (tra_gyro_z*0.005-Gyro_Bias.Zdata);
 	
 	// angle = angle_calc(imu963ra_acc_y, imu660ra_gyro_z);
@@ -72,27 +87,52 @@ int main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
 
-	//imu660ra_init();
-	//imu660_zeroBias();
-	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
-	my_encoder_init();	//对屏幕显示可能也有影响
-	my_servo_init();
-	my_image_init();
+	imu660ra_init();
+	imu660_zeroBias();
+ 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
+ 	my_encoder_init();	//对屏幕显示可能也有影响
+	//my_servo_init();
+	my_key_init();
+	//my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
 	
 	
 	//timer_init(GPT_TIM_1,TIMER_US);
-	uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
-	pit_ms_init(PIT_CH1, 25);
+	//uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
+	pit_ms_init(PIT_CH1, 20);
 	
 	interrupt_set_priority(LPUART8_IRQn,4);
-	interrupt_set_priority(PIT_IRQn, 1);
+	interrupt_set_priority(PIT_IRQn, 0);
 	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
-	arm_down();
+
     while(1)
     {
+		//my_key_work();
+		//ips114_show_float(100,100,Kp_T, 2,1);
+		// ips114_show_float(0,20,Kp_correct1, 3,3);
+		// ips114_show_float(0,40,Kd_correct1, 3,3);		
+		v_y = 30;
+		v_x =0;
+		system_delay_ms(2000);
+        v_y = -30;//0;
+		v_x =0;//-30;
+		system_delay_ms(2000);
+//		v_y = -30;
+//		v_x =0;
+//		system_delay_ms(1000);
+//		v_y = 0;
+//		v_x =30;
+//		system_delay_ms(1000);
+		// system_delay_ms(10);
+		// for(uint8 i = 0; i<=3; i++)
+		// {
+		// 	Servo_SetAngle(3,i*93);
+		// 	system_delay_ms(1500);
+		// 	arm_up();
+		// 	arm_hang();
+		// }
 		//printf("fdsf");
 		//dat = uart_read_byte(UART_4);printf("is:%d",dat);
 		//if(uart_read_byte(UART_4, data_buffer))printf("data is: %d", data_buffer);
@@ -125,42 +165,44 @@ int main(void)
 
 //		}
 		
-		if(mt9v03x_finish_flag)
-        {
-		 	mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
-         	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
- 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-//			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+
+
+
+// 		if(mt9v03x_finish_flag)
+//         {
+// 		 	mt9v03x_finish_flag = 0;
+// 			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+// 		 	//image_process();
+//          	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
+//  			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+// //			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
+// 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
   			
-			//start _finish_line_find();
+// 			//start _finish_line_find();
 			
- 			find_middle();
+//  			find_middle();
 
-			Slope = slope();
-			//ips114_clear();
-
+// 			Slope = slope();
+// 			//ips114_clear();
 		
+//  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 
- 			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-		}
-
+	}
+        
 			 
-			 //逆透视
-//			 uint8_t show[RESULT_ROW][RESULT_COL];
-//                for(int i=0;i<RESULT_ROW;i++)
-//                {
-//                    for(int j=0;j<RESULT_COL;j++)
-//                    {
-//                        show[i][j]=ImageUsed[i][j];
-//                    }
-//                }
-//            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
+// 			 //逆透视
+// //			 uint8_t show[RESULT_ROW][RESULT_COL];
+// //                for(int i=0;i<RESULT_ROW;i++)
+// //                {
+// //                    for(int j=0;j<RESULT_COL;j++)
+// //                    {
+// //                        show[i][j]=ImageUsed[i][j];
+// //                    }
+// //                }
+// //            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
 
 		
-    }
+//     }
 
 }
 

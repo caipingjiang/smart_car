@@ -1,4 +1,4 @@
-./objects/main.o: ..\user\src\main.c \
+./objects/my_key.o: ..\code\my_key.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -121,5 +121,4 @@
   ..\..\libraries\rt-thread\include\rtm.h \
   ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
   ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h \
-  ..\code\my_servo.h ..\code\my_image.h ..\code\my_key.h ..\code\image.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\math.h ..\code\imu660ra.h
+  ..\code\my_servo.h
