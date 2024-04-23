@@ -45,9 +45,10 @@ void CSI_IRQHandler(void)
     CSI_DriverIRQHandler();     // 调用SDK自带的中断函数 这个函数最后会调用我们设置的回调函数
     __DSB();                    // 数据同步隔离
 }
-extern void pit_handler (void);
-extern uint8 count;
-extern void pit_handler_1();
+void pit_handler (void);
+void pit_handler_1();
+void my_uart_callback(uart_index_enum uart_n);
+
 void PIT_IRQHandler(void)
 {	
     if(pit_flag_get(PIT_CH0))
@@ -83,6 +84,8 @@ void LPUART1_IRQHandler(void)
     #if DEBUG_UART_USE_INTERRUPT                        // 如果开启 debug 串口中断
         debug_interrupr_handler();                      // 调用 debug 串口接收处理函数 数据会被 debug 环形缓冲区读取
     #endif                                              // 如果修改了 DEBUG_UART_INDEX 那这段代码需要放到对应的串口中断去
+    
+        my_uart_callback(UART_1);
     }
         
     LPUART_ClearStatusFlags(LPUART1, kLPUART_RxOverrunFlag);    // 不允许删除
@@ -104,7 +107,7 @@ void LPUART3_IRQHandler(void)
     if(kLPUART_RxDataRegFullFlag & LPUART_GetStatusFlags(LPUART3))
     {
         // 接收中断
-        
+
     }
         
     LPUART_ClearStatusFlags(LPUART3, kLPUART_RxOverrunFlag);    // 不允许删除
@@ -115,9 +118,11 @@ void LPUART4_IRQHandler(void)
     if(kLPUART_RxDataRegFullFlag & LPUART_GetStatusFlags(LPUART4))
     {
         // 接收中断 
-        flexio_camera_uart_handler();
-        
-        gps_uart_callback();
+        //flexio_camera_uart_handler();
+        //gps_uart_callback();
+
+       my_uart_callback(UART_4);
+       
     }
         
     LPUART_ClearStatusFlags(LPUART4, kLPUART_RxOverrunFlag);    // 不允许删除

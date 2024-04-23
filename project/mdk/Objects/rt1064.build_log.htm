@@ -22,12 +22,25 @@ Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
 D:\smart_car\SeekFree_RT1064_Opensource_Library\project\mdk\rt1064.uvprojx
-Project File Date:  04/12/2024
+Project File Date:  04/21/2024
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'D:\Keil\ARM\ARMCLANG\Bin'
 Build target 'nor_sdram_zf_dtcm'
-".\Objects\rt1064.axf" - 0 Error(s), 0 Warning(s).
+../code/my_uart.c(46): warning: passing 'uint8[12]' (aka 'unsigned char[12]') to parameter of type 'const char *' converts between pointers to integer types where one is of the unique plain 'char' type and the other is not [-Wpointer-sign]
+                        sscanf(uart_buffer, "%d,%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
+                               ^~~~~~~~~~~
+D:\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h(529): note: passing argument to parameter here
+extern _ARMABI int sscanf(const char * __restrict /*s*/,
+                                                       ^
+../code/my_uart.c(25): warning: 5 enumeration values not handled in switch: 'UART_2', 'UART_3', 'UART_5'... [-Wswitch]
+    switch (uart_n)
+            ^~~~~~
+2 warnings generated.
+compiling my_uart.c...
+linking...
+Program Size: Code=51512 RO-data=14908 RW-data=312 ZI-data=10968  
+".\Objects\rt1064.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -40,7 +53,7 @@ Package Vendor: NXP
   D:/Keil/ARM/PACK/NXP/MIMXRT1064_DFP/17.0.0/devices/MIMXRT1064
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

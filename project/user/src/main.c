@@ -66,7 +66,7 @@ FireWater_Send();
 	angle += (tra_gyro_z*0.005-Gyro_Bias.Zdata);
 	
 	// angle = angle_calc(imu963ra_acc_y, imu660ra_gyro_z);
-	// w = (int16)w_PID(180, tra_gyro_z);
+	// w = (in t16)w_PID(180, tra_gyro_z);
 }
 uint8 image_copy[MT9V03X_H][MT9V03X_W];
 extern int16 temp;
@@ -89,36 +89,47 @@ int main(void)
 
 	imu660ra_init();
 	imu660_zeroBias();
- 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
- 	my_encoder_init();	//对屏幕显示可能也有影响
+ 	//my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
+ 	//my_encoder_init();	//对屏幕显示可能也有影响
 	//my_servo_init();
 	my_key_init();
 	//my_image_init();
-    wireless_uart_init();
+    //wireless_uart_init();
 	//ImagePerspective_Init();
-	
+	my_uart_init();
 	
 	//timer_init(GPT_TIM_1,TIMER_US);
 	//uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
-	pit_ms_init(PIT_CH1, 20);
+	//pit_ms_init(PIT_CH1, 20);
 	
-	interrupt_set_priority(LPUART8_IRQn,4);
-	interrupt_set_priority(PIT_IRQn, 0);
+//	interrupt_set_priority(LPUART8_IRQn,4);
+//	interrupt_set_priority(PIT_IRQn, 0);
+	interrupt_set_priority(LPUART1_IRQn,1);
+	interrupt_set_priority(LPUART4_IRQn,2);
 	interrupt_global_enable(0);
+	// interrupt_enable(LPUART1_IRQn);
+	// interrupt_enable(LPUART3_IRQn);
     // 此处编写用户代码 例如外设初始化代码等
 
     while(1)
     {
+		printf("flag:%d\n", packge_finish_flag);
+		
+		system_delay_ms(1500);
+		if(packge_finish_flag)
+			printf("data:%d,%d,%c\n", data_arr[0], data_arr[1], data_arr[2]);
+			
+			//packge_finish_flag = 0;
 		//my_key_work();
 		//ips114_show_float(100,100,Kp_T, 2,1);
 		// ips114_show_float(0,20,Kp_correct1, 3,3);
 		// ips114_show_float(0,40,Kd_correct1, 3,3);		
-		v_y = 30;
-		v_x =0;
-		system_delay_ms(2000);
-        v_y = -30;//0;
-		v_x =0;//-30;
-		system_delay_ms(2000);
+//		v_y = 30;
+//		v_x =0;
+//		system_delay_ms(2000);
+//        v_y = -30;//0;
+//		v_x =0;//-30;
+//		system_delay_ms(2000);
 //		v_y = -30;
 //		v_x =0;
 //		system_delay_ms(1000);

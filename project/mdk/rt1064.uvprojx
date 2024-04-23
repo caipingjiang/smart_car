@@ -494,6 +494,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\my_key.h</FilePath>
             </File>
+            <File>
+              <FileName>my_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\my_uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\my_uart.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -120,5 +120,6 @@
   ..\..\libraries\rt-thread\include\rtservice.h \
   ..\..\libraries\rt-thread\include\rtm.h \
   ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
-  ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h ..\code\image.h \
+  ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h \
+  ..\code\my_uart.h ..\code\image.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\math.h

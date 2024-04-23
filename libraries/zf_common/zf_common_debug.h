@@ -46,7 +46,7 @@
 #define DEBUG_UART_TX_PIN           (UART1_TX_B12 )                             // 指定 debug uart 所使用的的串口引脚
 #define DEBUG_UART_RX_PIN           (UART1_RX_B13)                              // 指定 debug uart 所使用的的串口引脚
 
-#define DEBUG_UART_USE_INTERRUPT    (1)                                         // 是否启用 debug uart 接收中断
+#define DEBUG_UART_USE_INTERRUPT    (0)                                         // 是否启用 debug uart 接收中断
 
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     断言
