@@ -81,14 +81,14 @@ int main(void)
 	//spi_init(SPI_1, 0, 1*1000*1000, SPI1_SCK_D12, SPI1_MOSI_D14, SPI1_MISO_D15, SPI1_CS0_D13);
 	//ips200_init(IPS200_TYPE_SPI);
 	//(IPS200_CROSSWISE);
-	//ips200_init(IPS200_TYPE_PARALLEL8);
-	ips114_set_dir(IPS114_CROSSWISE);
-	ips114_init();
+	ips200_init(IPS200_TYPE_PARALLEL8);
+	// ips114_set_dir(IPS114_CROSSWISE);
+	// ips114_init();
 
     // 此处编写用户代码 例如外设初始化代码等
 
-	imu660ra_init();
-	imu660_zeroBias();
+	// imu660ra_init();
+	// imu660_zeroBias();
  	//my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	//my_encoder_init();	//对屏幕显示可能也有影响
 	//my_servo_init();
@@ -113,11 +113,13 @@ int main(void)
 
     while(1)
     {
-		printf("flag:%d\n", packge_finish_flag);
+		//printf("flag:%d\n", packge_finish_flag);
 		
 		system_delay_ms(1500);
 		if(packge_finish_flag)
-			printf("data:%d,%d,%c\n", data_arr[0], data_arr[1], data_arr[2]);
+			//printf("data:%d,%d,%c\n", data_arr[0], data_arr[1], data_arr[2]);
+			ips200_show_int(20,20,data_arr[0],3);
+			ips200_show_int(20,40,data_arr[1],3);
 			
 			//packge_finish_flag = 0;
 		//my_key_work();

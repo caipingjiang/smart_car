@@ -24,6 +24,9 @@ void my_uart_callback(uart_index_enum uart_n)
 {
     switch (uart_n)
     {
+        //注意：串口1在与ART传输时一定要断开DAP下载线！！！，否则会接收不到
+        //注意：串口1在与ART传输时一定要断开DAP下载线！！！，否则会接收不到
+        //注意：串口1在与ART传输时一定要断开DAP下载线！！！，否则会接收不到
         case UART_1:
         {
             if(uart_query_byte(UART_1, &uart_data) != 0)
@@ -43,7 +46,7 @@ void my_uart_callback(uart_index_enum uart_n)
                     length = fifo_used(&uart_fifo);
                     if(length>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf(uart_buffer, "%d,%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
+                        sscanf((const char*)uart_buffer, "%d,%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
                     }
                     fifo_clear(&uart_fifo);
                     packge_finish_flag = 1;
@@ -53,8 +56,9 @@ void my_uart_callback(uart_index_enum uart_n)
         }
         case UART_4:
         {
-           if(uart_query_byte(UART_3, &uart_data) != 0)//一定要加上这个查询是否接收成功，不然会一直调用此函数造成卡死（BUG?）
+           if(uart_query_byte(UART_4, &uart_data) != 0)//一定要加上这个查询是否接收成功，不然会一直调用此函数造成卡死（BUG?）
                 printf("uart4_test");
+                //printf("uart4:%s\n",&uart_data);
             break;
         }
 
