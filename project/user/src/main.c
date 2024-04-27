@@ -27,12 +27,6 @@ void pit_handler_1()
 //	JustFloat_Send();
 FW_Data[0].type = 'd';
 FW_Data[1].type = 'd';
-<<<<<<< HEAD
-FW_Data[2].type = 'f';
-FW_Data[0].int_data   = encoder_data[0];
-FW_Data[1].int_data   = encoder_data[1];
-FW_Data[2].float_data = 1.657;
-=======
 //FW_Data[2].type = 'd';
 //FW_Data[3].type = 'd';
 
@@ -51,7 +45,6 @@ FW_Data[1].int_data = encoder_data[1];
  FW_Data[5].float_data = Inc_Ki[0];
 // FW_Data[6].int_data = Pwm[0];
 // FW_Data[7].int_data = Pwm[1];
->>>>>>> 629099a0e9916e4824b5d555280121ffef8aed4c
 FireWater_Send();
     //均值滤波
 //    float min=0, max=0, temp_angle;
@@ -94,15 +87,6 @@ int main(void)
 
     // 此处编写用户代码 例如外设初始化代码等
 
-<<<<<<< HEAD
-	//imu660ra_init();
-	//imu660_zeroBias();
-	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
-	my_encoder_init();	//对屏幕显示可能也有影响
-	my_servo_init();
-	 //my_image_init();
-    wireless_uart_init();
-=======
 	// imu660ra_init();
 	// imu660_zeroBias();
  	//my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
@@ -111,7 +95,6 @@ int main(void)
 	my_key_init();
 	//my_image_init();
     //wireless_uart_init();
->>>>>>> 629099a0e9916e4824b5d555280121ffef8aed4c
 	//ImagePerspective_Init();
 	my_uart_init();
 	
@@ -195,25 +178,6 @@ int main(void)
 
 //		}
 		
-<<<<<<< HEAD
-//		if(mt9v03x_finish_flag)
-//        {
-//		 	mt9v03x_finish_flag = 0;
-//			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-//		 	//image_process();
-//         	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
-// 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-////			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-//			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-//  			
-//			//start _finish_line_find();
-//			
-// 			find_middle();
-//			Slope= slope();
-//		
-// 			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-//		}
-=======
 
 
 
@@ -230,7 +194,6 @@ int main(void)
 // 			//start _finish_line_find();
 			
 //  			find_middle();
->>>>>>> 629099a0e9916e4824b5d555280121ffef8aed4c
 
 // 			Slope = slope();
 // 			//ips114_clear();
