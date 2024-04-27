@@ -223,60 +223,70 @@ void wireless_uart_callback (void)
     {
         
         fifo_write_buffer(&wireless_uart_fifo, &wireless_uart_data,1 );
-//        if     (wireless_uart_data == 'a') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]+=1;};    }
-//        else if(wireless_uart_data == 'b') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]-=1;};    }
-//        else if(wireless_uart_data == 'c') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]+=0.05;}; }
-//        else if(wireless_uart_data == 'd') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]-=0.05;}; }
-//        else if(wireless_uart_data == 'e') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]+=0.05;}; }
-//        else if(wireless_uart_data == 'f') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]-=0.05;}; }
-//        else if(wireless_uart_data == 'g') { Ki_w+=0.005;   }
-//        else if(wireless_uart_data == 'h') { Ki_w-=0.005;   }
-//        else if(wireless_uart_data == 'i') { Kp_w+=0.05;    }
-//        else if(wireless_uart_data == 'j') { Kp_w-=0.05;    }
-//        else if(wireless_uart_data == 'k') { Kd_w+=0.01;    }
-//        else if(wireless_uart_data == 'l') { Kd_w-=0.01;    }
-//        else if(wireless_uart_data == 'm') { Kp_A+=0.5;     }
-//        else if(wireless_uart_data == 'n') { Kp_A-=0.5;     }
-//        else if(wireless_uart_data == 'o') { Kd_A+=1;       }
-//        else if(wireless_uart_data == 'p') { Kd_A-=1;       }
-//        else if(wireless_uart_data == 'r') { Ki_A+=0.02;    }
-//        else if(wireless_uart_data == 's') { Ki_A-=0.02;    }
-//        else if(wireless_uart_data == 't') { Kp_T+=0.2;     }
-//        else if(wireless_uart_data == 'u') { Kp_T-=0.2;     }
-//        else if(wireless_uart_data == 'v') { Kd_T+=0.2;     }
-//        else if(wireless_uart_data == 'w') { Kd_T-=0.2;     }
-//        else if(wireless_uart_data == 'x') { v_y+=2;        }
-//        else if(wireless_uart_data == 'y') { v_y-=2;        }
-//          
-//		else if(wireless_uart_data == '@') {;}
+        if     (wireless_uart_data == 'a') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]+=5;};    }
+        else if(wireless_uart_data == 'b') { for(uint8 i = 0; i<4; i++){Inc_Kp[i]-=5;};    }
+        else if(wireless_uart_data == 'c') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]+=0.2;}; }
+        else if(wireless_uart_data == 'd') { for(uint8 i = 0; i<4; i++){Inc_Ki[i]-=0.2;}; }
+        else if(wireless_uart_data == 'e') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]+=1;}; }
+        else if(wireless_uart_data == 'f') { for(uint8 i = 0; i<4; i++){Inc_Kd[i]-=1;}; }
+        else if(wireless_uart_data == 'g') { Ki_w+=0.005;   }
+        else if(wireless_uart_data == 'h') { Ki_w-=0.005;   }
+        else if(wireless_uart_data == 'i') { Kp_w+=0.05;    }
+        else if(wireless_uart_data == 'j') { Kp_w-=0.05;    }
+        else if(wireless_uart_data == 'k') { Kd_w+=0.01;    }
+        else if(wireless_uart_data == 'l') { Kd_w-=0.01;    }
+        else if(wireless_uart_data == 'm') { Kp_A+=0.5;     }
+        else if(wireless_uart_data == 'n') { Kp_A-=0.5;     }
+        else if(wireless_uart_data == 'o') { Kd_A+=1;       }
+        else if(wireless_uart_data == 'p') { Kd_A-=1;       }
+        else if(wireless_uart_data == 'r') { Ki_A+=0.02;    }
+        else if(wireless_uart_data == 's') { Ki_A-=0.02;    }
+        else if(wireless_uart_data == 't') { Kp_T+=0.2;     }
+        else if(wireless_uart_data == 'u') { Kp_T-=0.2;     }
+        else if(wireless_uart_data == 'v') { Kd_T+=0.2;     }
+        else if(wireless_uart_data == 'w') { Kd_T-=0.2;     }
+        else if(wireless_uart_data == 'x') { v_y+=2;        }
+        else if(wireless_uart_data == 'y') { v_y-=2;        }
+         
+	    else if(wireless_uart_data == '@') {;}
 
-//        else if(wireless_uart_data == '>') {t_b += 5;}
-//        else if(wireless_uart_data == '<') {t_b -= 5;}
-//        else if(wireless_uart_data == '[') {k += 0;}
-//        else if(wireless_uart_data == ']') {k += 1;}
-//		
-//		else if(wireless_uart_data == '+') {y_threshold += 1;}
-//        else if(wireless_uart_data == '-') {y_threshold -= 1;}
-//        else if(wireless_uart_data == ')') {x_threshold += 1;}
-//        else if(wireless_uart_data == '(') {x_threshold -= 1;}
+        else if(wireless_uart_data == '>') {t_b += 5;}
+        else if(wireless_uart_data == '<') {t_b -= 5;}
+        else if(wireless_uart_data == '[') {k += 0;}
+        else if(wireless_uart_data == ']') {k += 1;}
+		 
+		else if(wireless_uart_data == '+') {y_threshold += 1;}
+        else if(wireless_uart_data == '-') {y_threshold -= 1;}
+        else if(wireless_uart_data == ')') {x_threshold += 1;}
+        else if(wireless_uart_data == '(') {x_threshold -= 1;}
 		
-//		else if(wireless_uart_data == 'z') 
-//		{
-//            clock_init(SYSTEM_CLOCK_600M);  // 不可删除
-//            debug_init();
-//            my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
-//            my_encoder_init();	//对屏幕显示可能也有影响
+        else if(wireless_uart_data == '{') {Kp_correct1 += 0.5;}
+        else if(wireless_uart_data == '}') {Kp_correct1 -= 0.5;}
+        else if(wireless_uart_data == ';') {Kd_correct1 += 0.1;}
+        else if(wireless_uart_data == '\'') {Kd_correct1 -= 0.1;}
 
-//            wireless_uart_init();
-//            imu660ra_init();
+        else if(wireless_uart_data == '|') {Kp_correct2 += 0.1;}
+        else if(wireless_uart_data == '.') {Kp_correct2 -= 0.1;}
+        else if(wireless_uart_data == ':') {Kd_correct2 += 0.1;}
+        else if(wireless_uart_data == '\"') {Kd_correct2 -= 0.1;}
+        
+		else if(wireless_uart_data == 'z') 
+		{
+           clock_init(SYSTEM_CLOCK_600M);  // 不可删除
+           debug_init();
+           my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
+           my_encoder_init();	//对屏幕显示可能也有影响
 
-//            pit_ms_init(PIT_CH1, 5);
-//            interrupt_set_priority(LPUART8_IRQn,0);
-//            interrupt_set_priority(PIT_IRQn, 1);
-//            interrupt_global_enable(0);
-//            
-//            gpio_init(B11, GPO, GPIO_LOW, GPO_PUSH_PULL);system_delay_ms(100); gpio_toggle_level(B11);system_delay_ms(100); gpio_toggle_level(B11);
-//        }
+           wireless_uart_init();
+           imu660ra_init();
+
+           pit_ms_init(PIT_CH1, 5);
+           interrupt_set_priority(LPUART8_IRQn,0);
+           interrupt_set_priority(PIT_IRQn, 1);
+           interrupt_global_enable(0);
+           
+           gpio_init(B11, GPO, GPIO_LOW, GPO_PUSH_PULL);system_delay_ms(100); gpio_toggle_level(B11);system_delay_ms(100); gpio_toggle_level(B11);
+       }
         
 //        //接收二维遥杆数据的状态机
 //        if(status == 0 && wireless_uart_data == ':' ) {status = 1;}                  //即将发数据vx

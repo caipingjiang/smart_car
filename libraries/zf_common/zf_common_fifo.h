@@ -51,7 +51,7 @@ typedef enum
 
 typedef enum
 {
-    FIFO_IDLE       = 0x00,
+    FIFO_IDLE       = 0x00, //¿ÕÏÐ×´Ì¬
     FIFO_CLEAR      = 0x01,
     FIFO_WRITE      = 0x02,
     FIFO_READ       = 0x04,

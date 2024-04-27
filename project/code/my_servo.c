@@ -71,6 +71,10 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     }
 }
 
+void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
+{
+	
+}
 void arm_down()
 {
     Servo_SetAngle(1, 96);
@@ -88,21 +92,24 @@ void arm_down()
 
 void arm_up()
 {
-    Servo_SetAngle(2, 218);
-    Servo_SetAngle(1, 22);
+    Servo_SetAngle(2, 225);
+	system_delay_ms(200);
+    Servo_SetAngle(1, 32);
+	system_delay_ms(500);
     magnet_set(1);
-    system_delay_ms(500);
-    Servo_SetAngle(1, 84);
+	Servo_SetAngle(1, 22);
+	system_delay_ms(500);
+    Servo_SetAngle(1, 72);
     system_delay_ms(1000);
-    Servo_SetAngle(2, 12);
-    system_delay_ms(500);
+    Servo_SetAngle(2, 30);
+    system_delay_ms(1000);
     Servo_SetAngle(1, 96);
     magnet_set(0);
 }
 void arm_hang()
 {
     magnet_set(0);
-    system_delay_ms(100);
+    system_delay_ms(500);
     Servo_SetAngle(1, 80);
     Servo_SetAngle(2, 40);
 }
