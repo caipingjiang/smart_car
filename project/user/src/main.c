@@ -24,13 +24,13 @@ void pit_handler_1()
 //	JF_Data.data[2] = 0.45;
 //	JF_Data.data[3] = -3.36;
 //	JustFloat_Send();
-//FW_Data[0].type = 'd';
-//FW_Data[1].type = 'd';
-//FW_Data[2].type = 'f';
-//FW_Data[0].int_data   = v_y;
-//FW_Data[1].int_data   = -34;
-//FW_Data[2].float_data = 1.657;
-//FireWater_Send();
+FW_Data[0].type = 'd';
+FW_Data[1].type = 'd';
+FW_Data[2].type = 'f';
+FW_Data[0].int_data   = encoder_data[0];
+FW_Data[1].int_data   = encoder_data[1];
+FW_Data[2].float_data = 1.657;
+FireWater_Send();
     //均值滤波
 //    float min=0, max=0, temp_angle;
 //	for(uint8 i=0; i<10; i++)
@@ -77,7 +77,7 @@ int main(void)
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
 	my_encoder_init();	//对屏幕显示可能也有影响
 	my_servo_init();
-	my_image_init();
+	 //my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
 	
@@ -125,28 +125,23 @@ int main(void)
 
 //		}
 		
-		if(mt9v03x_finish_flag)
-        {
-		 	mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
-         	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
- 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-//			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-  			
-			//start _finish_line_find();
-			
- 			find_middle();
-<<<<<<< HEAD
-			Slope = slope();
-			//ips114_clear();
-=======
-			Slope= slope();
-		
->>>>>>> 9083993ade817b5e1e1163635f77af77d013b3f3
- 			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-		}
+//		if(mt9v03x_finish_flag)
+//        {
+//		 	mt9v03x_finish_flag = 0;
+//			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+//		 	//image_process();
+//         	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
+// 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+////			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
+//			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+//  			
+//			//start _finish_line_find();
+//			
+// 			find_middle();
+//			Slope= slope();
+//		
+// 			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
+//		}
 
 			 
 			 //逆透视
