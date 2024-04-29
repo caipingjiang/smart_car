@@ -55,6 +55,7 @@ Section Cross References
     main.o(.text.pit_handler_1) refers to zf_device_imu660ra.o(.text.imu660ra_get_acc) for imu660ra_get_acc
     main.o(.text.pit_handler_1) refers to zf_device_imu660ra.o(.text.imu660ra_get_gyro) for imu660ra_get_gyro
     main.o(.text.pit_handler_1) refers to zf_device_imu660ra.o(.bss.imu660ra_gyro_z) for imu660ra_gyro_z
+>>>>>>> 629099a0e9916e4824b5d555280121ffef8aed4c
     main.o(.text.pit_handler_1) refers to main.o(.bss.tra_gyro_z) for tra_gyro_z
     main.o(.text.pit_handler_1) refers to zf_device_imu660ra.o(.data.imu660ra_transition_factor) for imu660ra_transition_factor
     main.o(.text.pit_handler_1) refers to imu660ra.o(.bss.Gyro_Bias) for Gyro_Bias
@@ -7649,6 +7650,7 @@ Removing Unused input sections from the image.
     Removing zf_common_debug.o(.ARM.exidx.text.debug_assert_disable), (8 bytes).
     Removing zf_common_debug.o(.ARM.exidx.text.debug_assert_handler), (8 bytes).
     Removing zf_common_debug.o(.ARM.exidx.text.debug_output), (8 bytes).
+    Removing zf_common_debug.o(.text.debug_log_handler), (48 bytes).
     Removing zf_common_debug.o(.ARM.exidx.text.debug_log_handler), (8 bytes).
     Removing zf_common_debug.o(.ARM.exidx.text.debug_output_struct_init), (8 bytes).
     Removing zf_common_debug.o(.ARM.exidx.text.debug_output_init), (8 bytes).
@@ -7679,6 +7681,7 @@ Removing Unused input sections from the image.
     Removing zf_common_function.o(.ARM.exidx.text.func_soft_delay), (8 bytes).
     Removing zf_common_function.o(.text.func_str_to_int), (98 bytes).
     Removing zf_common_function.o(.ARM.exidx.text.func_str_to_int), (8 bytes).
+    Removing zf_common_function.o(.text.func_int_to_str), (174 bytes).
     Removing zf_common_function.o(.ARM.exidx.text.func_int_to_str), (8 bytes).
     Removing zf_common_function.o(.text.func_str_to_uint), (68 bytes).
     Removing zf_common_function.o(.ARM.exidx.text.func_str_to_uint), (8 bytes).
@@ -7700,6 +7703,7 @@ Removing Unused input sections from the image.
     Removing zf_common_function.o(.ARM.exidx.text.zf_sprintf), (8 bytes).
     Removing zf_common_function.o(.text.removeFirstNChars), (28 bytes).
     Removing zf_common_function.o(.ARM.exidx.text.removeFirstNChars), (8 bytes).
+    Removing zf_common_function.o(.rodata.str1.1), (47 bytes).
     Removing zf_common_interrupt.o(.text), (0 bytes).
     Removing zf_common_interrupt.o(.ARM.exidx.text.interrupt_global_enable), (8 bytes).
     Removing zf_common_interrupt.o(.ARM.exidx.text.interrupt_global_disable), (8 bytes).
@@ -12269,6 +12273,54 @@ Image Symbol Table
     __cxa_finalize                            - Undefined Weak Reference
     _clock_init                               - Undefined Weak Reference
     _microlib_exit                            - Undefined Weak Reference
+<<<<<<< HEAD
+    FW_Data                                  0x20000004   Data          96  vofa.o(.data.FW_Data)
+    Inc_Ki                                   0x20000064   Data          16  my_moter.o(.data.Inc_Ki)
+    Inc_Kp                                   0x20000074   Data          16  my_moter.o(.data.Inc_Kp)
+    Kd_T                                     0x20000084   Data           4  my_moter.o(.data.Kd_T)
+    Kp_T                                     0x20000088   Data           4  my_moter.o(.data.Kp_T)
+    PORTPTR                                  0x2000008c   Data          44  zf_driver_gpio.o(.data.PORTPTR)
+    SystemCoreClock                          0x200000b8   Data           4  system_mimxrt1064.o(.data.SystemCoreClock)
+    camera_uart_handler                      0x200000bc   Data           4  zf_device_type.o(.data.camera_uart_handler)
+    flexio_camera_uart_handler               0x200000c0   Data           4  zf_device_type.o(.data.flexio_camera_uart_handler)
+    flexio_camera_vsync_handler              0x200000c4   Data           4  zf_device_type.o(.data.flexio_camera_vsync_handler)
+    qtimer_index                             0x200000d0   Data          20  zf_driver_encoder.o(.data.qtimer_index)
+    s_lpuartIsr                              0x200000ec   Data           4  fsl_lpuart.o(.data.s_lpuartIsr)
+    system_clock                             0x200000f4   Data           4  zf_common_clock.o(.data.system_clock)
+    tof_module_exti_handler                  0x200000f8   Data           4  zf_device_type.o(.data.tof_module_exti_handler)
+    v_y                                      0x200000fc   Data           2  my_moter.o(.data.v_y)
+    wireless_module_spi_handler              0x20000100   Data           4  zf_device_type.o(.data.wireless_module_spi_handler)
+    wireless_module_uart_handler             0x20000104   Data           4  zf_device_type.o(.data.wireless_module_uart_handler)
+    Gyro_Bias                                0x2000010c   Data          12  imu660ra.o(.bss.Gyro_Bias)
+    Inc_Kd                                   0x20000118   Data          16  my_moter.o(.bss.Inc_Kd)
+    Pwm                                      0x20000128   Data           8  my_moter.o(.bss.Pwm)
+    Slope                                    0x20000130   Data           2  main.o(.bss.Slope)
+    angle                                    0x20000138   Data           4  main.o(.bss.angle)
+    control_flag                             0x2000013c   Data           2  zf_device_wireless_uart.o(.bss.control_flag)
+    debug_uart_buffer                        0x20000164   Data          64  zf_common_debug.o(.bss.debug_uart_buffer)
+    debug_uart_data                          0x200001a4   Data           1  zf_common_debug.o(.bss.debug_uart_data)
+    debug_uart_fifo                          0x200001a8   Data          24  zf_common_debug.o(.bss.debug_uart_fifo)
+    encoder_data                             0x200001c0   Data           8  my_encoder.o(.bss.encoder_data)
+    g_lpspiDummyData                         0x200001c8   Data           5  fsl_lpspi.o(.bss.g_lpspiDummyData)
+    g_rtcXtalFreq                            0x200001d0   Data           4  fsl_clock.o(.bss.g_rtcXtalFreq)
+    g_xtalFreq                               0x200001d4   Data           4  fsl_clock.o(.bss.g_xtalFreq)
+    gps_gga_state                            0x20000258   Data           1  zf_device_gps_tau1201.o(.bss.gps_gga_state)
+    gps_rmc_state                            0x200002d9   Data           1  zf_device_gps_tau1201.o(.bss.gps_rmc_state)
+    gps_tau1201_flag                         0x200002da   Data           1  zf_device_gps_tau1201.o(.bss.gps_tau1201_flag)
+    motor_bias_last                          0x200002fe   Data           8  my_moter.o(.bss.motor_bias_last)
+    motor_bias_last2                         0x20000306   Data           8  my_moter.o(.bss.motor_bias_last2)
+    s_cdcVcom                                0x20000398   Data          16  zf_driver_usb_cdc.o(.bss.s_cdcVcom)
+    s_lpi2cMasterHandle                      0x20000400   Data          20  fsl_lpi2c.o(.bss.s_lpi2cMasterHandle)
+    s_lpi2cMasterIsr                         0x20000414   Data           4  fsl_lpi2c.o(.bss.s_lpi2cMasterIsr)
+    s_lpuartHandle                           0x20000444   Data          36  fsl_lpuart.o(.bss.s_lpuartHandle)
+    tra_gyro_z                               0x200004b0   Data           4  main.o(.bss.tra_gyro_z)
+    v_w                                      0x200004b4   Data           8  my_moter.o(.bss.v_w)
+    v_x                                      0x200004bc   Data           2  my_moter.o(.bss.v_x)
+    w                                        0x200004be   Data           2  my_moter.o(.bss.w)
+    wireless_type                            0x200004c0   Data           1  zf_device_type.o(.bss.wireless_type)
+    Image$$ARM_LIB_HEAP$$ZI$$Base            0x20000520   Number         0  anon$$obj.o ABSOLUTE
+    Image$$ARM_LIB_HEAP$$ZI$$Limit           0x20000920   Number         0  anon$$obj.o ABSOLUTE
+=======
     _scanf_longlong                           - Undefined Weak Reference
     __stdout                                 0x20000000   Data           4  stdout.o(.data)
     FW_Data                                  0x20000008   Data          96  vofa.o(.data.FW_Data)
@@ -13643,6 +13695,66 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
+<<<<<<< HEAD
+       574          0          0          0          0       7512   board.o
+      1706          0          8          0          0      18544   clock_config.o
+         0          0        512          0          0       2453   evkmimxrt1064_flexspi_nor_config.o
+         0          0       1040          0          0        516   evkmimxrt1064_sdram_ini_dcd.o
+        60         44          0          0          0        715   fsl_assert.o
+      4138         88         61          0          8      44492   fsl_clock.o
+        38          0          0          4          4      20950   fsl_csi.o
+      3178        130          0          0         20      24513   fsl_debug_console.o
+      1300          0         53          0        128      38962   fsl_edma.o
+       230          0         81          0         32      60720   fsl_enet.o
+       260         84         41          4         16      63588   fsl_flexcan.o
+       198          0          0          0         24      17926   fsl_flexio.o
+         0          0         48          0          0        834   fsl_flexspi_nor_boot.o
+       472        138         61          0          0       8573   fsl_gpio.o
+       608        116        128          0          0       7942   fsl_gpt.o
+       704          0          0          0         48      48484   fsl_lpi2c.o
+      3870        152        151          0         25      46535   fsl_lpspi.o
+      1428         28        301          4         36      36810   fsl_lpuart.o
+       256         16         71          0          0       6584   fsl_pit.o
+      1856         56        156          0          0      21802   fsl_pwm.o
+       420          0        103          0          0      14767   fsl_qtmr.o
+      1302         56         37          0         32      54408   fsl_sai.o
+       884          0         39          0         16      25737   fsl_spdif.o
+        74          0          0          4         12      42560   fsl_usdhc.o
+         0          0          0          0         12       1184   imu660ra.o
+       508          0          0          0          0       6581   isr.o
+       258          8          0          0         10       6547   main.o
+       154          0          0          0          8       2750   my_encoder.o
+      1406         16          0         42         56       9903   my_moter.o
+       188          0          0          0          0       5473   my_servo.o
+       564        260       1024          0          0       2381   startup_mimxrt1064.o
+       262          0          0          4          0       6068   system_mimxrt1064.o
+       194          0          0          0          0      18834   usb_device_dci.o
+      1102          0          0          0          0      22167   usb_device_ehci.o
+       168         40          0         96         12       1847   vofa.o
+        32          0          0          4          0        686   zf_common_clock.o
+      1502         96          9          1        109       8583   zf_common_debug.o
+       966          0         43          0          0       7138   zf_common_fifo.o
+         0          0       2072          0          0        697   zf_common_font.o
+       146          0          0          0          4       8579   zf_common_interrupt.o
+        16          0          0          0          0        931   zf_common_vector.o
+       244          8          0          0        284      16928   zf_device_gps_tau1201.o
+      2178          0         61          6          2      27125   zf_device_ips114.o
+        52          0          0         24          1       2399   zf_device_type.o
+       252          0         52          0         91       6046   zf_device_wireless_uart.o
+       108          0          0          0          0       3176   zf_driver_delay.o
+      1010          8         46         20          0       7081   zf_driver_encoder.o
+       274          0          0         44          0       8832   zf_driver_gpio.o
+       200         52          0          0          1       7777   zf_driver_pit.o
+      1730        312         62          0          0      10962   zf_driver_pwm.o
+      1484          8         62          0         10      24143   zf_driver_spi.o
+      1086          8         79          0          0      13783   zf_driver_uart.o
+        28          0          0          0         16      18740   zf_driver_usb_cdc.o
+
+    ----------------------------------------------------------------------
+     40238       1748       6460        264      11284     873268   Object Totals
+         0          0         48          0      10240          0   (incl. Generated)
+       570         24         11          7         27          0   (incl. Padding)
+=======
        574          0          0          0          0       7546   board.o
       1706          0          8          0          0      18578   clock_config.o
          0          0        512          0          0       2487   evkmimxrt1064_flexspi_nor_config.o
