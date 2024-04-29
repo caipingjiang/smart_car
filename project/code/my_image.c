@@ -17,40 +17,53 @@ uint8 boder_L[MT9V03X_H - 5];		//左边扫线（左边界 黄色）
 uint8 boder_R[MT9V03X_H - 5];		//右边扫线（右边界 绿色）
 uint8 boder_M[MT9V03X_H - 5];		//中线 （蓝色）
 uint8 boder_U[MT9V03X_W] = {0};		//上边扫线（上边线 红色）
-uint8 diff_boder_L[MT9V03X_H - 6];	//差值
-uint8 diff_boder_R[MT9V03X_H - 6];	//差值
-uint8 diff_boder_M[MT9V03X_H - 6];	//差值
+uint8 diff_boder_L[MT9V03X_H - 6];	//左边界相邻行的点的x坐标之差
+uint8 diff_boder_R[MT9V03X_H - 6];	//左边界相邻行的点的x坐标之差
 uint8 diff_boder_U[MT9V03X_W-1]; 	//差值
-uint8 boder_correct[60];
-uint8 red_point[25];
-int8  diff_y[25];
+uint8 road_width[MT9V03X_H - 5];  	//赛道宽度，即右边界减去左边界
+uint8 boder_correct[60];			//用于边线矫正的采样数据点（y坐标）
 uint8 longest, index;				//最长白列对应的纵坐标和横坐标
+
 int16 a, b;							//差比和中的a,b
-int16 sideline_err = 0, sideline_distance = 0;//边界矫正中与前方赛道边界的相对倾斜度，以及与边界的距离
-uint8 white_value = 120;			//差比和中的a,b
+int16 sideline_angle = 0, sideline_distance = 0;///边界矫正的边线倾角误差、边线距离误差（通过这两个数据传入边界较真的两个并级PID进行边线矫正）
+uint8 white_value = 120;			//参考白点初值
 
 
 //计算白色参考阈值
 uint8 find_white_point(uint8 image_array[][188])
 {
-	uint16 total = 0;
-	for (uint8 i = 0; i < 18; i += 2)
+	uint16 total = 0, cnt=0;
+	for (uint8 i = 0; i < 20; i += 2)
 	{
-		for (uint8 j = 0; j < 10; j += 2)
+		for (uint8 j = 0; j < 8; j += 4)
 		{
-			total += image_array[90 + i][90 + j];
+			if (image_array[84 + i][100 + j] > 55)//过滤掉灰度太低的像素点
+			{
+				cnt++;
+				total += image_array[84 + i][100 + j];
+			}
 		}
 	}
-	ips114_show_int(90, 70, total / 45, 3);
+	ips114_show_int(90, 70, total / 20, 3);
 	//	ips114_draw_point(90,80,RGB565_BLUE);
 	//	ips114_draw_point(91,80,RGB565_BLUE);
 	//	ips114_draw_point(90,81,RGB565_BLUE);
 	//	ips114_draw_point(91,81,RGB565_BLUE);
-	return total/45;
+	if (cnt)return total / (cnt);
+	else return 120; //若所选区域为黑则直接返回120作为白色
 }
 
 
-uint8 y_threshold = 22;//12
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  找最长白列(y最小)
+// 参数说明  longest：存放最长白列长度(y值)的数据的地址，对应前面的全局变量uint8 longest
+// 参数说明  index：存放最长白列对应索引(x值)的数据的地址，对应前面的全局变量uint8 index
+// 返回参数  void
+// 使用示例  find_longest(&longest, &index);
+// 备注信息  本函数在下面的find_middle()函数中被调用
+//-----------------------------------------------------------------------------------------------
+uint8 y_threshold = 22;//12 纵向扫线对比度阈值
 void find_longest(uint8* longest, uint8* index)
 {
 	//----------------找左右边界起点-----------------
@@ -105,7 +118,7 @@ void find_longest(uint8* longest, uint8* index)
 					ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
 				}
 
-				if (j < *longest)
+				if (j < *longest) //更新最长白列
 				{
 					*longest = j; //j
 					*index = i;
@@ -141,11 +154,19 @@ void find_longest(uint8* longest, uint8* index)
 	//ips114_show_int(150, 90, high_sum / (highest_count+1) , 3);
 }
 
-uint8 x_threshold = 15;//15
+//-----------------------------------------------------------------------------------------------
+// 函数简介  计算中线
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+uint8 x_threshold = 15;//15横向扫线对比度阈值
+#define SHORTEST (MT9V03X_H - 20)//定义最长白列的最短值，若还小于最短值，直接return，认为跑出赛道了
 void find_middle()
 {
-
 	find_longest(&longest, &index);
+	if(longest>SHORTEST)return;	//小于最短值，直接return，认为跑出赛道了
 	ips114_draw_line(index, MT9V03X_H - 10, index, longest, RGB565_PURPLE);
 
 	//从最长列开始寻找左右边界
@@ -210,22 +231,144 @@ void find_middle()
 		ips114_draw_point(boder_M[i], i, RGB565_BLUE);
 	}
 }
-void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance);
+
+
+void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_distance);
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  计算斜率
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
 int16 slope()
 {
-	sideline_correct(boder_correct, &sideline_err, &sideline_distance);
+	static int16 lastresult;
+	if(longest>SHORTEST)return lastresult;	//小于最短值，认为跑出赛道了，就返回上次斜率，
+	sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 	int16 sum1 = 0, sum2 = 0, result;
 	for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
 	{
-		sum1 += (int16)(boder_M[i] - boder_M[MT9V03X_H - 10]);
+		sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10]
 		sum2 += (int16)(MT9V03X_H - 10 - i);
 	}
 	result = 50 * sum1 / (sum2+1); //分母加1防止除0;
 	ips114_show_int(50, 80, (const int32)result, 3);
-
+	lastresult = result;
 	return result;
 }
 
+
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  边线矫正
+// 参数说明  
+// 返回参数  side_point：采集点数组的地址（对应前面的全局数组uint8 boder_correct[60];）
+// 使用示例  
+// 备注信息  此函数调用后即可得到边线倾角误差和边线距离误差，再在my_motor.c文件中调用roundabout_move(&sideline_angle, &sideline_distance);就可实现环岛十字路段横向移动矫正
+//-----------------------------------------------------------------------------------------------
+void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_distance)
+{
+	uint16 y1 = 0, y2 = 0;
+	for (uint8 i = 0; i < 10; i++)
+	{
+		y1 += side_point[i];
+		y2 += side_point[59 - i];
+	}
+	*sideline_angle = (y1 - y2);
+	*sideline_distance = (y1 + y2) / 2;
+
+	ips114_show_int(120, 20, *sideline_angle, 5);
+	ips114_show_int(120, 40, *sideline_distance, 4);
+}
+
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  环岛十字识别
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+void roundabout_cross() 
+{
+	uint16 jump_point[4][2] = { {0} };//存放边线跳变点
+
+	//求左边线相邻行点的x差值
+	for (uint8 i = MT9V03X_H - 6; i >= longest + 1; i--)
+	{
+		diff_boder_L[i-1] = abs(boder_L[i] - boder_L[i - 1]); //diff_boder_L的i-1与boder_L的i-1对应
+		if (diff_boder_L[i-1] > 15)
+		{
+			if (boder_L[i] > boder_L[i - 1] && (jump_point[0][0] * jump_point[0][1]) == 0) //左边线从下到上的第一个突变点
+			{ 
+				ips114_draw_circle(boder_L[i], i, 4, RGB565_YELLOW); 
+				jump_point[0][0] = boder_L[i];  jump_point[0][1] = i;
+			}
+			else { ips114_draw_circle(boder_L[i-1], i-1, 4, RGB565_YELLOW); }
+		}
+	}
+	//求右边线相邻行点的x差值
+	for (uint8 i = MT9V03X_H - 6; i >= longest + 1; i--)
+	{
+		diff_boder_R[i-1] = abs(boder_R[i] - boder_R[i - 1]);
+		if (diff_boder_R[i-1] > 15)
+		{
+			if(boder_R[i] < boder_R[i - 1] && (jump_point[1][0] * jump_point[1][1]) == 0 && (jump_point[0][0] * jump_point[0][1]) != 0)  //右边线从下到上的第一个突变点
+			{
+				ips114_draw_circle(boder_R[i], i, 4, RGB565_GREEN);
+				jump_point[1][0] = boder_R[i];  jump_point[1][1] = i;
+			}
+			else { ips114_draw_circle(boder_R[i-1], i-1, 4, RGB565_GREEN); }
+		}
+	}
+	//求上边线相邻列点的y差值
+	for (uint8 i = 2; i < MT9V03X_W; i+=2)
+	{
+		diff_boder_U[i] = abs(boder_U[i] - boder_U[i - 2]);
+		if (diff_boder_U[i] > 15 && i<90) // 限制X坐标范围，可以判断左右边线
+		{
+			//ips114_draw_point(30, 30, RGB565_CYAN);
+			//ips114_draw_point(i-2, boder_U[i-2], 1, RGB565_CYAN);
+			ips114_draw_circle(i - 2, boder_U[i - 2], 4, RGB565_RED);
+			jump_point[2][0] = i - 2;  jump_point[2][1] = boder_U[i - 2];
+		}
+		if (diff_boder_U[i] > 15 && i > 90 && jump_point[2][0]!=0) // 限制X坐标范围，可以判断左右边线
+		{
+			jump_point[3][0] = i;  jump_point[3][1] = boder_U[i];
+			//ips114_draw_point(30, 30, RGB565_CYAN);
+			////ips114_draw_point(i-2, boder_U[i-2], 1, RGB565_CYAN);
+			ips114_draw_circle(i, boder_U[i], 4, RGB565_RED);
+			//jump_point[1][0] = i - 2;  jump_point[1][1] = boder_U[i - 2];
+		}
+	}
+	uint16 x1 = abs(jump_point[0][0] - jump_point[2][0]);
+	uint16 y1 = abs(jump_point[0][1] - jump_point[2][1]);
+	uint16 x2 = abs(jump_point[1][0] - jump_point[3][0]);
+	uint16 y2 = abs(jump_point[1][1] - jump_point[3][1]);
+	uint16 distance1 = x1 * x1 + y1 * y1;
+	uint16 distance2 = x2 * x2 + y2 * y2;
+	if (distance1 <= 40 && jump_point[0][0]*jump_point[2][0] != 0) {
+		ips114_show_int(50, 60, x1, 2);
+		ips114_show_int(50, 70, y1, 2);
+		ips114_show_string(50, 90, "RA") ;
+	}
+	if (distance2 <= 40 && jump_point[1][0]*jump_point[3][0] != 0) {
+		ips114_show_int(130, 60, x2, 2);
+		ips114_show_int(130, 70, y2, 2);
+		ips114_show_string(130, 90, "CR");
+	}
+}
+
+
+
+
+
+
+
+
+//---------------------------以下为未使用-------------------------------
 /*!
  *  @brief      大津法二值化0.8ms程序
  *  @date:   2018-10
@@ -235,7 +378,6 @@ int16 slope()
  *  height：图像高
  *  @author     Z小旋
  */
-
 
 uint8 otsu(uint8* image, uint16 width, uint16 height)
 {
@@ -285,43 +427,29 @@ uint8 otsu(uint8* image, uint16 width, uint16 height)
 
 }
 
-//计算边线倾角，便于矫正
-void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance)
+
+//梯度图像
+uint8 t_b = 30, k = 1;
+uint8 x_operator[8][2] = { {0,1}, {-1,1}, {-1,0}, {0,-1}, {1,-1}, {1,0}, {1,1} };
+uint8 image_changed[MT9V03X_H - 2][MT9V03X_W - 2];
+void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height)
 {
-	uint16 y1 = 0, y2 = 0;
-	for (uint8 i = 0; i < 10; i++)
+	for (uint8 i = 1; i <= MT9V03X_W - 2; i++)
 	{
-		y1 += side_point[i];
-		y2 += side_point[59 - i];
+		for (uint8 j = 1; j <= MT9V03X_H - 2; j++)
+		{
+			//image_changed[j-1][i-1] = k*(image[j][i+1] - image[j][i-1] + image[j+1][i] - image[j-1][i] + t_b);
+			int16 x_diff = (image[j][i + 1] - image[j][i - 1]);
+			int16 y_diff = (image[j + 1][i] - image[j - 1][i]);
+			image_changed[j - 1][i - 1] = (uint8)sqrt(x_diff * x_diff + y_diff * y_diff);
+		}
 	}
-	*sideline_err = (y1 - y2);
-	*sideline_distance = (y1 + y2) / 2;
-
-	// uint16 odd_sum = 0, even_sum =0;
-	// for (uint8 i = 0; i < 60; i++)
-	// {
-	// 	//&1相当于对2取余（%2）
-	// 	if((i&1) == 1){odd_sum  += side_point[i];}
-	// 	else{even_sum += side_point[i];}
-	// }
-	// *sideline_err = odd_sum - even_sum ;
-
-//	double total_slope = 0.0;
-//	for (uint8 i = 0; i < 59; i++) {
-//		double slope = (side_point[i+1] - side_point[i]) /                      1.0; // 计算相邻点之间的斜率
-//		total_slope += slope;
-//	}
-	// double average_slope = total_slope ; // 计算平均斜率
-	// *sideline_err = average_slope; // 将平均斜率存储在sideline_err中
-
-	ips114_show_int(120, 20, *sideline_err, 5);
-	ips114_show_int(120, 40, *sideline_distance, 4);
 }
+
 
 
 //灰度八领域
 #define 	DISTANCE 	3
-
 uint8 l_edge[MT9V03X_H] = { 0 };
 uint8 r_edge[MT9V03X_H] = { 0 };
 static uint8 start_point_l[2] = { 0 };
@@ -353,56 +481,6 @@ void find_start_point(uint8 image[][188])
 		}
 	}
 }
-
-//梯度图像
-uint8 t_b = 30, k = 1;
-uint8 x_operator[8][2] = { {0,1}, {-1,1}, {-1,0}, {0,-1}, {1,-1}, {1,0}, {1,1} };
-uint8 image_changed[MT9V03X_H - 2][MT9V03X_W - 2];
-void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height)
-{
-	for (uint8 i = 1; i <= MT9V03X_W - 2; i++)
-	{
-		for (uint8 j = 1; j <= MT9V03X_H - 2; j++)
-		{
-			//image_changed[j-1][i-1] = k*(image[j][i+1] - image[j][i-1] + image[j+1][i] - image[j-1][i] + t_b);
-			int16 x_diff = (image[j][i + 1] - image[j][i - 1]);
-			int16 y_diff = (image[j + 1][i] - image[j - 1][i]);
-			image_changed[j - 1][i - 1] = (uint8)sqrt(x_diff * x_diff + y_diff * y_diff);
-		}
-	}
-}
-
-
-void roundabout() //环岛
-{
-	for (uint8 i = MT9V03X_H - 6; i >= longest + 1; i--)
-	{
-		diff_boder_L[i-1] = abs(boder_L[i] - boder_L[i - 1]); //diff_boder_L的i-1与boder_L的i-1对应
-		if (diff_boder_L[i-1] > 15)
-		{
-			if(boder_L[i] > boder_L[i - 1] ){ ips114_draw_circle(boder_L[i], i, 4, RGB565_YELLOW); }
-			else { ips114_draw_circle(boder_L[i-1], i-1, 4, RGB565_YELLOW); }
-		}
-	}
-	
-	for (uint8 i = MT9V03X_H - 6; i >= longest + 1; i--)
-	{
-		diff_boder_R[i-1] = abs(boder_R[i] - boder_R[i - 1]);
-		if (diff_boder_R[i-1] > 15)
-		{
-			if(boder_R[i] > boder_R[i - 1]){ ips114_draw_circle(boder_R[i], i, 4, RGB565_GREEN); }
-			else { ips114_draw_circle(boder_R[i-1], i-1, 4, RGB565_GREEN); }
-		}
-	}
-
-	for (uint8 i = 4; i < MT9V03X_W; i+=2)
-	{
-		diff_boder_U[i] = abs(boder_U[i] - boder_U[i - 4]);
-		if(diff_boder_U[i]>20) ips114_draw_circle(i, diff_boder_U[i], 4, RGB565_RED);
-	}
-}
-
-
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>逆透视变换>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -445,5 +523,4 @@ void roundabout() //环岛
  
 //完成摄像头初始化后，调用一次ImagePerspective_Init，此后，直接调用ImageUsed   即为透视结果
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<逆透视变换<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 

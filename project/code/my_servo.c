@@ -34,16 +34,18 @@
 //向下：servo_1:22°， servo_2:218°
 void my_servo_init(void)
 {  
-    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, 0);
-    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, 0);
+    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(108));
+    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo2_Angle(40));
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, 0);
 	
+    pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(0));
+    system_delay_ms(500);//等待仓复位完成
 	pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(80));
     pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(40));
-    pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(0));
+    
 	
 	//电磁铁初始化
-	pwm_init(magnet_PWM, 1000, 0);
+	pwm_init(magnet_PWM, 2000, 0);
 
 	system_delay_ms(100);
 }
@@ -51,7 +53,7 @@ void my_servo_init(void)
 void magnet_set(uint8 state)
 {
 	if(state == 0){ pwm_set_duty(magnet_PWM, 0); }
-	else if(state == 1){pwm_set_duty(magnet_PWM, 9999); }
+	else if(state == 1){pwm_set_duty(magnet_PWM, 9999); }//7142
 }
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
@@ -77,40 +79,43 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 }
 void arm_down()
 {
-    Servo_SetAngle(1, 96);
+    Servo_SetAngle(1, 84);
     Servo_SetAngle(2, 12);
     magnet_set(1);
-    system_delay_ms(1000);
-    Servo_SetAngle(1, 84);
-    system_delay_ms(1000);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 96);
+    system_delay_ms(500);
     Servo_SetAngle(2, 218);
     system_delay_ms(500);
-    Servo_SetAngle(1, 32);
+    Servo_SetAngle(1, 130);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 160);
     system_delay_ms(500);
     magnet_set(0);
 }
 
 void arm_up()
 {
-    Servo_SetAngle(2, 225);
+    Servo_SetAngle(2, 223);
 	system_delay_ms(200);
-    Servo_SetAngle(1, 32);
+    Servo_SetAngle(1, 150);
 	system_delay_ms(500);
     magnet_set(1);
-	Servo_SetAngle(1, 22);
+	Servo_SetAngle(1, 162);
 	system_delay_ms(500);
-    Servo_SetAngle(1, 72);
+    Servo_SetAngle(1, 108);
     system_delay_ms(1000);
-    Servo_SetAngle(2, 30);
+    Servo_SetAngle(2, 38);
     system_delay_ms(1000);
-    Servo_SetAngle(1, 96);
+    Servo_SetAngle(1, 90);
+	system_delay_ms(500);
     magnet_set(0);
 }
 void arm_hang()
 {
     magnet_set(0);
     system_delay_ms(500);
-    Servo_SetAngle(1, 80);
+    Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 40);
 }
 

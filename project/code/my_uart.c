@@ -20,6 +20,13 @@ void my_uart_init()
     
 }
 
+//-----------------------------------------------------------------------------------------------
+// 函数简介  串口中断回调函数
+// 参数说明  uart_n：串口号
+// 返回参数  void
+// 使用示例  my_uart_callback(UART_1)
+// 备注信息  此函数在isr.c文件的串口中断函数中被调用
+//-----------------------------------------------------------------------------------------------
 void my_uart_callback(uart_index_enum uart_n)
 {
     switch (uart_n)
@@ -31,15 +38,15 @@ void my_uart_callback(uart_index_enum uart_n)
         {
             if(uart_query_byte(UART_1, &uart_data) != 0)
             {
-                if(uart_rx_state == 0 && uart_data == '@') //接收到包头
+                if(uart_rx_state == 0 && uart_data == '@')      //接收到包头
                 {
                     if(fifo_used(&uart_fifo)==0) {uart_rx_state = 1;packge_finish_flag = 0;}
                 }
-                else if(uart_rx_state == 1 && uart_data != '#') //#为包尾
+                else if(uart_rx_state == 1 && uart_data != '#') //接收到包头但未接收到包尾时正常写入数据到fifo
                 {
                     fifo_write_buffer(&uart_fifo, &uart_data, 1);
                 }
-                else if(uart_rx_state == 1 && uart_data == '#')
+                else if(uart_rx_state == 1 && uart_data == '#') //接收到包尾
                 {
                     fifo_write_buffer(&uart_fifo, "\n", 1);
                     uart_rx_state = 0;

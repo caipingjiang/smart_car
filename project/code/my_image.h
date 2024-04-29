@@ -10,7 +10,7 @@ void find_middle();
 int16 slope();
 void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance);
 void find_start_point(uint8 image[][188]);
-void roundabout(); //»·µº
+void roundabout_cross(); //»·µº
 void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
 uint8 otsu(uint8* image, uint16 width, uint16 height);
 

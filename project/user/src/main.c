@@ -41,8 +41,8 @@ FW_Data[1].int_data = encoder_data[1];
 // FW_Data[2].int_data = encoder_data[2];
 // FW_Data[3].int_data = encoder_data[3];
 
- FW_Data[4].float_data = Inc_Kp[0];
- FW_Data[5].float_data = Inc_Ki[0];
+ FW_Data[4].float_data = Kp_correct2;
+ FW_Data[5].float_data = Kd_correct2;
 // FW_Data[6].int_data = Pwm[0];
 // FW_Data[7].int_data = Pwm[1];
 FireWater_Send();
@@ -81,29 +81,28 @@ int main(void)
 	//spi_init(SPI_1, 0, 1*1000*1000, SPI1_SCK_D12, SPI1_MOSI_D14, SPI1_MISO_D15, SPI1_CS0_D13);
 	//ips200_init(IPS200_TYPE_SPI);
 	//(IPS200_CROSSWISE);
-	ips200_init(IPS200_TYPE_PARALLEL8);
-	// ips114_set_dir(IPS114_CROSSWISE);
-	// ips114_init();
+	//ips200_init(IPS200_TYPE_PARALLEL8);
+	ips114_set_dir(IPS114_CROSSWISE);
+	ips114_init();
 
     // 此处编写用户代码 例如外设初始化代码等
 
-	// imu660ra_init();
-	// imu660_zeroBias();
- 	//my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
- 	//my_encoder_init();	//对屏幕显示可能也有影响
-	//my_servo_init();
-	my_key_init();
-	//my_image_init();
-    //wireless_uart_init();
+	imu660ra_init();
+	imu660_zeroBias();
+ 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
+ 	my_encoder_init();	//对屏幕显示可能也有影响
+	my_servo_init();
+//	my_key_init();
+	my_image_init();
+    wireless_uart_init();
 	//ImagePerspective_Init();
 	my_uart_init();
 	
 	//timer_init(GPT_TIM_1,TIMER_US);
-	//uart_init(UART_4, 115200, UART4_TX_C16, UART4_RX_C17);
-	//pit_ms_init(PIT_CH1, 20);
+//	pit_ms_init(PIT_CH1, 5);
 	
 //	interrupt_set_priority(LPUART8_IRQn,4);
-//	interrupt_set_priority(PIT_IRQn, 0);
+	interrupt_set_priority(PIT_IRQn, 3);
 	interrupt_set_priority(LPUART1_IRQn,1);
 	interrupt_set_priority(LPUART4_IRQn,2);
 	interrupt_global_enable(0);
@@ -111,47 +110,94 @@ int main(void)
 	// interrupt_enable(LPUART3_IRQn);
     // 此处编写用户代码 例如外设初始化代码等
 
+	// Servo_SetAngle(1, 148);
+	// system_delay_ms(1500);
+		// Servo_SetAngle(1, 98);
+		// system_delay_ms(1500);
+//	arm_down();
     while(1)
-    {
-		//printf("flag:%d\n", packge_finish_flag);
+    {		
 		
-		system_delay_ms(1500);
-		if(packge_finish_flag)
-			//printf("data:%d,%d,%c\n", data_arr[0], data_arr[1], data_arr[2]);
-			ips200_show_int(20,20,data_arr[0],3);
-			ips200_show_int(20,40,data_arr[1],3);
-			
+		//arm_up();
+		// system_delay_ms(1500);
+		// if(packge_finish_flag)
+		// 	//printf("data:%d,%d,%c\n", data_arr[0], data_arr[1], data_arr[2]);
+		// 	ips200_show_int(20,20,data_arr[0],3);
+		// 	ips200_show_int(20,40,data_arr[1],3);
 			//packge_finish_flag = 0;
+
 		//my_key_work();
 		//ips114_show_float(100,100,Kp_T, 2,1);
 		// ips114_show_float(0,20,Kp_correct1, 3,3);
-		// ips114_show_float(0,40,Kd_correct1, 3,3);		
-//		v_y = 30;
-//		v_x =0;
-//		system_delay_ms(2000);
-//        v_y = -30;//0;
-//		v_x =0;//-30;
-//		system_delay_ms(2000);
-//		v_y = -30;
-//		v_x =0;
-//		system_delay_ms(1000);
-//		v_y = 0;
-//		v_x =30;
-//		system_delay_ms(1000);
+		// ips114_show_float(0,40,Kd_correct1, 3,3);
+
+
 		// system_delay_ms(10);
 		// for(uint8 i = 0; i<=3; i++)
 		// {
 		// 	Servo_SetAngle(3,i*93);
 		// 	system_delay_ms(1500);
-		// 	arm_up();
+		// 	arm_down();
 		// 	arm_hang();
-		// }
-		//printf("fdsf");
-		//dat = uart_read_byte(UART_4);printf("is:%d",dat);
-		//if(uart_read_byte(UART_4, data_buffer))printf("data is: %d", data_buffer);
+		// } 		
+
+
+		if(mt9v03x_finish_flag)
+        {
+		 	mt9v03x_finish_flag = 0;
+			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+		 	//image_process();
+         	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
+ 			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+//			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
+			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+			//start _finish_line_find();
 			
-		//printf("%d, %d, %d, %d\n", Pwm[0],Pwm[1], Pwm[2], Pwm[3]);
- 		//uint8 data_len = wireless_uart_read_buffer(data_buffer, 32);  
+ 			find_middle();
+			Slope = slope();
+		
+//  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
+		}
+        
+		
+    }
+
+}
+
+
+
+//------------------------------测试代码------------------------------------
+//定时器测量时间
+//			 timer_start(GPT_TIM_1);			 			 
+//			 timer_stop(GPT_TIM_1);
+//			 uint32 time = timer_get(GPT_TIM_1);
+//			 timer_clear(GPT_TIM_1);
+//			 ips200_show_int(50, 50, time, 4);
+
+
+ //逆透视
+//			 uint8_t show[RESULT_ROW][RESULT_COL];
+//                for(int i=0;i<RESULT_ROW;i++)
+//                {
+//                    for(int j=0;j<RESULT_COL;j++)
+//                    {
+//                        show[i][j]=ImageUsed[i][j];
+//                    }
+//                }
+//            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
+
+
+//		if(mt9v03x_finish_flag)
+//		{	zf_assert(NULL != &image_copy[0][0]);
+//			mt9v03x_finish_flag = 0;
+//		
+//			memcpy(image_copy[0], mt9v03x_image[0], MT9V03X_IMAGE_SIZE);
+//			wireless_uart_send_buffer((const uint8*)preFrame, sizeof(int)*7);
+//			wireless_uart_send_buffer(&image_copy[0][0], MT9V03X_IMAGE_SIZE);
+//		}
+
+
+//uint8 data_len = wireless_uart_read_buffer(data_buffer, 32);  
 // 		if(data_len != 0)                                                       // 收到了消息 读取函数会返回实际读取到的数据个数
 //         {
 //			 //printf(data_buffer);
@@ -161,68 +207,26 @@ int main(void)
 //// 			memset(data_buffer, 0, 32);
 //         }
 		//printf("%d,%d, %d\n",v_x, v_y, w);
-		//system_delay_ms(1500);
+
+
+		// v_y = 0;
+		// v_x =0;
+		// system_delay_ms(2000);
+		// v_y = -90;//0;
+		// v_x =0;//-30;
+		// system_delay_ms(2000);
+//		v_y = -30;
+//		v_x =0;
+//		system_delay_ms(1000);
+//		v_y = 0;
+//		v_x =30;
+//		system_delay_ms(1000);
+
+//system_delay_ms(1500);
 		//system_delay_ms(1000);
 		//		Target_Speed = 35;
 		//		system_delay_ms(4000);
 		// 		Target_Speed = -35;
 		// 		system_delay_ms(4000);
 
-//		if(mt9v03x_finish_flag)
-//		{	zf_assert(NULL != &image_copy[0][0]);
-//			mt9v03x_finish_flag = 0;
-//		
-//			memcpy(image_copy[0], mt9v03x_image[0], MT9V03X_IMAGE_SIZE);
-//			wireless_uart_send_buffer((const uint8*)preFrame, sizeof(int)*7);
-//			wireless_uart_send_buffer(&image_copy[0][0], MT9V03X_IMAGE_SIZE);
-
-//		}
-		
-
-
-
-// 		if(mt9v03x_finish_flag)
-//         {
-// 		 	mt9v03x_finish_flag = 0;
-// 			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-// 		 	//image_process();
-//          	// ips200_displayimage03x((const uint8 *)mt9v03x_image,MT9V03X_W,MT9V03X_H);
-//  			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-// //			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-// 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-  			
-// 			//start _finish_line_find();
-			
-//  			find_middle();
-
-// 			Slope = slope();
-// 			//ips114_clear();
-		
-//  			// if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-
-	}
-        
-			 
-// 			 //逆透视
-// //			 uint8_t show[RESULT_ROW][RESULT_COL];
-// //                for(int i=0;i<RESULT_ROW;i++)
-// //                {
-// //                    for(int j=0;j<RESULT_COL;j++)
-// //                    {
-// //                        show[i][j]=ImageUsed[i][j];
-// //                    }
-// //                }
-// //            ips200_show_gray_image(0,130,show[0],RESULT_COL,RESULT_ROW,RESULT_COL,RESULT_ROW,0);
-
-		
-//     }
-
-}
-
-//定时器测量时间
-//			 timer_start(GPT_TIM_1);			 			 
-//			 timer_stop(GPT_TIM_1);
-//			 uint32 time = timer_get(GPT_TIM_1);
-//			 timer_clear(GPT_TIM_1);
-//			 ips200_show_int(50, 50, time, 4);
-
+//------------------------------测试代码------------------------------------

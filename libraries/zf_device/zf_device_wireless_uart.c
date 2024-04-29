@@ -260,13 +260,13 @@ void wireless_uart_callback (void)
         else if(wireless_uart_data == ')') {x_threshold += 1;}
         else if(wireless_uart_data == '(') {x_threshold -= 1;}
 		
-        else if(wireless_uart_data == '{') {Kp_correct1 += 0.5;}
-        else if(wireless_uart_data == '}') {Kp_correct1 -= 0.5;}
-        else if(wireless_uart_data == ';') {Kd_correct1 += 0.1;}
-        else if(wireless_uart_data == '\'') {Kd_correct1 -= 0.1;}
+        else if(wireless_uart_data == '{') {Kp_correct1 += 0.25;}
+        else if(wireless_uart_data == '}') {Kp_correct1 -= 0.25;}
+        else if(wireless_uart_data == ';') {Kd_correct1 += 1;}
+        else if(wireless_uart_data == '\'') {Kd_correct1 -= 1;}
 
-        else if(wireless_uart_data == '|') {Kp_correct2 += 0.1;}
-        else if(wireless_uart_data == '.') {Kp_correct2 -= 0.1;}
+        else if(wireless_uart_data == '|') {Kp_correct2 += 0.01;}
+        else if(wireless_uart_data == '.') {Kp_correct2 -= 0.01;}
         else if(wireless_uart_data == ':') {Kd_correct2 += 0.1;}
         else if(wireless_uart_data == '\"') {Kd_correct2 -= 0.1;}
         

@@ -155,7 +155,7 @@ extern float Kp_T, Kd_T;
 extern uint8 t_b, k;
 extern uint8 image_changed[MT9V03X_H - 2][MT9V03X_W - 2];
 extern uint8 y_threshold, x_threshold;
-extern int16 sideline_err, sideline_distance;
+extern int16 sideline_angle, sideline_distance;
 
 //ÍÓÂİÒÇÏà¹Ø
 extern float angle;
