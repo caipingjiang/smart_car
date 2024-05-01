@@ -53,7 +53,7 @@ void my_uart_callback(uart_index_enum uart_n)
                     length = fifo_used(&uart_fifo);
                     if(length>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart_buffer, "%d,%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
+                        sscanf((const char*)uart_buffer, "%d，%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
                     }
                     fifo_clear(&uart_fifo);
                     packge_finish_flag = 1;

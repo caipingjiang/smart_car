@@ -215,7 +215,7 @@ void motor_control()
     if(Control_Mode == 0)Turn(0,Slope);     //正常循迹模式
     else if(Control_Mode == 1)              //边界矫正模式
     {
-        //roundabout_move(&sideline_angle, &sideline_distance);
+        roundabout_move(&sideline_angle, &sideline_distance);
         //w = Angle_PID(Target_Speed, angle);
         //car_omni(20, out2, out1);
     }
