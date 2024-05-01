@@ -3,7 +3,7 @@
 
 #include "zf_common_headfile.h"
 void my_encoder_init(void);
-void pit_handler (void);
+void pit_handler_0 (void);
 
 extern int16 encoder_data_1;     //左编码器速度
 extern int16 encoder_data_2;     //右编码器速度

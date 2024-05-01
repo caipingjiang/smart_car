@@ -123,4 +123,5 @@
   ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h \
   ..\code\my_uart.h ..\code\my_servo.h ..\code\my_image.h \
   ..\code\my_key.h ..\code\image.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\math.h ..\code\imu660ra.h
+  D:\Keil\ARM\ARMCLANG\Bin\..\include\math.h ..\code\imu660ra.h \
+  ..\code\car_control.h

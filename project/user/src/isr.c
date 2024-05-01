@@ -45,8 +45,9 @@ void CSI_IRQHandler(void)
     CSI_DriverIRQHandler();     // 调用SDK自带的中断函数 这个函数最后会调用我们设置的回调函数
     __DSB();                    // 数据同步隔离
 }
-void pit_handler (void);
-void pit_handler_1();
+void pit_handler_0(void);	//编码器
+void pit_handler_1(void);	//陀螺仪
+void pit_handler_2(void);	//摄像头
 void my_uart_callback(uart_index_enum uart_n);
 
 void PIT_IRQHandler(void)
@@ -54,7 +55,7 @@ void PIT_IRQHandler(void)
     if(pit_flag_get(PIT_CH0))
     {
         pit_flag_clear(PIT_CH0);
-		pit_handler();
+		pit_handler_0();
     }
     
     if(pit_flag_get(PIT_CH1))
@@ -66,6 +67,7 @@ void PIT_IRQHandler(void)
     if(pit_flag_get(PIT_CH2))
     {
         pit_flag_clear(PIT_CH2);
+        pit_handler_2();
     }
     
     if(pit_flag_get(PIT_CH3))

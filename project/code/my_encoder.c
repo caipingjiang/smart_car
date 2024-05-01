@@ -25,8 +25,7 @@ void my_encoder_init(void)
     pit_ms_init(PIT_CH,3);
 }
 
-
-void pit_handler (void)
+void pit_handler_0 (void)
 {
     //motor_control();
    encoder_data[0] = encoder_get_count(ENCODER_1);
@@ -41,9 +40,7 @@ void pit_handler (void)
     encoder_data[3] = encoder_get_count(ENCODER_4);
     encoder_clear_count(ENCODER_4);                              // 获取编码器计数
     //ips200_show_int(0,0,encoder_data[0],4);
-    motor_control();
-	
-	
+    motor_control();	
 }
  
 

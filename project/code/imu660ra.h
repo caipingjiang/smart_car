@@ -9,11 +9,9 @@ typedef struct {
 } gyro_zero_param_t;
 
 
-extern gyro_zero_param_t Gyro_Bias;
-
+extern gyro_zero_param_t Gyro_Bias, Gyro_Angle;
 
 void imu660_zeroBias(void);
-float slidingFilter(float newData);
-
+void my_imu660ra_init();
 
 #endif

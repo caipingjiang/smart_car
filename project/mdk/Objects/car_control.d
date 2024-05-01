@@ -1,4 +1,4 @@
-./objects/my_moter.o: ..\code\my_moter.c \
+./objects/car_control.o: ..\code\car_control.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -121,5 +121,4 @@
   ..\..\libraries\rt-thread\include\rtm.h \
   ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
   ..\code\my_moter.h ..\code\my_encoder.h ..\code\vofa.h \
-  ..\code\my_uart.h ..\code\imu660ra.h ..\code\my_image.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\math.h
+  ..\code\my_uart.h ..\code\my_image.h ..\code\imu660ra.h
