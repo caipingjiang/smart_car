@@ -48,6 +48,7 @@ int main(void)
 	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 
+	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
     while(1)
     {		
 		
@@ -65,11 +66,18 @@ int main(void)
 			Slope = slope();
 			//roundabout_cross();
 			cross();
+			roundabout();
 //  		if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 		}
-
+		
+		
 		cross_move_control();
-		ips114_show_int(0,40,cross_flag,2);
+		roundabout_move_control();
+
+		ips114_show_int(0,20,cross_flag,2);
+		ips114_show_int(0,60,lose_point_num_L,3);
+		ips114_show_int(0,80,lose_point_num_R,3);
+
 		
     }
 }

@@ -136,6 +136,7 @@ void move(int16 angle, int8 speed)
 {
     v_x = speed*cos(angle*3.14/180);
     v_y = speed*sin(angle*3.14/180);
+    w = 0;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -242,7 +243,7 @@ void motor_control()
     }
 	else if(Control_Mode == 4)              //µÈ´ýÄ£Ê½
     {
-        
+
     }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));

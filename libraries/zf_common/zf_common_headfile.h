@@ -128,6 +128,7 @@
 
 #include "my_moter.h"
 #include "my_encoder.h"
+#include "my_image.h"
 #include "vofa.h"
 #include "my_uart.h"
 

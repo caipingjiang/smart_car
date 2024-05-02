@@ -2,25 +2,27 @@
 #include "my_image.h"
 #include <math.h>
 
-#define		middle	MT9V03X_W/2
+
 int16 Slope;						//图像斜率
 uint8 cross_flag = 0, roundabout_flag = 0;//环岛十字的标志位，1为到达此处
+int8 roundabout_dir = 0;			//环岛方向，-1: 左环岛， 1: 右环岛
 
 uint8 boder_L[MT9V03X_H - 5];		//左边扫线（左边界 黄色）
 uint8 boder_R[MT9V03X_H - 5];		//右边扫线（右边界 绿色）
 uint8 boder_M[MT9V03X_H - 5];		//中线 （蓝色）
 uint8 boder_U[MT9V03X_W] = {0};		//上边扫线（上边线 红色）
 uint8 diff_boder_L[MT9V03X_H - 6];	//左边界相邻行的点的x坐标之差
-uint8 diff_boder_R[MT9V03X_H - 6];	//左边界相邻行的点的x坐标之差
+uint8 diff_boder_R[MT9V03X_H - 6];	//右边界相邻行的点的x坐标之差
 uint8 diff_boder_U[MT9V03X_W-1]; 	//差值
-uint8 road_width[MT9V03X_H - 5];  	//赛道宽度，即右边界减去左边界
 uint8 boder_correct[60];			//用于边线矫正的采样数据点（y坐标）
 uint8 longest, index;				//最长白列对应的纵坐标和横坐标
 
 int16 a, b;							//差比和中的a,b
-int16 sideline_angle = 0, sideline_distance = 0;///边界矫正的边线倾角误差、边线距离误差（通过这两个数据传入边界较真的两个并级PID进行边线矫正）
-uint8 white_value = 120;			//参考白点初值
+int16 sideline_angle = 0, sideline_distance = 0;///边界矫正的边线倾角误差、边线距离误差（通过这两个数据传入边线矫正的两个并级PID进行边线矫正）
+uint8 white_value = 120;			//参考白点默认值
 
+uint32 track_wide = 0;				//赛道宽度(取图像中间三分之一高度的平均赛道宽度)
+uint8 lose_point_num_L = 0, lose_point_num_R= 0;		//左、右边线丢线点数
 
 void my_image_init()
 {
@@ -35,11 +37,11 @@ void my_image_init()
 uint8 find_white_point(uint8 image_array[][188])
 {
 	uint16 total = 0, cnt=0;
-	for (uint8 i = 0; i < 20; i += 2)
+	for (uint8 i = 0; i < 20; i += 2)		//共10列
 	{
-		for (uint8 j = 0; j < 8; j += 4)
+		for (uint8 j = 0; j < 8; j += 4)	//共2行
 		{
-			if (image_array[84 + i][100 + j] > 55)//过滤掉灰度太低的像素点
+			if (image_array[84 + i][100 + j] > 55)//过滤掉灰度太低的像素点 //55
 			{
 				cnt++;
 				total += image_array[84 + i][100 + j];
@@ -68,29 +70,29 @@ uint8 find_white_point(uint8 image_array[][188])
 uint8 y_threshold = 22;//12 纵向扫线对比度阈值
 void find_longest(uint8* longest, uint8* index)
 {
-	//----------------找左右边界起点-----------------
-	for (uint8 i = middle; i > 10; i--)
-	{
-		if (i - 5 < 0)break;
-		if (100 * abs(mt9v03x_image[MT9V03X_H - 10][i] - mt9v03x_image[MT9V03X_H - 10][i - 5]) / (mt9v03x_image[MT9V03X_H - 10][i] + mt9v03x_image[MT9V03X_H - 10][i - 5] + 1) > 25)//分母加个1防止除0
-		{
-			ips114_draw_circle(i, MT9V03X_H - 10, 4, RGB565_PURPLE);
-			break;
-		}
-	}
-	for (uint8 i = middle; i < MT9V03X_W; i++)
-	{
-		if (i + 5 > MT9V03X_W)break;
-		if (100 * abs(mt9v03x_image[MT9V03X_H - 10][i] - mt9v03x_image[MT9V03X_H - 10][i + 5]) / (mt9v03x_image[MT9V03X_H - 10][i] + mt9v03x_image[MT9V03X_H - 10][i + 5] + 1) > 25)//分母加个1防止除0
-		{
-			ips114_draw_circle(i, MT9V03X_H - 10, 4, RGB565_PURPLE);
-			break;
-		}
-	}
-	//-----------------------------------------------
+	// //----------------找左右边界起点-----------------
+	// for (uint8 i = middle; i > 10; i--)
+	// {
+	// 	if (i - 5 < 0)break;
+	// 	if (100 * abs(mt9v03x_image[MT9V03X_H - 10][i] - mt9v03x_image[MT9V03X_H - 10][i - 5]) / (mt9v03x_image[MT9V03X_H - 10][i] + mt9v03x_image[MT9V03X_H - 10][i - 5] + 1) > 25)//分母加个1防止除0
+	// 	{
+	// 		ips114_draw_circle(i, MT9V03X_H - 10, 4, RGB565_PURPLE);
+	// 		break;
+	// 	}
+	// }
+	// for (uint8 i = middle; i < MT9V03X_W; i++)
+	// {
+	// 	if (i + 5 > MT9V03X_W)break;
+	// 	if (100 * abs(mt9v03x_image[MT9V03X_H - 10][i] - mt9v03x_image[MT9V03X_H - 10][i + 5]) / (mt9v03x_image[MT9V03X_H - 10][i] + mt9v03x_image[MT9V03X_H - 10][i + 5] + 1) > 25)//分母加个1防止除0
+	// 	{
+	// 		ips114_draw_circle(i, MT9V03X_H - 10, 4, RGB565_PURPLE);
+	// 		break;
+	// 	}
+	// }
+	// //-----------------------------------------------
 
-	uint8 high_l = 0, high_r = 0, highest_count = 0;
-	uint16 high_sum = 0;
+	uint8 high_l = 0, high_r = 0, highest_count = 0;//第一个满屏白列(靠左边)， 最后一个满屏白列(靠右边)， 满屏白列计数值
+	uint16 high_sum = 0;	//所有满屏白列x坐标求和值
 	*longest = MT9V03X_H - 10;
 	white_value = 0.7 * 130 + 0.3 * find_white_point(mt9v03x_image);
 	ips114_show_int(188, 90, white_value, 3);
@@ -101,15 +103,16 @@ void find_longest(uint8* longest, uint8* index)
 			a = j;
 			b = a + 4;
 
-			uint8 value_1 = 100 * abs(mt9v03x_image[a][i] - mt9v03x_image[b][i]) / (mt9v03x_image[a][i] + mt9v03x_image[b][i] + 1);//>>>>>>>分母加个1,防止除0
+			//uint8 value_1 = 100 * abs(mt9v03x_image[a][i] - mt9v03x_image[b][i]) / (mt9v03x_image[a][i] + mt9v03x_image[b][i] + 1);//>>>>>>>分母加个1,防止除0
 			uint8 value_2 = 100 * abs(mt9v03x_image[a][i] - white_value) / (mt9v03x_image[a][i] + white_value + 1);
-			if (value_1 * 0 + value_2 * 1 < y_threshold && a <= 2)
+			if (value_2 < y_threshold && a <= 2)	//若一列最上边为白色，说明这一列是满屏高度
 			{
+				//纪录满屏高度白列数量以及x坐标之和，最后取平均值，作为最长白列的index
 				highest_count++;
-				high_sum += i;
+				high_sum += i;	
 				ips114_draw_point(i, j, RGB565_RED);
 			}
-			if ((value_1 * 0 + value_2 * 1) > y_threshold)//25
+			if (value_2 > y_threshold)//25
 			{	
 				ips114_draw_point(i, j, RGB565_RED); //j
 				boder_U[i] = j;
@@ -117,7 +120,6 @@ void find_longest(uint8* longest, uint8* index)
 				if (i >= middle - 30 && i < middle + 30)
 				{  
 					boder_correct[i - middle + 30] = j;
-					ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
 				}
 
 				if (j < *longest) //更新最长白列
@@ -125,18 +127,7 @@ void find_longest(uint8* longest, uint8* index)
 					*longest = j; //j
 					*index = i;
 				}
-				//if (j <= 20 && 100 * abs(mt9v03x_image[0][i + 14] - white_value) / (mt9v03x_image[0][i + 14] + white_value) < 12 && high_l == 0)
-				//{
-				//	high_l = *index;  //最高处为空白，则记录从那一列开始最高处空白
-				//	ips114_draw_circle(high_l, j, 3, RGB565_RED);
-				//	break;
-				//}
-				//if (j <= 20 && 100 * abs(mt9v03x_image[0][i - 14] - white_value) / (mt9v03x_image[0][i - 14] + white_value) < 12 && high_l != 0 && high_r == 0)
-				//{
-				//	high_r = *index;
-				//	ips114_draw_circle(high_r, j, 3, RGB565_YELLOW);
-				//	break;
-				//}
+			
 				break;//每列找到第一个黑点后就不再继续往后找了，直接进行下一列
 			}
 
@@ -167,6 +158,8 @@ uint8 x_threshold = 15;//15横向扫线对比度阈值
 #define SHORTEST (MT9V03X_H - 20)//定义最长白列的最短值，若还小于最短值，直接return，认为跑出赛道了
 void find_middle()
 {
+	lose_point_num_L = 0;	//清零丢线点数
+	lose_point_num_R = 0;	//清零丢线点数
 	find_longest(&longest, &index);
 	if(longest>SHORTEST)return;	//小于最短值，直接return，认为跑出赛道了
 	ips114_draw_line(index, MT9V03X_H - 10, index, longest, RGB565_PURPLE);
@@ -174,6 +167,7 @@ void find_middle()
 	//从最长列开始寻找左右边界
 	for (uint8 i = longest; i < MT9V03X_H - 5; i++)
 	{
+		
 		//找左边界
 		for (int16 j = index; j >= 0; j -= 1)
 		{
@@ -181,6 +175,7 @@ void find_middle()
 			{
 				boder_L[i] = 0;
 				ips114_draw_point(0, i, RGB565_YELLOW);
+				lose_point_num_L++;
 				break;
 			}
 
@@ -192,6 +187,7 @@ void find_middle()
 			{
 				boder_L[i] = 0;
 				ips114_draw_point(0, i, RGB565_YELLOW);
+				lose_point_num_L++;
 				break;
 			}
 			if (value_1*0.6 + value_2*0.4> x_threshold)
@@ -209,6 +205,7 @@ void find_middle()
 			{
 				boder_R[i] = MT9V03X_W-1;
 				ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
+				lose_point_num_R++;
 				break;
 			}
 			a = j;
@@ -219,6 +216,7 @@ void find_middle()
 			{
 				boder_R[i] = MT9V03X_W-1;
 				ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
+				lose_point_num_R++;
 				break;
 			}
 			if (value_1 * 0.6 + value_2 * 0.4 > x_threshold )
@@ -235,8 +233,6 @@ void find_middle()
 }
 
 
-void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_distance);
-
 //-----------------------------------------------------------------------------------------------
 // 函数简介  计算斜率
 // 参数说明  
@@ -252,7 +248,7 @@ int16 slope()
 	int16 sum1 = 0, sum2 = 0, result;
 	for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
 	{
-		sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10]
+		sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
 		sum2 += (int16)(MT9V03X_H - 10 - i);
 	}
 	result = 50 * sum1 / (sum2+1); //分母加1防止除0;
@@ -293,7 +289,7 @@ void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_
 // 参数说明  
 // 返回参数  void
 // 使用示例  
-// 备注信息  
+// 备注信息  目前效果不理想，弃用，使用下面新写的cross()和roundabout()
 //-----------------------------------------------------------------------------------------------
 void roundabout_cross() 
 {
@@ -372,6 +368,9 @@ void roundabout_cross()
 
 #define cross_longest_limit 	20		//十字路段最长白列判断限制
 #define cross_slope_limit		12		//十字路段最大斜率判断限制
+#define track_wide_limit		70		//十字|环岛路段的赛道宽度判断限制
+#define lose_point_num_limit_1	70		//丢线点数限制1
+#define lose_point_num_limit_2	5		//丢线点数限制2
 //-----------------------------------------------------------------------------------------------
 // 函数简介  十字路段状态机
 // 参数说明  
@@ -381,33 +380,30 @@ void roundabout_cross()
 //-----------------------------------------------------------------------------------------------
 void cross()//十字
 {
-	uint32 track_wide = 0;
-	
-	ips114_show_int(90, 50, cross_flag, 1);
+	track_wide = 0;	//清零上次计算的赛道宽度
 	if(cross_flag == 0)
 	{
-
 		for (uint16 i = MT9V03X_H / 3; i < MT9V03X_H * 2 / 3; i++)
 		{
-			track_wide += (boder_R[i] - boder_L[i]);
+			track_wide += (boder_R[i] - boder_L[i]);//累加赛道宽度
 		}
-		ips114_show_int(90, 70, track_wide/ MT9V03X_W, 2);
+		//ips114_show_int(90, 70, track_wide/ MT9V03X_W, 2);
 		if (track_wide > MT9V03X_W * MT9V03X_H * 4 / 15 && longest < cross_longest_limit)//限制一个最长白列的最短长度限制，长度大于此值认为是急弯过滤掉
 		{
-			//ips114_show_string(90, 90, "C");
-			cross_flag = 1;		//检测到十字路段的宽度变化
+			//通过左右丢线点数再一次过滤，避免环岛误判
+			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1)
+			{
+				cross_flag = 1;		//检测到十字路段的宽度变化，且左右都丢线
+			}
 		}	
 
-		
 	}
 	else if(cross_flag == 1)
 	{
 		if(abs(Slope)>cross_slope_limit)
 		{
 			cross_flag = 2;		//检测到斜率增大到限制，即已经进入十字，下一步进行90度转向
-
 		}
-
 	}
 	else if(cross_flag == 2)
 	{
@@ -420,6 +416,51 @@ void cross()//十字
 	{
 		if(Control_Mode == 0)cross_flag=0;	//确保走出十字才复位十字标志位
 	}	
+}
+
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  环岛路段状态机
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  环岛判断函数需放在十字判断后面调用,因为环岛使用了在十字判断函数中计算的赛道宽度
+//-----------------------------------------------------------------------------------------------
+void roundabout()
+{
+	if(roundabout_flag == 0)
+	{
+		if(track_wide>MT9V03X_W * MT9V03X_H * 4 / 15 && longest < cross_longest_limit )	//借用十字的赛道宽度判断
+		{
+			//左环岛
+			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2)
+			{
+				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
+				roundabout_dir = -1;		//标记环岛方向
+			}
+			//右环岛
+			else if(lose_point_num_L < lose_point_num_limit_2 && lose_point_num_R > lose_point_num_limit_1)
+			{
+				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
+				roundabout_dir = 1;			//标记环岛方向
+			}
+		}
+	}
+	else if(roundabout_flag == 1)
+	{
+		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)))	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
+		{
+			roundabout_flag = 2;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
+		}
+	}
+	else if(roundabout_flag == 2)
+	{
+		if(turn_flag == 1)roundabout_flag=3;	//转向完成(继检测到最长白列高度突变后); 用模式1走到环岛对侧的卡片放置区放完卡片在回到原处
+	}
+	else if(roundabout_flag == 3)
+	{
+		if(Control_Mode == 0)roundabout_flag=0;	//在回到循迹模式时清除环岛标志位
+	}
 }
 
 void pit_handler_2()

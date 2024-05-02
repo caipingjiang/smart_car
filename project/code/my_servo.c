@@ -41,7 +41,7 @@ void my_servo_init(void)
     pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(0));
     system_delay_ms(500);//等待仓复位完成
 	pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(80));
-    pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(40));
+    pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(60));
     
 	
 	//电磁铁初始化
