@@ -247,6 +247,8 @@ void wireless_uart_callback (void)
         else if(wireless_uart_data == 'w') { Kd_T-=0.2;     }
         else if(wireless_uart_data == 'x') { v_y+=2;        }
         else if(wireless_uart_data == 'y') { v_y-=2;        }
+        else if(wireless_uart_data == '!') { v_x+=5;        }
+        else if(wireless_uart_data == '$') { v_x-=5;        }
          
 	    else if(wireless_uart_data == '@') {;}
 
@@ -262,8 +264,8 @@ void wireless_uart_callback (void)
 		
         else if(wireless_uart_data == '{') {Kp_correct1 += 0.25;}
         else if(wireless_uart_data == '}') {Kp_correct1 -= 0.25;}
-        else if(wireless_uart_data == ';') {Kd_correct1 += 1;}
-        else if(wireless_uart_data == '\'') {Kd_correct1 -= 1;}
+        else if(wireless_uart_data == ';') {Kd_correct1 += 10;}
+        else if(wireless_uart_data == '\'') {Kd_correct1 -= 10;}
 
         else if(wireless_uart_data == '|') {Kp_correct2 += 0.01;}
         else if(wireless_uart_data == '.') {Kp_correct2 -= 0.01;}

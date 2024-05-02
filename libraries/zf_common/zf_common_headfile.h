@@ -158,12 +158,10 @@ extern uint8 y_threshold, x_threshold;
 extern int16 sideline_angle, sideline_distance;
 
 //ÍÓÂİÒÇÏà¹Ø
-extern float angle;
 extern float tra_acc_x, tra_acc_y, tra_acc_z, tra_gyro_x,tra_gyro_y, tra_gyro_z;
 extern int16 w;
 extern float Kp_w,Kd_w,Ki_w;
 extern float out_w, err_w,last_err_w, last_err_w2;
-void imu660_zeroBias(void);
 extern float Kp_A,Kd_A,Ki_A;
 
 

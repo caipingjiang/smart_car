@@ -1,18 +1,11 @@
 #include "zf_common_headfile.h"
 #include "my_image.h"
 #include <math.h>
-void my_image_init()
-{
-	mt9v03x_init();
-	mt9v03x_set_exposure_time(120);
-	system_delay_ms(100);
-
-	//ÉèÖÃ×Ô¶¯ÆØ¹âÊ±¼äÒÔÓ¦¶Ô²îÒì½Ï´óµÄ¹âÏß»·¾³£¿£¿£¿
-}
-
 
 #define		middle	MT9V03X_W/2
-//±ß½çµã×ø±êÓëÖĞÏß×ø±ê
+int16 Slope;						//Í¼ÏñĞ±ÂÊ
+uint8 cross_flag = 0, roundabout_flag = 0;//»·µºÊ®×ÖµÄ±êÖ¾Î»£¬1Îªµ½´ï´Ë´¦
+
 uint8 boder_L[MT9V03X_H - 5];		//×ó±ßÉ¨Ïß£¨×ó±ß½ç »ÆÉ«£©
 uint8 boder_R[MT9V03X_H - 5];		//ÓÒ±ßÉ¨Ïß£¨ÓÒ±ß½ç ÂÌÉ«£©
 uint8 boder_M[MT9V03X_H - 5];		//ÖĞÏß £¨À¶É«£©
@@ -29,6 +22,15 @@ int16 sideline_angle = 0, sideline_distance = 0;///±ß½ç½ÃÕıµÄ±ßÏßÇã½ÇÎó²î¡¢±ßÏß¾
 uint8 white_value = 120;			//²Î¿¼°×µã³õÖµ
 
 
+void my_image_init()
+{
+	mt9v03x_init();
+	mt9v03x_set_exposure_time(320);//120
+	system_delay_ms(100);
+	//ÉèÖÃ×Ô¶¯ÆØ¹âÊ±¼äÒÔÓ¦¶Ô²îÒì½Ï´óµÄ¹âÏß»·¾³£¿£¿£¿
+	//pit_ms_init(PIT_CH2,5);	//¼ÆËãĞ±ÂÊ¡¢»·µºÊ®×ÖµÄÖÜÆÚ
+}
+
 //¼ÆËã°×É«²Î¿¼ãĞÖµ
 uint8 find_white_point(uint8 image_array[][188])
 {
@@ -44,7 +46,7 @@ uint8 find_white_point(uint8 image_array[][188])
 			}
 		}
 	}
-	ips114_show_int(90, 70, total / 20, 3);
+	ips114_show_int(188, 70, total / 20, 3);
 	//	ips114_draw_point(90,80,RGB565_BLUE);
 	//	ips114_draw_point(91,80,RGB565_BLUE);
 	//	ips114_draw_point(90,81,RGB565_BLUE);
@@ -91,7 +93,7 @@ void find_longest(uint8* longest, uint8* index)
 	uint16 high_sum = 0;
 	*longest = MT9V03X_H - 10;
 	white_value = 0.7 * 130 + 0.3 * find_white_point(mt9v03x_image);
-	ips114_show_int(90, 90, white_value, 3);
+	ips114_show_int(188, 90, white_value, 3);
 	for (uint8 i = 0; i < MT9V03X_W; i += 2)		//+=5
 	{
 		for (int16 j = MT9V03X_H - 6; j >= 0; j -= 1)		//???????,Òª¼õ¸ö10£¬±ßÔµ»Ò¶ÈÖµºÜ´ó?????????//´ıÓÅ»¯-=3£¿
@@ -205,8 +207,8 @@ void find_middle()
 		{
 			if (index > MT9V03X_W-6)//×î³¤°×ÁĞ¿¿½üÁË×îÓÒ±ß
 			{
-				boder_L[i] = 0;
-				ips114_draw_point(0, i, RGB565_YELLOW);
+				boder_R[i] = MT9V03X_W-1;
+				ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
 				break;
 			}
 			a = j;
@@ -246,7 +248,7 @@ int16 slope()
 {
 	static int16 lastresult;
 	if(longest>SHORTEST)return lastresult;	//Ğ¡ÓÚ×î¶ÌÖµ£¬ÈÏÎªÅÜ³öÈüµÀÁË£¬¾Í·µ»ØÉÏ´ÎĞ±ÂÊ£¬
-	sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+	
 	int16 sum1 = 0, sum2 = 0, result;
 	for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
 	{
@@ -254,7 +256,7 @@ int16 slope()
 		sum2 += (int16)(MT9V03X_H - 10 - i);
 	}
 	result = 50 * sum1 / (sum2+1); //·ÖÄ¸¼Ó1·ÀÖ¹³ı0;
-	ips114_show_int(50, 80, (const int32)result, 3);
+	ips114_show_int(188, 110, (const int32)result, 3);
 	lastresult = result;
 	return result;
 }
@@ -263,9 +265,11 @@ int16 slope()
 
 //-----------------------------------------------------------------------------------------------
 // º¯Êı¼ò½é  ±ßÏß½ÃÕı
-// ²ÎÊıËµÃ÷  
-// ·µ»Ø²ÎÊı  side_point£º²É¼¯µãÊı×éµÄµØÖ·£¨¶ÔÓ¦Ç°ÃæµÄÈ«¾ÖÊı×éuint8 boder_correct[60];£©
-// Ê¹ÓÃÊ¾Àı  
+// ²ÎÊıËµÃ÷  side_point£º²É¼¯µãÊı×éµÄµØÖ·£¨¶ÔÓ¦Ç°ÃæµÄÈ«¾ÖÊı×éuint8 boder_correct[60];£©
+// ²ÎÊıËµÃ÷  sideline_angle£º±ßÏßÇã½ÇµÄµØÖ·£¨¶ÔÓ¦Ç°ÃæµÄÈ«¾Ö±äÁ¿int16 sideline_angle£©
+// ²ÎÊıËµÃ÷  sideline_distance£º±ßÏß¾àÀëµÄµØÖ·£¨¶ÔÓ¦Ç°ÃæµÄÈ«¾Ö±äÁ¿int16 sideline_angle£©
+// ·µ»Ø²ÎÊı  void
+// Ê¹ÓÃÊ¾Àı  sideline_correct(boder_correct, &sideline_angle, &sideline_distance)
 // ±¸×¢ĞÅÏ¢  ´Ëº¯Êıµ÷ÓÃºó¼´¿ÉµÃµ½±ßÏßÇã½ÇÎó²îºÍ±ßÏß¾àÀëÎó²î£¬ÔÙÔÚmy_motor.cÎÄ¼şÖĞµ÷ÓÃroundabout_move(&sideline_angle, &sideline_distance);¾Í¿ÉÊµÏÖ»·µºÊ®×ÖÂ·¶ÎºáÏòÒÆ¶¯½ÃÕı
 //-----------------------------------------------------------------------------------------------
 void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_distance)
@@ -279,8 +283,8 @@ void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_
 	*sideline_angle = (y1 - y2);
 	*sideline_distance = (y1 + y2) / 2;
 
-	ips114_show_int(120, 20, *sideline_angle, 5);
-	ips114_show_int(120, 40, *sideline_distance, 4);
+	ips114_show_int(188, 0, *sideline_angle, 4);
+	ips114_show_int(188, 20, *sideline_distance, 4);
 }
 
 
@@ -303,10 +307,10 @@ void roundabout_cross()
 		{
 			if (boder_L[i] > boder_L[i - 1] && (jump_point[0][0] * jump_point[0][1]) == 0) //×ó±ßÏß´ÓÏÂµ½ÉÏµÄµÚÒ»¸öÍ»±äµã
 			{ 
-				ips114_draw_circle(boder_L[i], i, 4, RGB565_YELLOW); 
+				//ips114_draw_circle(boder_L[i], i, 4, RGB565_YELLOW)---; 
 				jump_point[0][0] = boder_L[i];  jump_point[0][1] = i;
 			}
-			else { ips114_draw_circle(boder_L[i-1], i-1, 4, RGB565_YELLOW); }
+			else { /*ips114_draw_circle(boder_L[i-1], i-1, 4, RGB565_YELLOW); ---*/}
 		}
 	}
 	//ÇóÓÒ±ßÏßÏàÁÚĞĞµãµÄx²îÖµ
@@ -317,10 +321,10 @@ void roundabout_cross()
 		{
 			if(boder_R[i] < boder_R[i - 1] && (jump_point[1][0] * jump_point[1][1]) == 0 && (jump_point[0][0] * jump_point[0][1]) != 0)  //ÓÒ±ßÏß´ÓÏÂµ½ÉÏµÄµÚÒ»¸öÍ»±äµã
 			{
-				ips114_draw_circle(boder_R[i], i, 4, RGB565_GREEN);
+				//ips114_draw_circle(boder_R[i], i, 4, RGB565_GREEN);---
 				jump_point[1][0] = boder_R[i];  jump_point[1][1] = i;
 			}
-			else { ips114_draw_circle(boder_R[i-1], i-1, 4, RGB565_GREEN); }
+			else { /*ips114_draw_circle(boder_R[i-1], i-1, 4, RGB565_GREEN);-*/ }
 		}
 	}
 	//ÇóÉÏ±ßÏßÏàÁÚÁĞµãµÄy²îÖµ
@@ -331,7 +335,8 @@ void roundabout_cross()
 		{
 			//ips114_draw_point(30, 30, RGB565_CYAN);
 			//ips114_draw_point(i-2, boder_U[i-2], 1, RGB565_CYAN);
-			ips114_draw_circle(i - 2, boder_U[i - 2], 4, RGB565_RED);
+
+			//ips114_draw_circle(i - 2, boder_U[i - 2], 4, RGB565_RED);-------
 			jump_point[2][0] = i - 2;  jump_point[2][1] = boder_U[i - 2];
 		}
 		if (diff_boder_U[i] > 15 && i > 90 && jump_point[2][0]!=0) // ÏŞÖÆX×ø±ê·¶Î§£¬¿ÉÒÔÅĞ¶Ï×óÓÒ±ßÏß
@@ -339,7 +344,7 @@ void roundabout_cross()
 			jump_point[3][0] = i;  jump_point[3][1] = boder_U[i];
 			//ips114_draw_point(30, 30, RGB565_CYAN);
 			////ips114_draw_point(i-2, boder_U[i-2], 1, RGB565_CYAN);
-			ips114_draw_circle(i, boder_U[i], 4, RGB565_RED);
+			//ips114_draw_circle(i, boder_U[i], 4, RGB565_RED);-------------
 			//jump_point[1][0] = i - 2;  jump_point[1][1] = boder_U[i - 2];
 		}
 	}
@@ -350,19 +355,77 @@ void roundabout_cross()
 	uint16 distance1 = x1 * x1 + y1 * y1;
 	uint16 distance2 = x2 * x2 + y2 * y2;
 	if (distance1 <= 40 && jump_point[0][0]*jump_point[2][0] != 0) {
-		ips114_show_int(50, 60, x1, 2);
-		ips114_show_int(50, 70, y1, 2);
-		ips114_show_string(50, 90, "RA") ;
+		ips114_show_int(0, 110, x1, 2);
+		ips114_show_int(30, 110, y1, 2);
+		ips114_show_string(0, 0, "RA") ;
+
+		roundabout_flag = 1;
 	}
 	if (distance2 <= 40 && jump_point[1][0]*jump_point[3][0] != 0) {
-		ips114_show_int(130, 60, x2, 2);
-		ips114_show_int(130, 70, y2, 2);
-		ips114_show_string(130, 90, "CR");
+		ips114_show_int(60, 110, x2, 2);
+		ips114_show_int(90, 110, y2, 2);
+		ips114_show_string(120, 0, "CR");
+		
+		cross_flag = 1;
 	}
 }
 
+#define cross_longest_limit 	20		//Ê®×ÖÂ·¶Î×î³¤°×ÁĞÅĞ¶ÏÏŞÖÆ
+#define cross_slope_limit		12		//Ê®×ÖÂ·¶Î×î´óĞ±ÂÊÅĞ¶ÏÏŞÖÆ
+//-----------------------------------------------------------------------------------------------
+// º¯Êı¼ò½é  Ê®×ÖÂ·¶Î×´Ì¬»ú
+// ²ÎÊıËµÃ÷  
+// ·µ»Ø²ÎÊı  void
+// Ê¹ÓÃÊ¾Àı  
+// ±¸×¢ĞÅÏ¢  
+//-----------------------------------------------------------------------------------------------
+void cross()//Ê®×Ö
+{
+	uint32 track_wide = 0;
+	
+	ips114_show_int(90, 50, cross_flag, 1);
+	if(cross_flag == 0)
+	{
 
+		for (uint16 i = MT9V03X_H / 3; i < MT9V03X_H * 2 / 3; i++)
+		{
+			track_wide += (boder_R[i] - boder_L[i]);
+		}
+		ips114_show_int(90, 70, track_wide/ MT9V03X_W, 2);
+		if (track_wide > MT9V03X_W * MT9V03X_H * 4 / 15 && longest < cross_longest_limit)//ÏŞÖÆÒ»¸ö×î³¤°×ÁĞµÄ×î¶Ì³¤¶ÈÏŞÖÆ£¬³¤¶È´óÓÚ´ËÖµÈÏÎªÊÇ¼±Íä¹ıÂËµô
+		{
+			//ips114_show_string(90, 90, "C");
+			cross_flag = 1;		//¼ì²âµ½Ê®×ÖÂ·¶ÎµÄ¿í¶È±ä»¯
+		}	
 
+		
+	}
+	else if(cross_flag == 1)
+	{
+		if(abs(Slope)>cross_slope_limit)
+		{
+			cross_flag = 2;		//¼ì²âµ½Ğ±ÂÊÔö´óµ½ÏŞÖÆ£¬¼´ÒÑ¾­½øÈëÊ®×Ö£¬ÏÂÒ»²½½øĞĞ90¶È×ªÏò
+
+		}
+
+	}
+	else if(cross_flag == 2)
+	{
+		if(longest<5 && turn_flag == 1)	//³öÊ®×ÖÅĞ¶Ï£¬Ò»°ãÇé¿ö³öÊ®×Ö×î³¤°×ÁĞ»áÍ»È»±ä³¤£¨Ö±½Óµ½Í¼Ïñ×îÉÏ·½£©
+		{
+			cross_flag = 3;		//¼ì²âµ½×î³¤°×ÁĞ³¤¶ÈÍ»È»±ä´ó£¬ËµÃ÷¼´½«×ß³öÊ®×Ö£¬ÏÂÒ»²½90¶È×ªÏò
+		}
+	}
+	else if(cross_flag == 3)
+	{
+		if(Control_Mode == 0)cross_flag=0;	//È·±£×ß³öÊ®×Ö²Å¸´Î»Ê®×Ö±êÖ¾Î»
+	}	
+}
+
+void pit_handler_2()
+{
+	
+}
 
 
 

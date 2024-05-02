@@ -1,15 +1,21 @@
 #include "zf_common_headfile.h"
 #include "my_moter.h"
 #include "imu660ra.h"
+#include "my_image.h"
 #include <math.h>
+
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
+
+float angle_now = 0;    //进入环岛十字时的角度
+float angle_turn = 0;   //需要转的角度
+uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
 int16 v_w[4]={0};       //四个轮子的转速
-int16 v_x=0, v_y=40, w=0;  //x、 y轴分速度,车绕几何中心的角速度
+int16 v_x=0, v_y=30, w=0;  //x、 y轴分速度,车绕几何中心的角速度
 int16 Pwm[4]={0};
 int16 bias;
 int16 motor_bias_last[4];
@@ -90,7 +96,7 @@ void car_omni(int16 v_x, int16 v_y, int16 w)
 void Turn_Left()
 {
     v_x = 0;
-    v_y = 7;
+    v_y = 0;
     w = 20;
 	car_omni(v_x, v_y, w);
 }
@@ -140,7 +146,7 @@ void move(int16 angle, int8 speed)
 // 使用示例  roundabout_move(&sideline_angle, &sideline_distance);
 // 备注信息  注意参数为存放数据变量的地址，在调用时传入在my_iamge.c中的全局变量int16 sideline_angle,sideline_distance的地址即可
 //-----------------------------------------------------------------------------------------------
-float Kp_correct1=1.5, Kd_correct1=10; //0.5 0.2 //1 10
+float Kp_correct1=1, Kd_correct1=10; //0.5 0.2 //1 10
 float Kp_correct2=0.07, Kd_correct2=0.4;
 static int16 out1, out2;
 void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
@@ -155,7 +161,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
     out1 = func_limit(out1, 200); //限幅
 
     //赛道边线距离矫正pid
-    err2 = (500-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）
+    err2 = (450-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）
     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
     err_last2 = err2;
     out2 = func_limit(out2, 400); //限幅
@@ -169,7 +175,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
 // 备注信息  计算出的输出值可直接传给w, 也可以传入内环角速度环，后一种目前效果不是很好，可能是因为内外环中期一样的原因；目前直接用的外环
 // 备注信息  串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
 //-----------------------------------------------------------------------------------------------
-float Kp_A=2,Kd_A=8,Ki_A=0; // 20/95/0
+float Kp_A=1.25,Kd_A=8,Ki_A=0; // 20/95/0
 float Angle_PID(float Target_Angle, float Angle)
 {	
 	//Angle = slidingFilter(Angle);
@@ -216,6 +222,12 @@ void motor_control()
     else if(Control_Mode == 1)              //边界矫正模式
     {
         roundabout_move(&sideline_angle, &sideline_distance);
+<<<<<<< HEAD
+=======
+        v_y = out2;
+        //v_x = 20;
+        w = out1;
+>>>>>>> 770f3a423882e11769e9692f6e107c6e6bc8379b
         //w = Angle_PID(Target_Speed, angle);
         //car_omni(20, out2, out1);
     }
@@ -225,10 +237,17 @@ void motor_control()
     }
     else if(Control_Mode == 3)              //陀螺仪转向模式
     {
-        //w = (int16)w_PID(Angle_PID(0, angle), tra_gyro_z);
+
+        
+        //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
         //w = (int16)w_PID(20, tra_gyro_z);
+        w = Angle_PID(angle_now + angle_turn, Gyro_Angle.Zdata);
     }
-	
+	else if(Control_Mode == 4)              //等待模式
+    {
+        
+    }
+    car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
     motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));
     motor_set_duty(3, Incremental_PI(3,encoder_data[2],v_w[2]));
