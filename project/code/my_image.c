@@ -463,6 +463,32 @@ void roundabout()
 	}
 }
 
+//-----------------------------------------------------------------------------------------------
+// 函数简介  始终线判断
+// 参数说明  
+// 返回参数  0-没有检测到始终线， 1-检测到始终线
+// 使用示例  
+// 备注信息  定义的阈值参数可调，还未达到最理想的状态
+//-----------------------------------------------------------------------------------------------
+#define GrayThreshold	85	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
+uint8 find_start_finish_line()
+{
+	uint8 judge_state = 0;		//判断状态
+	uint8 black_block_num = 0;	//统计的斑马线黑色快数量
+	for(uint8 i = 0; i<MT9V03X_W; i++)
+	{
+		switch(judge_state)
+		{
+			case 0:{if(mt9v03x_image[70][i]>GrayThreshold)judge_state = 1; break;}
+			case 1:{if(mt9v03x_image[70][i]<GrayThreshold)judge_state = 2; break;}
+			case 2:{if(mt9v03x_image[70][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
+		}
+	}
+	ips114_show_int(70,70,black_block_num, 3);
+	if(black_block_num>7)return 1;//大于7个点就认为是斑马线了
+	else return 0;
+}
+
 void pit_handler_2()
 {
 	

@@ -132,3 +132,32 @@ void roundabout_move_control()
         v_y = 30;
     }
 }
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  始终线发车停车控制
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+void start_finish_line_control()
+{
+    static uint8 find_times  = 0;	//起始线识别次数
+    if(find_start_finish_line())
+	{
+		find_times++;
+        if(find_times == 1)
+        {
+            move(90,30);
+            Control_Mode = 4;
+            system_delay_ms(600);//确保发车成功
+
+            Control_Mode = 0;
+        }
+        if(find_times == 2) //第二次识别就停车
+        {
+            move(0,0);
+		    Control_Mode = 4;
+        }
+	}
+}

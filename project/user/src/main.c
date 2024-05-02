@@ -67,10 +67,13 @@ int main(void)
 			//roundabout_cross();
 			cross();
 			roundabout();
+			
+
 //  		if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
 		}
 		
 		
+		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
 
