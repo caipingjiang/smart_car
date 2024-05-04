@@ -3,7 +3,7 @@
 #define SERVO_MOTOR_PWM1             (PWM4_MODULE2_CHA_C30)  //机械臂舵机1                     // 定义主板上舵机对应引脚
 #define SERVO_MOTOR_PWM2             (PWM2_MODULE1_CHA_C8)   //机械臂舵机2
 #define SERVO_MOTOR_PWM3             (PWM2_MODULE0_CHB_C7)   //储物舱舵机
-#define magnet_PWM             		 (PWM1_MODULE3_CHA_B10)  //储物舱舵机
+#define magnet_PWM             		 (PWM1_MODULE3_CHA_B10)  //电磁铁
 
 
 #define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
@@ -79,34 +79,36 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 }
 void arm_down()
 {
-    Servo_SetAngle(1, 84);
-    Servo_SetAngle(2, 12);
+    Servo_SetAngle(1, 80);
+    Servo_SetAngle(2, 23);
     magnet_set(1);
-    system_delay_ms(500);
-    Servo_SetAngle(1, 96);
-    system_delay_ms(500);
-    Servo_SetAngle(2, 218);
-    system_delay_ms(500);
+    system_delay_ms(1200);
+    Servo_SetAngle(1, 95);
+    system_delay_ms(200);
+    Servo_SetAngle(2, 228);
+    system_delay_ms(800);
     Servo_SetAngle(1, 130);
-    system_delay_ms(500);
-    Servo_SetAngle(1, 160);
-    system_delay_ms(500);
+    system_delay_ms(300);
+//    Servo_SetAngle(1, 160);
+//    system_delay_ms(500);
     magnet_set(0);
 }
 
 void arm_up()
 {
-    Servo_SetAngle(2, 223);
-	system_delay_ms(200);
-    Servo_SetAngle(1, 150);
-	system_delay_ms(500);
+	Servo_SetAngle(1, 150);
+    Servo_SetAngle(2, 234);
+	system_delay_ms(800);
     magnet_set(1);
 	Servo_SetAngle(1, 162);
+	system_delay_ms(400);
+	Servo_SetAngle(1, 130);
+	system_delay_ms(100);
+	Servo_SetAngle(2, 70);
 	system_delay_ms(500);
-    Servo_SetAngle(1, 108);
-    system_delay_ms(1000);
-    Servo_SetAngle(2, 38);
-    system_delay_ms(1000);
+	Servo_SetAngle(1, 100);
+    system_delay_ms(800);
+    Servo_SetAngle(2, 28);
     Servo_SetAngle(1, 90);
 	system_delay_ms(500);
     magnet_set(0);

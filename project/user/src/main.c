@@ -41,35 +41,45 @@ int main(void)
 	
 	//timer_init(GPT_TIM_1,TIMER_US);
 	
- 	interrupt_set_priority(LPUART8_IRQn,4);
-	interrupt_set_priority(PIT_IRQn, 3);
-	interrupt_set_priority(LPUART1_IRQn,1);
-	interrupt_set_priority(LPUART4_IRQn,2);
-	interrupt_global_enable(0);
+ 	//interrupt_set_priority(LPUART8_IRQn,4);
+	//interrupt_set_priority(PIT_IRQn, 3);
+	//interrupt_set_priority(LPUART1_IRQn,1);
+	//interrupt_set_priority(LPUART4_IRQn,2);
+	//interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 
     while(1)
     {		
+	//Servo_SetAngle(3, 90);
+	
+ 	arm_down();
+		//arm_hang();
+		system_delay_ms(1500);
+		arm_up();
+	system_delay_ms(2000);
+	
+	
 		
-		if(mt9v03x_finish_flag)
-        {
-		 	mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
-//			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-			//start _finish_line_find();
+	
+//		if(mt9v03x_finish_flag)
+//        {
+//		 	mt9v03x_finish_flag = 0;
+//			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+//		 	//image_process();
+////			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
+//			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+//			//start _finish_line_find();
 
- 			find_middle();
-			sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-			Slope = slope();
-			//roundabout_cross();
-			cross();
-//  		if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-		}
+// 			find_middle();
+//			//sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+//			Slope = slope();
+//			//roundabout_cross();
+//	//		cross();
+////  		if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
+//		}
 
-		cross_move_control();
-		ips114_show_int(0,40,cross_flag,2);
+////		cross_move_control();
+//		ips114_show_int(0,40,cross_flag,2);
 		
     }
 }

@@ -222,12 +222,9 @@ void motor_control()
     else if(Control_Mode == 1)              //边界矫正模式
     {
         roundabout_move(&sideline_angle, &sideline_distance);
-<<<<<<< HEAD
-=======
         v_y = out2;
         //v_x = 20;
         w = out1;
->>>>>>> 770f3a423882e11769e9692f6e107c6e6bc8379b
         //w = Angle_PID(Target_Speed, angle);
         //car_omni(20, out2, out1);
     }
