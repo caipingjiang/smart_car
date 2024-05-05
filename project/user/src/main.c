@@ -10,7 +10,7 @@
 #include "car_control.h"
 
 uint8 data_buffer[32];//测试用
-int16 Target_Speed=0; //测试用
+int16 Target_Speed=1; //测试用
 
 int main(void)
 {
@@ -28,13 +28,13 @@ int main(void)
 	ips114_init();
 
     // 此处编写用户代码 例如外设初始化代码等
-	my_imu660ra_init();
-	imu660_zeroBias();
+	// my_imu660ra_init();
+	// imu660_zeroBias();
  	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	my_servo_init();
 //	my_key_init();
-	my_image_init();
+	//my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
 	my_uart_init();
@@ -51,7 +51,24 @@ int main(void)
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
     while(1)
     {		
+		// for(uint8 i = 0; i<=3; i++)
+		// {
+		// 	Servo_SetAngle(3,i*90);
+		// 	system_delay_ms(1500);
+		// 	//arm_down();
+		// 	arm_hang();
+		// } 
+		Servo_SetAngle_Slow(1, 90);
+		system_delay_ms(1500);
+		Servo_SetAngle_Slow(1, 0);
+		system_delay_ms(1500);
+		Servo_SetAngle(1, 90);
+		system_delay_ms(1500);
+		Servo_SetAngle(1, 0);
+		system_delay_ms(1500);
 		
+		
+
 		if(mt9v03x_finish_flag)
         {
 		 	mt9v03x_finish_flag = 0;
@@ -73,13 +90,19 @@ int main(void)
 		}
 		
 		
-		start_finish_line_control();
-		cross_move_control();
-		roundabout_move_control();
+		// start_finish_line_control();
+		// cross_move_control();
+		// roundabout_move_control();
 
 		ips114_show_int(0,20,cross_flag,2);
 		ips114_show_int(0,60,lose_point_num_L,3);
 		ips114_show_int(0,80,lose_point_num_R,3);
+		if(packge_finish_flag)
+		{
+			ips114_show_int(40,20,data_arr[0],4);
+			ips114_show_int(40,40,data_arr[1],4);
+			//ips114_show_string(40,60,(const char)data_arr[2]);
+		}
 
 		
     }

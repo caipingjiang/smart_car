@@ -485,7 +485,7 @@ uint8 find_start_finish_line()
 		}
 	}
 	ips114_show_int(70,70,black_block_num, 3);
-	if(black_block_num>7)return 1;//大于7个点就认为是斑马线了
+	if(black_block_num>7)return 1;//黑色快大于7个就认为是斑马线了
 	else return 0;
 }
 
