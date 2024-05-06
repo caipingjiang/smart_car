@@ -3,6 +3,7 @@
 
 void my_servo_init(void);
 void Servo_SetAngle( uint8 servo_num, uint32 angle );
+void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle);
 void arm_down();
 void arm_up();
 void arm_hang();

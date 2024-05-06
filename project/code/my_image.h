@@ -2,6 +2,8 @@
 #ifndef _MY_IMAGE_H_
 #define _MY_IMAGE_H_
 
+#define		middle	MT9V03X_W/2
+
 void pit_handler_2();
 void my_image_init();
 uint8 find_white_point(uint8 image_array[][188]);
@@ -11,13 +13,17 @@ int16 slope();
 void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance);
 void find_start_point(uint8 image[][188]);
 void roundabout_cross(); //环岛
+uint8 find_start_finish_line();
 void cross();
+void roundabout();
 void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
 uint8 otsu(uint8* image, uint16 width, uint16 height);
 
 extern uint8 cross_flag, roundabout_flag;
+extern int8 roundabout_dir;
 extern uint8 boder_correct[60];
 extern uint8 longest, index;
+extern uint8 lose_point_num_L, lose_point_num_R;
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114
 //#define         USED_ROW                120  //用于透视图的行列

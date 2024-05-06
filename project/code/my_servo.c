@@ -28,26 +28,19 @@
 #define Arm_Servo1_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange1))
 #define Arm_Servo2_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange3))
 #define Box_Servo_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange2))
-	
-//舵机姿态对应角度：
-//向上：servo_1:96°， servo_2:12°
-//向下：servo_1:22°， servo_2:218°
+
+//用于在Servo_SetAngle_Slow里记录角度	
+static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
+
 void my_servo_init(void)
 {  
-    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(108));
-    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo2_Angle(40));
-    pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, 0);
-	
-    pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(0));
-    system_delay_ms(500);//等待仓复位完成
-	pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(80));
-    pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(40));
-    
+    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(100));
+    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(40));
+    system_delay_ms(200);
+    pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0));
 	
 	//电磁铁初始化
 	pwm_init(magnet_PWM, 2000, 0);
-
-	system_delay_ms(100);
 }
 //电磁铁， 0关闭， 1开启
 void magnet_set(uint8 state)
@@ -58,6 +51,7 @@ void magnet_set(uint8 state)
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
 {
+    current_angle[servo_num-1] = angle;   //更新当前角度
     switch (servo_num)
     {
         case 1:
@@ -73,10 +67,37 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     }
 }
 
+//-----------------------------------------------------------------------------------------------
+// 函数简介  设置舵机角度（有延时，转得慢）
+// 参数说明  servo_num：舵机编号， angle：要设置的角度
+// 返回参数  void
+// 使用示例  
+// 备注信息  若在my_servo_init里初始化pwm时改了初始设置的角度，则这里也应更改静态数组current_angle的初始值
+//-----------------------------------------------------------------------------------------------
 void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 {
-	
-}
+    while(current_angle[servo_num-1]!=angle)
+    {
+        if     (current_angle[servo_num-1]<angle)current_angle[servo_num-1]+=1;
+        else if(current_angle[servo_num-1]>angle)current_angle[servo_num-1]-=1;
+
+        switch (servo_num)
+        {
+            case 1:
+                pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(current_angle[servo_num-1]));
+                break;
+            case 2:
+                pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(current_angle[servo_num-1]));
+                break;
+            case 3:
+                pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(current_angle[servo_num-1]));
+            default:
+                break;
+        }
+        system_delay_ms(5);       //设置的延时时间
+    }
+}   
+
 void arm_down()
 {
     Servo_SetAngle(1, 80);
@@ -110,9 +131,10 @@ void arm_up()
     system_delay_ms(800);
     Servo_SetAngle(2, 28);
     Servo_SetAngle(1, 90);
-	system_delay_ms(500);
+    system_delay_ms(500);
     magnet_set(0);
 }
+
 void arm_hang()
 {
     magnet_set(0);

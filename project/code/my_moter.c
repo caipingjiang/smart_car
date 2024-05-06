@@ -10,7 +10,7 @@
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
-uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正
+uint8 Control_Mode = 2;     //0-正常循迹， 1-边界矫正
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
@@ -136,6 +136,7 @@ void move(int16 angle, int8 speed)
 {
     v_x = speed*cos(angle*3.14/180);
     v_y = speed*sin(angle*3.14/180);
+    w = 0;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -210,6 +211,20 @@ float w_PID(float Target_w, float w)
 }
 
 //-----------------------------------------------------------------------------------------------
+// 函数简介  利用openart发送的坐标进行车身位置矫正
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+void position_correct()
+{
+    v_x = data_arr[0]*0.2;
+    v_y = -data_arr[1]*0.2;
+    w = 0;
+}
+
+//-----------------------------------------------------------------------------------------------
 // 函数简介  电机控制函数，放在编码器采集中断中被调用
 // 参数说明  
 // 返回参数  void
@@ -230,7 +245,8 @@ void motor_control()
     }
     else if(Control_Mode == 2)              //卡片矫正模式
     {
-
+        if(packge_finish_flag)position_correct();
+        //position_correct();
     }
     else if(Control_Mode == 3)              //陀螺仪转向模式
     {
@@ -242,7 +258,7 @@ void motor_control()
     }
 	else if(Control_Mode == 4)              //等待模式
     {
-        
+
     }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));

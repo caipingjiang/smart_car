@@ -7,7 +7,7 @@ static  uint8 uart_rx_state = 0;
 uint8 packge_finish_flag = 0; //数据包接收完成标志
 static uint32 length = 0; //fifo实际的缓存数据长度
 
-uint16 data_arr[3] = {0}; //解析后的数据，依次为x,y,class
+int16 data_arr[3] = {0}; //解析后的数据，依次为x,y,class
 
 void my_uart_init()
 {
