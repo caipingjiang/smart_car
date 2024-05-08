@@ -51,22 +51,20 @@ int main(void)
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
     while(1)
     {		
-		// for(uint8 i = 0; i<=3; i++)
-		// {
-		// 	Servo_SetAngle(3,i*90);
-		// 	system_delay_ms(1500);
-		// 	//arm_down();
-		// 	arm_hang();
-		// } 
-		Servo_SetAngle_Slow(1, 90);
-		system_delay_ms(1500);
-		Servo_SetAngle_Slow(1, 0);
-		system_delay_ms(1500);
-		Servo_SetAngle(1, 90);
-		system_delay_ms(1500);
-		Servo_SetAngle(1, 0);
-		system_delay_ms(1500);
 		
+		
+		Box_In('A',1);
+		Box_In('B',1);
+		Box_In('C',1);
+		Box_In('D',1);
+		Box_In('E',1);
+		Box_In('A',1);
+		
+		Box_Out('A',1);
+		Box_Out('B',1);
+		Box_Out('C',1);
+		Box_Out('D',1);
+		Box_Out('E',1);
 		
 
 		if(mt9v03x_finish_flag)
