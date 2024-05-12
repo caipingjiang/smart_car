@@ -10,7 +10,7 @@
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
-uint8 Control_Mode = 2;     //0-正常循迹， 1-边界矫正
+uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1

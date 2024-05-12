@@ -450,7 +450,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 
                five_Flag=0;
             }
-            for(uint8 i=0;i=five_Flag;i++)
+            for(uint8 i=0;i<five_Flag;i++)
             {
                 Servo_SetAngle(3, 0);
                 system_delay_ms(800);

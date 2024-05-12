@@ -491,7 +491,7 @@ uint8 find_start_finish_line()
 
 void pit_handler_2()
 {
-	
+			
 }
 
 

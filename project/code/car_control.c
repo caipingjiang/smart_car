@@ -22,8 +22,25 @@ void cross_move_control()
 		Control_Mode = 3;
 		angle_turn = -abs(Slope)/Slope*90;
 		system_delay_ms(1000);	//等待转向完成
+		if(有卡片)        //识别到卡片
+		{
+		position_correct();     //图片矫正
+			if(data_arr[3]=1)    //矫正完成
+			{
+				v_x = 0;
+				v_y = 0;
+				w = 0;
+				system_delay_ms(100);   
+				if(有卡片)        //识别并捡卡片
+				{
+				Box_In(data_arr[2],1);
+				}
+				
+			}
+		}
+		
 		angle_turn *= -1;	//往回转180度
-		system_delay_ms(1000); //等待转向完成
+		system_delay_ms(1000); //等待转向完
 		turn_flag = 1;
 		Control_Mode = 1;
 		v_x = abs(Slope)/Slope*20;

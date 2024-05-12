@@ -28,43 +28,30 @@ int main(void)
 	ips114_init();
 
     // 此处编写用户代码 例如外设初始化代码等
-	// my_imu660ra_init();
-	// imu660_zeroBias();
+	 my_imu660ra_init();
+	 imu660_zeroBias();
  	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	my_servo_init();
 //	my_key_init();
-	//my_image_init();
+	my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
 	my_uart_init();
 	
 	//timer_init(GPT_TIM_1,TIMER_US);
 	
- 	//interrupt_set_priority(LPUART8_IRQn,4);
-	//interrupt_set_priority(PIT_IRQn, 3);
-	//interrupt_set_priority(LPUART1_IRQn,1);
-	//interrupt_set_priority(LPUART4_IRQn,2);
-	//interrupt_global_enable(0);
+ 	interrupt_set_priority(LPUART8_IRQn,4);
+	interrupt_set_priority(PIT_IRQn, 3);
+	interrupt_set_priority(LPUART1_IRQn,1);
+	interrupt_set_priority(LPUART4_IRQn,2);
+	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
     while(1)
     {		
 		
-		
-		Box_In('A',1);
-		Box_In('B',1);
-		Box_In('C',1);
-		Box_In('D',1);
-		Box_In('E',1);
-		Box_In('A',1);
-		
-		Box_Out('A',1);
-		Box_Out('B',1);
-		Box_Out('C',1);
-		Box_Out('D',1);
-		Box_Out('E',1);
 		
 
 		if(mt9v03x_finish_flag)
@@ -89,18 +76,18 @@ int main(void)
 		
 		
 		// start_finish_line_control();
-		// cross_move_control();
-		// roundabout_move_control();
+		 cross_move_control();
+		 roundabout_move_control();
 
 		ips114_show_int(0,20,cross_flag,2);
 		ips114_show_int(0,60,lose_point_num_L,3);
 		ips114_show_int(0,80,lose_point_num_R,3);
-		if(packge_finish_flag)
-		{
-			ips114_show_int(40,20,data_arr[0],4);
-			ips114_show_int(40,40,data_arr[1],4);
-			//ips114_show_string(40,60,(const char)data_arr[2]);
-		}
+//		if(packge_finish_flag)
+//		{
+//			ips114_show_int(40,20,data_arr[0],4);
+//			ips114_show_int(40,40,data_arr[1],4);
+//			//ips114_show_string(40,60,(const char)data_arr[2]);
+//		}
 
 		
     }

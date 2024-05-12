@@ -7,7 +7,7 @@ static  uint8 uart_rx_state = 0;
 uint8 packge_finish_flag = 0; //数据包接收完成标志
 static uint32 length = 0; //fifo实际的缓存数据长度
 
-int16 data_arr[3] = {0}; //解析后的数据，依次为x,y,class
+int16 data_arr[5] = {0}; //解析后的数据，依次为x,y,class,矫正完成标志位,存在卡片标志位，识别完成标志位
 
 void my_uart_init()
 {
@@ -53,7 +53,7 @@ void my_uart_callback(uart_index_enum uart_n)
                     length = fifo_used(&uart_fifo);
                     if(length>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart_buffer, "%d，%d,%c\n", &data_arr[0], &data_arr[1], &data_arr[2]);
+                        sscanf((const char*)uart_buffer, "%d,%d,%c,%d\n", &data_arr[0], &data_arr[1], &data_arr[2],&data_arr[3]);
                     }
                     fifo_clear(&uart_fifo);
                     packge_finish_flag = 1;
