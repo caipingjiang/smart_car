@@ -28,82 +28,61 @@ int main(void)
 	ips114_init();
 
     // 此处编写用户代码 例如外设初始化代码等
-	// my_imu660ra_init();
-	// imu660_zeroBias();
+	my_imu660ra_init();
+	imu660_zeroBias();
  	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	my_servo_init();
 //	my_key_init();
-	//my_image_init();
-    wireless_uart_init();
+	my_image_init();
+    // wireless_uart_init();
 	//ImagePerspective_Init();
-	my_uart_init();
+	// my_uart_init();
 	
-	//timer_init(GPT_TIM_1,TIMER_US);
+	timer_init(GPT_TIM_1,TIMER_US);
 	
- 	interrupt_set_priority(LPUART8_IRQn,4);
-	interrupt_set_priority(PIT_IRQn, 3);
-	interrupt_set_priority(LPUART1_IRQn,1);
-	interrupt_set_priority(LPUART4_IRQn,2);
-	interrupt_global_enable(0);
+ 	// interrupt_set_priority(LPUART8_IRQn,4);
+	// interrupt_set_priority(PIT_IRQn, 3);
+	// interrupt_set_priority(LPUART1_IRQn,1);
+	// interrupt_set_priority(LPUART4_IRQn,2);
+	// interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
     while(1)
     {		
-		// for(uint8 i = 0; i<=3; i++)
-		// {
-		// 	Servo_SetAngle(3,i*90);
-		// 	system_delay_ms(1500);
-		// 	//arm_down();
-		// 	arm_hang();
-		// } 
-		Servo_SetAngle_Slow(1, 90);
-		system_delay_ms(1500);
-		Servo_SetAngle_Slow(1, 0);
-		system_delay_ms(1500);
-		Servo_SetAngle(1, 90);
-		system_delay_ms(1500);
-		Servo_SetAngle(1, 0);
-		system_delay_ms(1500);
-		
-		
-
-		if(mt9v03x_finish_flag)
-        {
-		 	mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
-//			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-			//start _finish_line_find();
-
- 			find_middle();
-			sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-			Slope = slope();
-			//roundabout_cross();
-			cross();
-			roundabout();
 			
 
-//  		if(start_finish_line_find())ips200_draw_square(60,100,8,RGB565_PINK);
-		}
+// 		if(mt9v03x_finish_flag)
+//         {
+// 		 	mt9v03x_finish_flag = 0;
+// 			timer_clear(GPT_TIM_1);
+// 			timer_start(GPT_TIM_1);	
+// 			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+// 		 	//image_process();
+// //			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
+// 			//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+
+// 			find_start_finish_line();
+//  			find_middle();
+// 			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+// 			Slope = slope();
+// 			cross();
+// 			roundabout();
+// 			timer_stop(GPT_TIM_1);
+// 			uint32 time = timer_get(GPT_TIM_1);
+// 			ips114_show_int(50, 50, time, 4);
+// 		}
 		
 		
-		// start_finish_line_control();
-		// cross_move_control();
-		// roundabout_move_control();
+		start_finish_line_control();
+		cross_move_control();
+		roundabout_move_control();
 
-		ips114_show_int(0,20,cross_flag,2);
-		ips114_show_int(0,60,lose_point_num_L,3);
-		ips114_show_int(0,80,lose_point_num_R,3);
-		if(packge_finish_flag)
-		{
-			ips114_show_int(40,20,data_arr[0],4);
-			ips114_show_int(40,40,data_arr[1],4);
-			//ips114_show_string(40,60,(const char)data_arr[2]);
-		}
-
+		// ips114_show_int(0,20,cross_flag,2);
+		// ips114_show_int(0,60,lose_point_num_L,3);
+		// ips114_show_int(0,80,lose_point_num_R,3);
+		// ART_control();
 		
     }
 }

@@ -10,12 +10,12 @@
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
-uint8 Control_Mode = 2;     //0-正常循迹， 1-边界矫正
+uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
 int16 v_w[4]={0};       //四个轮子的转速
-int16 v_x=0, v_y=30, w=0;  //x、 y轴分速度,车绕几何中心的角速度
+int16 v_x=0, v_y=40, w=0;  //x、 y轴分速度,车绕几何中心的角速度
 int16 Pwm[4]={0};
 int16 bias;
 int16 motor_bias_last[4];
@@ -219,8 +219,8 @@ float w_PID(float Target_w, float w)
 //-----------------------------------------------------------------------------------------------
 void position_correct()
 {
-    v_x = data_arr[0]*0.2;
-    v_y = -data_arr[1]*0.2;
+    v_x = uart4_data_arr[0]*0.2;
+    v_y = -uart4_data_arr[1]*0.2;
     w = 0;
 }
 
@@ -233,33 +233,30 @@ void position_correct()
 //-----------------------------------------------------------------------------------------------
 void motor_control()
 {
-    if(Control_Mode == 0)Turn(0,Slope);     //正常循迹模式
-    else if(Control_Mode == 1)              //边界矫正模式
+    switch(Control_Mode)
     {
-        roundabout_move(&sideline_angle, &sideline_distance);
-        v_y = out2;
-        //v_x = 20;
-        w = out1;
-        //w = Angle_PID(Target_Speed, angle);
-        //car_omni(20, out2, out1);
+        case 0:                         //正常循迹模式
+            Turn(0,Slope);               
+            break;
+        case 1:                         //边界矫正模式
+            roundabout_move(&sideline_angle, &sideline_distance);
+            v_y = out2;
+            //v_x = 20;
+            w = out1;
+            //w = Angle_PID(Target_Speed, angle);
+            break;
+        case 2:                         //卡片矫正模式
+            /*if(packge1_finish_flag)*/position_correct();
+            break;
+        case 3:                         //陀螺仪转向模式
+            //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
+            //w = (int16)w_PID(20, tra_gyro_z);
+            w = Angle_PID(angle_now + angle_turn, Gyro_Angle.Zdata);
+            break;
+	    case 4:                         //等待模式
+            break;
     }
-    else if(Control_Mode == 2)              //卡片矫正模式
-    {
-        if(packge_finish_flag)position_correct();
-        //position_correct();
-    }
-    else if(Control_Mode == 3)              //陀螺仪转向模式
-    {
-
-        
-        //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
-        //w = (int16)w_PID(20, tra_gyro_z);
-        w = Angle_PID(angle_now + angle_turn, Gyro_Angle.Zdata);
-    }
-	else if(Control_Mode == 4)              //等待模式
-    {
-
-    }
+    
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
     motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));

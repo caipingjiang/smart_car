@@ -8,10 +8,10 @@
 
 #define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
 #define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
-#define SERVO_MOTOR_MaxRange2       (320)                   //320度舵机  (储物舱的舵机)
+#define SERVO_MOTOR_MaxRange2       (360)                   //360度舵机  (储物舱的舵机)
 #define SERVO_MOTOR_MaxRange3       (360)                   //360度舵机(可控制角度)  (机械臂上面的舵机)
 
-#if (SERVO_MOTOR_FREQ<50 || SERVO_MOTOR_FREQ>300)
+#if (SERVO_MOTOR_FREQ<50 || SERVO_MOTOR_FREQ>330)
     #error "SERVO_MOTOR_FREQ ERROE!"
 #endif
 // ------------------ 舵机占空比计算方式 ------------------
@@ -46,7 +46,7 @@ void my_servo_init(void)
 void magnet_set(uint8 state)
 {
 	if(state == 0){ pwm_set_duty(magnet_PWM, 0); }
-	else if(state == 1){pwm_set_duty(magnet_PWM, 9999); }//7142
+	else if(state == 1){pwm_set_duty(magnet_PWM, 7142); }//7142
 }
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
@@ -215,7 +215,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
             //若仓位不为空，则判断本次拾取的卡片是否属于该仓位
             else if (card_class == temp_class_arr[i][0] )
             {
-                if (five_Flag == 1 &&i==0)
+                if (five_Flag == 1 && i==0)
                 {
                     five_Flag += 2;
                     break;

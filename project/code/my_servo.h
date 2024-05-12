@@ -8,4 +8,7 @@ void arm_down();
 void arm_up();
 void arm_hang();
 
+void Box_In(char card_class, uint8 cross_roundabout_Flag);
+void Box_Out(char label_num, uint8 cross_roundabout_Flag);
+
 #endif

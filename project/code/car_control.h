@@ -4,5 +4,6 @@
 void cross_move_control();
 void roundabout_move_control();
 void start_finish_line_control();
+void ART_control();
 
 #endif
