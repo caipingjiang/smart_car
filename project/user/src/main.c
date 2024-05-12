@@ -41,11 +41,11 @@ int main(void)
 	
 	timer_init(GPT_TIM_1,TIMER_US);
 	
- 	// interrupt_set_priority(LPUART8_IRQn,4);
-	// interrupt_set_priority(PIT_IRQn, 3);
-	// interrupt_set_priority(LPUART1_IRQn,1);
-	// interrupt_set_priority(LPUART4_IRQn,2);
-	// interrupt_global_enable(0);
+ 	interrupt_set_priority(LPUART8_IRQn,4);
+	interrupt_set_priority(PIT_IRQn, 3);
+	interrupt_set_priority(LPUART1_IRQn,1);
+	interrupt_set_priority(LPUART4_IRQn,2);
+	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
 
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
@@ -53,31 +53,23 @@ int main(void)
     {		
 			
 
-// 		if(mt9v03x_finish_flag)
-//         {
-// 		 	mt9v03x_finish_flag = 0;
-// 			timer_clear(GPT_TIM_1);
-// 			timer_start(GPT_TIM_1);	
-// 			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-// 		 	//image_process();
-// //			ips200_show_gray_image(100, 0, (const uint8 *)image_changed, MT9V03X_W-2, MT9V03X_H-2, 188-2, 120-2, 0);
-// 			//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
-
-// 			find_start_finish_line();
-//  			find_middle();
-// 			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-// 			Slope = slope();
-// 			cross();
-// 			roundabout();
-// 			timer_stop(GPT_TIM_1);
-// 			uint32 time = timer_get(GPT_TIM_1);
-// 			ips114_show_int(50, 50, time, 4);
-// 		}
+		// if(mt9v03x_finish_flag)
+        // {
+		//  	mt9v03x_finish_flag = 0;
+		// 	//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+		//  	//image_process();
+		// 	ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+ 		// 	find_middle();
+		// 	sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+		// 	Slope = slope();
+		// 	cross();
+		// 	roundabout();
+		// }
 		
 		
-		start_finish_line_control();
-		cross_move_control();
-		roundabout_move_control();
+		// start_finish_line_control();
+		// cross_move_control();
+		// roundabout_move_control();
 
 		// ips114_show_int(0,20,cross_flag,2);
 		// ips114_show_int(0,60,lose_point_num_L,3);
