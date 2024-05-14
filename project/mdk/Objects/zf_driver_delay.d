@@ -3,38 +3,38 @@
   ..\..\libraries\rt-thread\bsp\imxrt\imxrt1064-nxp-evk\rtconfig.h \
   ..\..\libraries\rt-thread\include\rtdebug.h \
   ..\..\libraries\rt-thread\include\rtdef.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stdarg.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   ..\..\libraries\rt-thread\include\rtlibc.h \
   ..\..\libraries\rt-thread\include\libc\libc_stat.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\time.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\time.h \
   ..\..\libraries\rt-thread\include\libc\libc_errno.h \
   ..\..\libraries\rt-thread\include\libc\libc_fcntl.h \
   ..\..\libraries\rt-thread\include\libc\libc_ioctl.h \
   ..\..\libraries\rt-thread\include\libc\libc_dirent.h \
   ..\..\libraries\rt-thread\include\libc\libc_signal.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\signal.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\signal.h \
   ..\..\libraries\rt-thread\include\libc\libc_fdset.h \
   ..\..\libraries\rt-thread\include\rtservice.h \
   ..\..\libraries\rt-thread\include\rtm.h \
   ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
   ..\..\libraries\zf_common\zf_common_clock.h \
   ..\..\libraries\zf_common\zf_common_typedef.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\string.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
   ..\..\libraries\sdk\drives\fsl_common.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\assert.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\assert.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
   ..\..\libraries\sdk\deceive\fsl_device_registers.h \
   ..\..\libraries\sdk\deceive\MIMXRT1064.h \
   ..\..\libraries\sdk\CMSIS\Include\core_cm7.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_version.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
   ..\..\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
-  D:\Keil\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  C:\keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
   ..\..\libraries\sdk\CMSIS\Include\mpu_armv7.h \
   ..\..\libraries\sdk\deceive\system_MIMXRT1064.h \
   ..\..\libraries\sdk\deceive\MIMXRT1064_features.h \
