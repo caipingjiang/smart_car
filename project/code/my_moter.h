@@ -27,6 +27,7 @@ void Turn_Left();
 void forward();
 void move(int16 angle, int8 speed);
 float w_PID(float Target_w, float w);
+void position_correct();
 
 extern uint8 Control_Mode;  
 extern float angle_now;

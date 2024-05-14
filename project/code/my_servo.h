@@ -12,4 +12,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag);
 void Box_Out(char label_num, uint8 cross_roundabout_Flag);
 void arm_exchange(uint8 a,uint8 b);
 
+void Box_In(char card_class, uint8 cross_roundabout_Flag);
+void Box_Out(char label_num, uint8 cross_roundabout_Flag);
+
 #endif

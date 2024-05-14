@@ -30,7 +30,7 @@ void my_image_init()
 	mt9v03x_set_exposure_time(320);//120
 	system_delay_ms(100);
 	//设置自动曝光时间以应对差异较大的光线环境？？？
-	//pit_ms_init(PIT_CH2,5);	//计算斜率、环岛十字的周期
+	pit_ms_init(PIT_CH2,5);	//计算斜率、环岛十字的周期
 }
 
 //计算白色参考阈值
@@ -48,7 +48,7 @@ uint8 find_white_point(uint8 image_array[][188])
 			}
 		}
 	}
-	ips114_show_int(188, 70, total / 20, 3);
+	//ips114_show_int(188, 70, total / 20, 3);
 	//	ips114_draw_point(90,80,RGB565_BLUE);
 	//	ips114_draw_point(91,80,RGB565_BLUE);
 	//	ips114_draw_point(90,81,RGB565_BLUE);
@@ -95,7 +95,7 @@ void find_longest(uint8* longest, uint8* index)
 	uint16 high_sum = 0;	//所有满屏白列x坐标求和值
 	*longest = MT9V03X_H - 10;
 	white_value = 0.7 * 130 + 0.3 * find_white_point(mt9v03x_image);
-	ips114_show_int(188, 90, white_value, 3);
+	// ips114_show_int(188, 90, white_value, 3);
 	for (uint8 i = 0; i < MT9V03X_W; i += 2)		//+=5
 	{
 		for (int16 j = MT9V03X_H - 6; j >= 0; j -= 1)		//???????,要减个10，边缘灰度值很大?????????//待优化-=3？
@@ -110,11 +110,11 @@ void find_longest(uint8* longest, uint8* index)
 				//纪录满屏高度白列数量以及x坐标之和，最后取平均值，作为最长白列的index
 				highest_count++;
 				high_sum += i;	
-				ips114_draw_point(i, j, RGB565_RED);
+				//ips114_draw_point(i, j, RGB565_RED);
 			}
 			if (value_2 > y_threshold)//25
 			{	
-				ips114_draw_point(i, j, RGB565_RED); //j
+				//ips114_draw_point(i, j, RGB565_RED); //j
 				boder_U[i] = j;
 
 				if (i >= middle - 30 && i < middle + 30)
@@ -162,7 +162,7 @@ void find_middle()
 	lose_point_num_R = 0;	//清零丢线点数
 	find_longest(&longest, &index);
 	if(longest>SHORTEST)return;	//小于最短值，直接return，认为跑出赛道了
-	ips114_draw_line(index, MT9V03X_H - 10, index, longest, RGB565_PURPLE);
+	//ips114_draw_line(index, MT9V03X_H - 10, index, longest, RGB565_PURPLE);
 
 	//从最长列开始寻找左右边界
 	for (uint8 i = longest; i < MT9V03X_H - 5; i++)
@@ -174,7 +174,7 @@ void find_middle()
 			if(index<5)//最长白列靠近了最左边
 			{
 				boder_L[i] = 0;
-				ips114_draw_point(0, i, RGB565_YELLOW);
+				//ips114_draw_point(0, i, RGB565_YELLOW);
 				lose_point_num_L++;
 				break;
 			}
@@ -186,14 +186,14 @@ void find_middle()
 			if (b == 0) //若没有找到左边界点，则把最左点作为左边界点
 			{
 				boder_L[i] = 0;
-				ips114_draw_point(0, i, RGB565_YELLOW);
+				//ips114_draw_point(0, i, RGB565_YELLOW);
 				lose_point_num_L++;
 				break;
 			}
 			if (value_1*0.6 + value_2*0.4> x_threshold)
 			{
 				boder_L[i] = b;
-				ips114_draw_point(b, i, RGB565_YELLOW);
+				//ips114_draw_point(b, i, RGB565_YELLOW);
 				break;
 			}
 		}
@@ -204,7 +204,7 @@ void find_middle()
 			if (index > MT9V03X_W-6)//最长白列靠近了最右边
 			{
 				boder_R[i] = MT9V03X_W-1;
-				ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
+				//ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
 				lose_point_num_R++;
 				break;
 			}
@@ -215,20 +215,20 @@ void find_middle()
 			if (b == MT9V03X_W-1) //若没有找到右边界点，则把最右点作为右边界点
 			{
 				boder_R[i] = MT9V03X_W-1;
-				ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
+				//ips114_draw_point(MT9V03X_W-1, i, RGB565_GREEN);
 				lose_point_num_R++;
 				break;
 			}
 			if (value_1 * 0.6 + value_2 * 0.4 > x_threshold )
 			{
 				boder_R[i] = b;
-				ips114_draw_point(b, i, RGB565_GREEN);
+				//ips114_draw_point(b, i, RGB565_GREEN);
 				break;
 			}
 		}
 
 		boder_M[i] = (boder_L[i] + boder_R[i]) / 2;
-		ips114_draw_point(boder_M[i], i, RGB565_BLUE);
+		//ips114_draw_point(boder_M[i], i, RGB565_BLUE);
 	}
 }
 
@@ -252,7 +252,7 @@ int16 slope()
 		sum2 += (int16)(MT9V03X_H - 10 - i);
 	}
 	result = 50 * sum1 / (sum2+1); //分母加1防止除0;
-	ips114_show_int(188, 110, (const int32)result, 3);
+	//ips114_show_int(188, 110, (const int32)result, 3);
 	lastresult = result;
 	return result;
 }
@@ -366,9 +366,11 @@ void roundabout_cross()
 	}
 }
 
+#define track_wide_limit		(MT9V03X_W * MT9V03X_H * 4 / 15)	//十字|环岛路段的赛道宽度判断限制
+#define start_height 			(MT9V03X_H / 3)						//计算赛道宽度的开始行
+#define end_height 				(MT9V03X_H * 2 / 3)					//计算赛道宽度的结束行
 #define cross_longest_limit 	20		//十字路段最长白列判断限制
 #define cross_slope_limit		12		//十字路段最大斜率判断限制
-#define track_wide_limit		70		//十字|环岛路段的赛道宽度判断限制
 #define lose_point_num_limit_1	70		//丢线点数限制1
 #define lose_point_num_limit_2	5		//丢线点数限制2
 //-----------------------------------------------------------------------------------------------
@@ -383,12 +385,12 @@ void cross()//十字
 	track_wide = 0;	//清零上次计算的赛道宽度
 	if(cross_flag == 0)
 	{
-		for (uint16 i = MT9V03X_H / 3; i < MT9V03X_H * 2 / 3; i++)
+		for (uint16 i = start_height; i < start_height; i++)
 		{
-			track_wide += (boder_R[i] - boder_L[i]);//累加赛道宽度
+			track_wide += (boder_R[i] - boder_L[i]);//注意这里是：累加赛道宽度
 		}
 		//ips114_show_int(90, 70, track_wide/ MT9V03X_W, 2);
-		if (track_wide > MT9V03X_W * MT9V03X_H * 4 / 15 && longest < cross_longest_limit)//限制一个最长白列的最短长度限制，长度大于此值认为是急弯过滤掉
+		if (track_wide > track_wide_limit && longest < cross_longest_limit)//限制一个最长白列的最短长度限制，长度大于此值认为是急弯过滤掉
 		{
 			//通过左右丢线点数再一次过滤，避免环岛误判
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1)
@@ -430,7 +432,7 @@ void roundabout()
 {
 	if(roundabout_flag == 0)
 	{
-		if(track_wide>MT9V03X_W * MT9V03X_H * 4 / 15 && longest < cross_longest_limit )	//借用十字的赛道宽度判断
+		if(track_wide > track_wide_limit && longest < cross_longest_limit )	//借用十字的赛道宽度判断
 		{
 			//左环岛
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2)
@@ -474,7 +476,7 @@ void roundabout()
 uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态
-	uint8 black_block_num = 0;	//统计的斑马线黑色快数量
+	uint8 black_block_num = 0;	//统计的斑马线黑色块数量
 	for(uint8 i = 0; i<MT9V03X_W; i++)
 	{
 		switch(judge_state)
@@ -484,14 +486,24 @@ uint8 find_start_finish_line()
 			case 2:{if(mt9v03x_image[70][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
 		}
 	}
-	ips114_show_int(70,70,black_block_num, 3);
-	if(black_block_num>7)return 1;//黑色快大于7个就认为是斑马线了
+	//ips114_show_int(70,70,black_block_num, 3);
+	if(black_block_num>7)return 1;//黑色块大于7个就认为是斑马线了
 	else return 0;
 }
 
 void pit_handler_2()
 {
-			
+	if(mt9v03x_finish_flag)
+    {
+	 	mt9v03x_finish_flag = 0;
+		//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+		//find_start_finish_line();
+ 		find_middle();
+		// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+		Slope = slope();
+		cross();
+		roundabout();
+	}
 }
 
 

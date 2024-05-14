@@ -1,6 +1,7 @@
 #include "zf_common_headfile.h"
 #include "my_image.h"
 #include "my_moter.h"
+#include "my_servo.h"
 #include "imu660ra.h"
 //-----------------------------------------------------------------------------------------------
 // 函数简介  十字运动控制
@@ -176,5 +177,80 @@ void start_finish_line_control()
             move(0,0);
 		    Control_Mode = 4;
         }
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  通过分析OpenART传回来的数据来控制小车运动
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+void ART_control()
+{
+	static uint8 art_turn_flag = 0;
+	
+	if(packge1_finish_flag)
+	{
+		ips114_show_int(40,20,uart1_data_arr[0],4);
+		ips114_show_int(40,40,uart1_data_arr[1],4);
+		//ips114_show_string(40,60,(const char)data_arr[2]);
+
+		// Control_Mode = 2;
+	}
+	if((!art_turn_flag) && packge4_finish_flag)
+	{
+		packge4_finish_flag = 0;
+		ips114_show_int(40,60,uart4_data_arr[0],4);
+		ips114_show_int(40,80,uart4_data_arr[1],4);
+		ips114_show_int(40,80,uart4_data_arr[2],4);
+		if(uart4_data_arr[0]>=0)	//x大于图像W/2,认为卡片在赛道的右边
+		{
+			move(0,0);	//停车
+			Control_Mode = 4;
+			system_delay_ms(1000);
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = -90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			Control_Mode = 2;	//-------mode = 2------->
+			w = 0;	
+			system_delay_ms(2500);
+			arm_up();
+			arm_hang();
+			
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = 90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			v_x = 0;v_y = 20;
+			Control_Mode = 0;
+		}
+		else
+		{
+			move(0,0);
+			Control_Mode = 4;
+			system_delay_ms(1000);
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = 90;
+			Control_Mode = 3;
+			system_delay_ms(1000);
+			Control_Mode = 2;	//mode = 2
+			move(0,0);
+			system_delay_ms(2500);
+			arm_up();
+			arm_hang();
+			
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = -90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			v_x = 0;v_y = 20;
+			Control_Mode = 0;
+		}
+		//art_turn_flag = 1;
+		//system_delay_ms(2000);
+		
 	}
 }

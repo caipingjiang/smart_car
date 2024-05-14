@@ -48,7 +48,7 @@ void my_servo_init(void)
 void magnet_set(uint8 state)
 {
 	if(state == 0){ pwm_set_duty(magnet_PWM, 0); }
-	else if(state == 1){pwm_set_duty(magnet_PWM, 9999); }//7142
+	else if(state == 1){pwm_set_duty(magnet_PWM, 7142); }//7142
 }
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
@@ -150,7 +150,7 @@ void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b
 {
     Servo_SetAngle(3, a*90);
     system_delay_ms(800);
-	 Servo_SetAngle(1, 80);
+	Servo_SetAngle(1, 80);
     Servo_SetAngle(2, 26);
     magnet_set(1);
     system_delay_ms(1200);
@@ -264,8 +264,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
 					system_delay_ms(500);
 					arm_up();
 					arm_hang();
-					
-					
+
                     break;
                 }
                 temp_class_arr[i][1]++;
