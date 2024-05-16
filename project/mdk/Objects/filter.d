@@ -1,4 +1,4 @@
-./objects/my_servo.o: ..\code\my_servo.c \
+./objects/filter.o: ..\code\filter.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\Keil\ARM\ARMCLANG\Bin\..\include\stdint.h \

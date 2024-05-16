@@ -2,10 +2,11 @@
 #include "my_image.h"
 #include <math.h>
 
+uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 
 int16 Slope;						//图像斜率
 uint8 cross_flag = 0, roundabout_flag = 0;//环岛十字的标志位，1为到达此处
-int8 roundabout_dir = 0;			//环岛方向，-1: 左环岛， 1: 右环岛
+int8 cross_dir = 0, roundabout_dir = 0;			//十字方向，-1：左十字， 1：右十字； 环岛方向，-1: 左环岛， 1: 右环岛
 
 uint8 boder_L[MT9V03X_H - 5];		//左边扫线（左边界 黄色）
 uint8 boder_R[MT9V03X_H - 5];		//右边扫线（右边界 绿色）
@@ -279,8 +280,8 @@ void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_
 	*sideline_angle = (y1 - y2);
 	*sideline_distance = (y1 + y2) / 2;
 
-	ips114_show_int(188, 0, *sideline_angle, 4);
-	ips114_show_int(188, 20, *sideline_distance, 4);
+	// ips114_show_int(188, 0, *sideline_angle, 4);
+	// ips114_show_int(188, 20, *sideline_distance, 4);
 }
 
 
@@ -385,7 +386,7 @@ void cross()//十字
 	track_wide = 0;	//清零上次计算的赛道宽度
 	if(cross_flag == 0)
 	{
-		for (uint16 i = start_height; i < start_height; i++)
+		for (uint16 i = start_height; i < end_height; i++)
 		{
 			track_wide += (boder_R[i] - boder_L[i]);//注意这里是：累加赛道宽度
 		}
@@ -404,6 +405,8 @@ void cross()//十字
 	{
 		if(abs(Slope)>cross_slope_limit)
 		{
+			if(Slope<0)cross_dir = -1;
+			else cross_dir = 1;
 			cross_flag = 2;		//检测到斜率增大到限制，即已经进入十字，下一步进行90度转向
 		}
 	}
@@ -416,7 +419,10 @@ void cross()//十字
 	}
 	else if(cross_flag == 3)
 	{
-		if(Control_Mode == 0)cross_flag=0;	//确保走出十字才复位十字标志位
+		if(Image_Mode == 0)
+		{
+			cross_flag=0;		//确保走出十字才复位十字标志位
+		}
 	}	
 }
 
@@ -461,7 +467,7 @@ void roundabout()
 	}
 	else if(roundabout_flag == 3)
 	{
-		if(Control_Mode == 0)roundabout_flag=0;	//在回到循迹模式时清除环岛标志位
+		if(Image_Mode == 0)roundabout_flag=0;	//在回到循迹模式时清除环岛标志位
 	}
 }
 
@@ -498,11 +504,35 @@ void pit_handler_2()
 	 	mt9v03x_finish_flag = 0;
 		//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
 		//find_start_finish_line();
- 		find_middle();
-		// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-		Slope = slope();
-		cross();
-		roundabout();
+		
+		switch (Image_Mode)		//不同的图像处理模式
+		{
+			case 0:
+			    find_middle();
+				Slope = slope();
+				cross();
+				roundabout();
+			    break;
+			case 1:
+				find_middle();
+				cross();
+				roundabout();
+				sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+				break;
+			case 2:
+			    break;
+			case 3:
+				find_middle();
+				Slope = slope();
+			    break;
+			case 4:
+			    break;
+
+		}
+ 		
+		//sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+		
+		
 	}
 }
 

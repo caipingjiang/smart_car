@@ -49,29 +49,34 @@ int main(void)
     // 此处编写用户代码 例如外设初始化代码等
 
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
-    while(1)
+	while(1)
     {		
 			
-
-		// if(mt9v03x_finish_flag)
-        // {
-		//  	mt9v03x_finish_flag = 0;
-		// 	//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		//  	//image_process();
-		// 	ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
- 		// 	find_middle();
-		// 	sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-		// 	Slope = slope();
-		// 	cross();
-		// 	roundabout();
-		// }
+		if(mt9v03x_finish_flag)
+        {
+		 	//mt9v03x_finish_flag = 0;
+			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
+		 	//image_process();
+			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+ 			// find_middle();
+			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
+			// Slopdabout();e = slope();
+			// cross();
+			// roun
+		}
+		
+		 
+		v_y =slidingFilter(1500/(abs(Slope)+20));
+		system_delay_ms(10);
 		
 		
 		// start_finish_line_control();
 		// cross_move_control();
-		// roundabout_move_control();
+		//roundabout_move_control();
 
-		// ips114_show_int(0,20,cross_flag,2);
+		ips114_show_int(0,20,cross_flag,2);
+		ips114_show_int(0,40,roundabout_flag,2);
+		//ips114_show_int(80,20,Slope,3);
 		// ips114_show_int(0,60,lose_point_num_L,3);
 		// ips114_show_int(0,80,lose_point_num_R,3);
 		// ART_control();
