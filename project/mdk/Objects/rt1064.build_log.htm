@@ -27,15 +27,10 @@ Project File Date:  05/01/2024
 <h2>Output:</h2>
 *** Using Compiler 'V6.19', folder: 'C:\keil5\ARM\ARMCLANG\Bin'
 Build target 'nor_sdram_zf_dtcm'
-../code/my_uart.c(61): error: use of undeclared identifier 'uart_buffer'
-                        sscanf((const char*)uart_buffer, "%d,%d,%c,%d,%d\n", &uart1_data_arr[0], &uart1_data_arr[1], &uart1_data_arr[2],&uart1_data_arr[3],&uart1_data_arr[4]);
-                                            ^
-../code/my_uart.c(37): warning: 5 enumeration values not handled in switch: 'UART_2', 'UART_3', 'UART_5'... [-Wswitch]
-    switch (uart_n)
-            ^~~~~~
-1 warning and 1 error generated.
-compiling my_uart.c...
-".\Objects\rt1064.axf" - 1 Error(s), 1 Warning(s).
+compiling main.c...
+linking...
+Program Size: Code=63872 RO-data=15036 RW-data=312 ZI-data=57024  
+".\Objects\rt1064.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -48,8 +43,7 @@ Package Vendor: NXP
   C:/keil5/ARM/PACK/NXP/MIMXRT1064_DFP/17.0.0/devices/MIMXRT1064
 
 <h2>Collection of Component Files used:</h2>
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

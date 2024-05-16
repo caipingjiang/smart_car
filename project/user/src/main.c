@@ -37,7 +37,7 @@ int main(void)
 	my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
-	// my_uart_init();
+	 my_uart_init();
 	
 	timer_init(GPT_TIM_1,TIMER_US);
 	
@@ -74,7 +74,7 @@ int main(void)
 		
 		// start_finish_line_control();
 		 cross_move_control();
-		 roundabout_move_control();
+		 //roundabout_move_control();
 
 		// ips114_show_int(0,20,cross_flag,2);
 		// ips114_show_int(0,60,lose_point_num_L,3);
