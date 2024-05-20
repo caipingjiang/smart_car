@@ -20,10 +20,11 @@ void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
 uint8 otsu(uint8* image, uint16 width, uint16 height);
 
 extern uint8 cross_flag, roundabout_flag;
-extern int8 roundabout_dir;
+extern int8  cross_dir, roundabout_dir;
 extern uint8 boder_correct[60];
 extern uint8 longest, index;
 extern uint8 lose_point_num_L, lose_point_num_R;
+extern uint8 Image_Mode;
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114
 //#define         USED_ROW                120  //用于透视图的行列

@@ -12,8 +12,9 @@
 //-----------------------------------------------------------------------------------------------
 void cross_move_control()
 {
-    if(cross_flag == 2 && turn_flag==0)
+    if(cross_flag == 2 && turn_flag == 0)
 	{
+		Image_Mode = 4;	//进入休闲模式，关闭十字判别，放
 		angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 
     	v_x = 0;
 		v_y = 0;
@@ -22,7 +23,7 @@ void cross_move_control()
 		system_delay_ms(1000);
 		Control_Mode = 3;
 		angle_turn = -abs(Slope)/Slope*90;
-		system_delay_ms(1000);	//等待转向完成
+		system_delay_ms(2000);	//等待转向完成
 		if(uart1_data_arr[3]==1)        //识别到卡片
 		{
 			while(!&uart1_data_arr[4])
@@ -44,7 +45,8 @@ void cross_move_control()
 		system_delay_ms(1000); //等待转向完
 		turn_flag = 1;
 		Control_Mode = 1;
-		v_x = abs(Slope)/Slope*20;
+		v_x = cross_dir*20;
+		Image_Mode = 1;	//此时进入边界矫正，故需要切换图像处理模式
 	}
 	else if(cross_flag == 3)
 	{
@@ -59,18 +61,23 @@ void cross_move_control()
 		Control_Mode = 3;
 		v_x = 0;
 		v_y = 0;
-		if(index<MT9V03X_W/2)angle_turn = 90;
-		else angle_turn = -90;
-		system_delay_ms(1000);	//等待转向完成
+		angle_turn = -cross_dir * 90;
+
+		Image_Mode = 4;			//转为空闲模式，防止在出十字时误判
+		system_delay_ms(1500);	//等待转向完成
 		turn_flag = 1;
 
-		Control_Mode = 4;		//先直行一段确保出十字
-		forward();
-		system_delay_ms(1000);
-
+		Image_Mode = 3;
+		Control_Mode = 0;		//先走一段,不判断十字,确保出十字
 		v_x = 0;
 		v_y = 30;
+		system_delay_ms(2000);
+		// Control_Mode = 4;		//先直行一段确保出十字
+		// forward();
+		// system_delay_ms(2000);
 		Control_Mode = 0;
+
+		Image_Mode = 0;
 		turn_flag = 0;	//走出十字后清零转向标志位
 
 	}
@@ -93,6 +100,7 @@ void roundabout_move_control()
 		v_y = 0;
 		w = 0;
 		Control_Mode = 4;
+		Image_Mode = 4;
 		system_delay_ms(500);   //等待停车
 		move(90-roundabout_dir*30, 15);
         system_delay_ms(1500);
@@ -105,6 +113,7 @@ void roundabout_move_control()
         turn_flag = 1;
 
         Control_Mode = 1;
+		Image_Mode = 1;
 		v_x = -(roundabout_dir*20);
         
 	}
@@ -146,6 +155,7 @@ void roundabout_move_control()
     {
         turn_flag = 0;//清零上一状态的标志位
         Control_Mode = 0;
+		Image_Mode = 0; 
         v_x = 0;
         v_y = 30;
     }
@@ -166,11 +176,9 @@ void start_finish_line_control()
 		find_times++;
         if(find_times == 1)
         {
-            move(90,30);
-            Control_Mode = 4;
+			Image_Mode = 3;
             system_delay_ms(600);//确保发车成功
-
-            Control_Mode = 0;
+            Image_Mode = 0;
         }
         if(find_times == 2) //第二次识别就停车
         {

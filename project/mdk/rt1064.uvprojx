@@ -514,6 +514,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\car_control.h</FilePath>
             </File>
+            <File>
+              <FileName>filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>filter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\filter.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

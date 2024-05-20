@@ -11,6 +11,7 @@
 ".\objects\my_key.o"
 ".\objects\my_uart.o"
 ".\objects\car_control.o"
+".\objects\filter.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"

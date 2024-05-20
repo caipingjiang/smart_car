@@ -1,4 +1,4 @@
-./objects/my_encoder.o: ..\code\my_encoder.c \
+./objects/filter.o: ..\code\filter.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \

@@ -133,6 +133,7 @@
 #include "my_uart.h"
 #include "my_servo.h"
 
+#include "filter.h"
 //±àÂëÆ÷Ïà¹Ø
 extern int16 encoder_data[4];
 extern int16 encoder_data_last[4];
