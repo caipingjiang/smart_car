@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu May 23 22:07:54 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu May 23 23:06:51 2024
 <BR><P>
 <H3>Maximum Stack Usage =        816 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1808,7 +1808,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_mimxrt1064.o(.text)
 </UL>
 <P><STRONG><a name="[21]"></a>LPUART1_IRQHandler</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, isr.o(.text.LPUART1_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 576<LI>Call Chain = LPUART1_IRQHandler &rArr; my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<BR><BR>[Stack]<UL><LI>Max Depth = 568<LI>Call Chain = LPUART1_IRQHandler &rArr; my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LPUART_ClearStatusFlags
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_uart_callback
@@ -1848,7 +1848,7 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_mimxrt1064.o(.text)
 </UL>
 <P><STRONG><a name="[24]"></a>LPUART4_IRQHandler</STRONG> (Thumb, 38 bytes, Stack size 8 bytes, isr.o(.text.LPUART4_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 576<LI>Call Chain = LPUART4_IRQHandler &rArr; my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<BR><BR>[Stack]<UL><LI>Max Depth = 568<LI>Call Chain = LPUART4_IRQHandler &rArr; my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[134]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LPUART_ClearStatusFlags
 <LI><a href="#[133]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;my_uart_callback
@@ -2856,8 +2856,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[133]"></a>my_uart_callback</STRONG> (Thumb, 476 bytes, Stack size 24 bytes, my_uart.o(.text.my_uart_callback))
-<BR><BR>[Stack]<UL><LI>Max Depth = 568<LI>Call Chain = my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[133]"></a>my_uart_callback</STRONG> (Thumb, 478 bytes, Stack size 16 bytes, my_uart.o(.text.my_uart_callback))
+<BR><BR>[Stack]<UL><LI>Max Depth = 560<LI>Call Chain = my_uart_callback &rArr; fifo_write_buffer &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[167]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fifo_clear
 <LI><a href="#[16a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fifo_write_buffer
