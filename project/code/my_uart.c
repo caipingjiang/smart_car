@@ -1,6 +1,6 @@
 #include "zf_common_headfile.h"
 
-// 串口1用于90度摄像头分类，串口四用于130度摄像头目标检测
+// 串口4用于90度摄像头分类，串口1用于130度摄像头目标检测
 static  fifo_struct     uart1_fifo, uart4_fifo;
 uint8   uart1_buffer[UART_BUFFER_SIZE];    // 数据存放数组
 uint8   uart4_buffer[UART_BUFFER_SIZE];
@@ -10,7 +10,7 @@ uint8   packge1_finish_flag = 0, packge4_finish_flag = 0; //数据包接收完成标志
 static  uint32 length1 = 0, length4; //fifo实际的缓存数据长度
 
 int16 uart1_data_arr[2] = {0}; //解析后的数据，依次为class，识别到卡片标志位
-int16 uart4_data_arr[3] = {0}; //解析后的数据，依次为x,y,distance
+int16 uart4_data_arr[2] = {0}; //解析后的数据，依次为class，识别到卡片标志位
 
 void my_uart_init()
 {
@@ -85,9 +85,9 @@ void my_uart_callback(uart_index_enum uart_n)
                     fifo_write_buffer(&uart4_fifo, "\n", 1);
                     uart4_rx_state = 0;
                     length4 = fifo_used(&uart4_fifo);
-                    if(length4>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
+                    if(length4>=3)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart4_buffer, "%d,%d,%d\n", &uart4_data_arr[0], &uart4_data_arr[1], &uart4_data_arr[2]);
+                         sscanf((const char*)uart1_buffer, "%c,%d\n",&uart4_data_arr[0], &uart4_data_arr[1]);
                     }
                     fifo_clear(&uart4_fifo);
                     packge4_finish_flag = 1;

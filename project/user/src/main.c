@@ -87,16 +87,16 @@ int main(void)
 		// ART_control();
 		//ips114_show_int(60,30,uart1_data_arr[1], 2);
 		
-		if(uart1_data_arr[1]==1)        //识别到卡片
+		if(uart4_data_arr[1]==1)        //识别到卡片
 		{
 			system_delay_ms(1000);
 			v_x = 0;
 			v_y = 0;
 			w = 0;
-			while(uart1_data_arr[1]==1)
+			while(uart4_data_arr[1]==1)
 			{
-				ips114_show_string(0,60,(const char*)&uart1_data_arr[0]);
-				Box_In((char)uart1_data_arr[0],0);
+				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+				Box_In((char)uart4_data_arr[0],0);
 				
 				system_delay_ms(1000);
 			}
