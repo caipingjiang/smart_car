@@ -37,7 +37,11 @@ int main(void)
 	my_image_init();
     wireless_uart_init();
 	//ImagePerspective_Init();
+<<<<<<< HEAD
 	 my_uart_init();
+=======
+	my_uart_init();
+>>>>>>> 8a3c7914deccab0c79439cc43953084b16e535c3
 	
 	timer_init(GPT_TIM_1,TIMER_US);
 	
@@ -56,7 +60,8 @@ int main(void)
 	ips114_draw_line(middle - 30, 20, middle + 30, 20, RGB565_GREEN);
 	while(1)
     {		
-			
+		
+		//Control_Mode  =	2;
 		if(mt9v03x_finish_flag)
         {
 		 	//mt9v03x_finish_flag = 0;
@@ -71,18 +76,24 @@ int main(void)
 		}
 		
 		 
+<<<<<<< HEAD
 		//v_y =25;    //slidingFilter(1500/(abs(Slope)+20));
 		system_delay_ms(10);
+=======
+		// v_y =slidingFilter(1500/(abs(Slope)+20));
+		// system_delay_ms(10);
+>>>>>>> 8a3c7914deccab0c79439cc43953084b16e535c3
 		
 		
 		// start_finish_line_control();
 		// cross_move_control();
-		//roundabout_move_control();
+		// roundabout_move_control();
 
 		ips114_show_int(0,20,cross_flag,2);
 		ips114_show_int(0,40,roundabout_flag,2);
 		//ips114_show_int(80,20,Slope,3);
 		// ips114_show_int(0,60,lose_point_num_L,3);
+<<<<<<< HEAD
 		// ips114_show_int(0,80,lose_point_num_R,3);
 		// ART_control();
 		//ips114_show_int(60,30,uart1_data_arr[1], 2);
@@ -102,6 +113,11 @@ int main(void)
 			}
 			
 		 }
+=======
+		// ips114_show_int(0,80,lzose_point_num_R,3);
+		ART_control();
+		ips114_show_int(180,90,packge1_finish_flag,2);
+>>>>>>> 8a3c7914deccab0c79439cc43953084b16e535c3
 		
     }
 }

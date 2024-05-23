@@ -2,7 +2,7 @@
 #include "my_image.h"
 #include "my_moter.h"
 #include "imu660ra.h"
-
+#include "math.h"
 //-----------------------------------------------------------------------------------------------
 // 函数简介  十字运动控制
 // 参数说明  
@@ -184,5 +184,141 @@ void start_finish_line_control()
             move(0,0);
 		    Control_Mode = 4;
         }
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  通过分析OpenART传回来的数据来控制小车运动
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+extern int16 finial_point[2];
+void ART_control()
+{
+	static uint8 art_turn_flag = 0;
+	
+	if(packge1_finish_flag)
+	{
+		switch (uart1_data_arr[3])	//correct_flag
+		{
+			case 0:break;	//未检测到卡片或卡片的距离未小于设定值
+			case 1://转弯和矫正卡片
+			{
+				Image_Mode = 4;	//挂起总钻风，防止误判
+				//停车
+				Control_Mode = 4;
+				move(0,0);
+				system_delay_ms(1000);	
+
+				//90度转向
+				angle_now = Gyro_Angle.Zdata;
+				if(uart1_data_arr[0]<160)angle_turn = 90;
+				else angle_turn = -90;
+				Control_Mode = 3;
+				system_delay_ms(1500);    //等待转向完成
+				
+				
+				//进入卡片矫正
+				while( !uart1_data_arr[0] )//先确保转弯后矫正前能看到卡片
+				{
+					Control_Mode = 4;
+					if(angle_turn>0)move(0, 20);
+					else move(180, 20);
+				}
+				
+				while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+				{
+					Control_Mode = 2;
+					w = 0;
+					system_delay_ms(2000);//等待矫正完成
+					Control_Mode = 4;
+					move(0,0);
+					
+					int16 temp_distance = 0;//临时距离
+					temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point[0], 2)+pow(uart1_data_arr[1] - finial_point[1], 2));
+					if( temp_distance < 30 ) //小于30，认为矫正成功；若矫正后距离仍然很大，就认为是误识别了，不执行拾取操作
+					{
+						Box_In('A', 0);
+					}
+				}
+				
+				
+				
+				
+				//回转
+				angle_now = Gyro_Angle.Zdata;
+				angle_turn = - angle_turn;
+				Control_Mode = 3;
+				system_delay_ms(1500); 
+				
+				//复位循迹
+				Control_Mode = 0;
+				v_x = 0;
+				v_y = 30;
+				w = 0;
+				Image_Mode = 0;
+	
+				break;
+				
+			}
+			
+		}
+
+	}
+	if((!art_turn_flag) && packge4_finish_flag)
+	{
+		packge4_finish_flag = 0;
+		ips114_show_int(40,60,uart4_data_arr[0],4);
+		ips114_show_int(40,80,uart4_data_arr[1],4);
+		ips114_show_int(40,80,uart4_data_arr[2],4);
+		if(uart4_data_arr[0]>=0)	//x大于图像W/2,认为卡片在赛道的右边
+		{
+			move(0,0);	//停车
+			Control_Mode = 4;
+			system_delay_ms(1000);
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = -90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			Control_Mode = 2;	//-------mode = 2------->
+			w = 0;	
+			system_delay_ms(2500);
+			arm_up();
+			arm_hang();
+			
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = 90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			v_x = 0;v_y = 20;
+			Control_Mode = 0;
+		}
+		else
+		{
+			move(0,0);
+			Control_Mode = 4;
+			system_delay_ms(1000);
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = 90;
+			Control_Mode = 3;
+			system_delay_ms(1000);
+			Control_Mode = 2;	//mode = 2
+			move(0,0);
+			system_delay_ms(2500);
+			arm_up();
+			arm_hang();
+			
+			angle_now = Gyro_Angle.Zdata;
+			angle_turn = -90;
+			Control_Mode = 3;
+			system_delay_ms(1000);	//等待转向完成
+			v_x = 0;v_y = 20;
+			Control_Mode = 0;
+		}
+		//art_turn_flag = 1;
+		//system_delay_ms(2000);
+		
 	}
 }
