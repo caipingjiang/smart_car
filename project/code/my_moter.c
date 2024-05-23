@@ -219,8 +219,8 @@ float w_PID(float Target_w, float w)
 //-----------------------------------------------------------------------------------------------
 void position_correct()
 {
-    v_x = uart4_data_arr[0]*0.2;
-    v_y = -uart4_data_arr[1]*0.2;
+    v_x = uart1_data_arr[0]*0.2;
+    v_y = -uart1_data_arr[1]*0.2;
     w = 0;
 }
 

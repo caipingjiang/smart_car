@@ -144,6 +144,7 @@ void arm_hang()
     system_delay_ms(500);
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
+    
 }
 
 void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b

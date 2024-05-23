@@ -9,7 +9,7 @@ static  uint8 uart1_rx_state,  uart4_rx_state= 0;
 uint8   packge1_finish_flag = 0, packge4_finish_flag = 0; //数据包接收完成标志
 static  uint32 length1 = 0, length4; //fifo实际的缓存数据长度
 
-int16 uart1_data_arr[4] = {0}; //解析后的数据，依次为x,y,class，识别到卡片标志位，卡片矫正完成标志位
+int16 uart1_data_arr[2] = {0}; //解析后的数据，依次为class，识别到卡片标志位
 int16 uart4_data_arr[3] = {0}; //解析后的数据，依次为x,y,distance
 
 void my_uart_init()
@@ -32,6 +32,7 @@ void my_uart_init()
 // 使用示例  my_uart_callback(UART_1)
 // 备注信息  此函数在isr.c文件的串口中断函数中被调用
 //-----------------------------------------------------------------------------------------------
+
 void my_uart_callback(uart_index_enum uart_n)
 {
     switch (uart_n)
@@ -56,9 +57,10 @@ void my_uart_callback(uart_index_enum uart_n)
                     fifo_write_buffer(&uart1_fifo, "\n", 1);
                     uart1_rx_state = 0;
                     length1 = fifo_used(&uart1_fifo);
-                    if(length1>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
+                    if(length1>=3)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart1_buffer, "%d,%d,%c,%d,%d\n", &uart1_data_arr[0], &uart1_data_arr[1], &uart1_data_arr[2],&uart1_data_arr[3],&uart1_data_arr[4]);
+                        sscanf((const char*)uart1_buffer, "%c,%d\n",&uart1_data_arr[0], &uart1_data_arr[1]);
+						
                     }
                     fifo_clear(&uart1_fifo);
                     packge1_finish_flag = 1;

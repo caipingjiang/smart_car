@@ -24,23 +24,22 @@ void cross_move_control()
 		Control_Mode = 3;
 		angle_turn = -abs(Slope)/Slope*90;
 		system_delay_ms(2000);	//等待转向完成
-		if(uart1_data_arr[3]==1)        //识别到卡片
-		{
-			while(!&uart1_data_arr[4])
-			{
-			position_correct();     //等待图片矫正完成
-			}
-			v_x = 0;
-			v_y = 0;
-			w = 0;
-			system_delay_ms(100);
-			while(uart1_data_arr[3])
-			{
-				Box_In(uart1_data_arr[2],1);
-			}
+		// if(uart1_data_arr[3]==1)        //识别到卡片
+		// {
+		// 	while(uart1_data_arr[4]==0)
+		// 	{
+		// 	Control_Mode = 2;   //等待图片矫正完成
+		// 	}
 			
-		}
-		
+		// 	system_delay_ms(1000);
+		// 	while(uart1_data_arr[3]==1)
+		// 	{
+		// 		Box_In(uart1_data_arr[2],1);
+		// 		system_delay_ms(500);
+		// 	}
+			
+		// }
+		Control_Mode = 3;
 		angle_turn *= -1;	//往回转180度
 		system_delay_ms(1000); //等待转向完
 		turn_flag = 1;
