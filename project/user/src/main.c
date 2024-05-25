@@ -35,17 +35,12 @@ int main(void)
 	my_servo_init();
 //	my_key_init();
 	my_image_init();
-    wireless_uart_init();
+    //wireless_uart_init();
 	//ImagePerspective_Init();
 	my_uart_init();
 	
 	timer_init(GPT_TIM_1,TIMER_US);
 	
- 	interrupt_set_priority(LPUART8_IRQn,4);
-	interrupt_set_priority(PIT_IRQn, 3);
-	interrupt_set_priority(LPUART1_IRQn,1);
-	interrupt_set_priority(LPUART4_IRQn,2);
-	interrupt_global_enable(0);
  	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 3);
 	interrupt_set_priority(LPUART1_IRQn,1);
@@ -85,25 +80,29 @@ int main(void)
 		//ips114_show_int(80,20,Slope,3);
 		// ips114_show_int(0,60,lose_point_num_L,3);
 		// ips114_show_int(0,80,lose_point_num_R,3);
-		// ART_control();
-		ips114_show_int(60,30,uart4_data_arr[1], 2);
-		if(uart4_data_arr[1]==1)        //识别到卡片
-		{
-			Control_Mode=4;
-			system_delay_ms(1000);
-			v_x = 0;
-			v_y = 0;
-			w = 0;
-			while(uart4_data_arr[1]==1)
-			{
-				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-				Box_In((char)uart4_data_arr[0],0);
-				
-				system_delay_ms(1000);
-			}
+		 ART_control();
+		//ips114_show_int(60,30,uart4_data_arr[1], 2);
+		// if(uart4_data_arr[1]==1)        //识别到卡片
+		// {
+		// 	uart_write_byte(UART_4, '0');     
+		// 	Control_Mode=4;
+		// 	system_delay_ms(1000);
+		// 	v_x = 0;
+		// 	v_y = 0;
+		// 	w = 0;
+		// 	while(uart4_data_arr[1]==1)
+		// 	{
+		// 		ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+		// 		Box_In((char)uart4_data_arr[0],0);
+		// 		system_delay_ms(1000);
+		// 	}
 			
-		 }
-		
+		//  }
+		// uart_write_byte(UART_4, '1'); 
+		//  ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+		//  system_delay_ms(1000);
+		// Box_Out((char)uart4_data_arr[0],0);
+
     }
 }
 

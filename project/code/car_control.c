@@ -1,6 +1,7 @@
 #include "zf_common_headfile.h"
 #include "my_image.h"
 #include "my_moter.h"
+#include "my_servo.h"
 #include "imu660ra.h"
 #include "math.h"
 //-----------------------------------------------------------------------------------------------
@@ -22,26 +23,10 @@ void cross_move_control()
 		Control_Mode = 4;
 		system_delay_ms(1000);
 		Control_Mode = 3;
-		angle_turn = -abs(Slope)/Slope*90;
-		system_delay_ms(2000);	//等待转向完成
-		// if(uart1_data_arr[3]==1)        //识别到卡片
-		// {
-		// 	while(uart1_data_arr[4]==0)
-		// 	{
-		// 	Control_Mode = 2;   //等待图片矫正完成
-		// 	}
-			
-		// 	system_delay_ms(1000);
-		// 	while(uart1_data_arr[3]==1)
-		// 	{
-		// 		Box_In(uart1_data_arr[2],1);
-		// 		system_delay_ms(500);
-		// 	}
-			
-		// }
-		Control_Mode = 3;
+		angle_turn = -cross_dir*90;
+		system_delay_ms(1500);	//等待转向完成
 		angle_turn *= -1;	//往回转180度
-		system_delay_ms(1000); //等待转向完
+		system_delay_ms(1500); //等待转向完成
 		turn_flag = 1;
 		Control_Mode = 1;
 		v_x = cross_dir*20;
@@ -240,13 +225,22 @@ void ART_control()
 					temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point[0], 2)+pow(uart1_data_arr[1] - finial_point[1], 2));
 					if( temp_distance < 30 ) //小于30，认为矫正成功；若矫正后距离仍然很大，就认为是误识别了，不执行拾取操作
 					{
-						Box_In('A', 0);
+						if(uart4_data_arr[1]==1)        //识别到卡片
+						{
+							uart_write_byte(UART_4, '0');     
+							system_delay_ms(1000);
+
+							while(uart4_data_arr[1]==1)
+							{
+								ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+								Box_In((char)uart4_data_arr[0],0);
+								system_delay_ms(1000);
+							}
+							
+						}
 					}
 				}
-				
-				
-				
-				
+
 				//回转
 				angle_now = Gyro_Angle.Zdata;
 				angle_turn = - angle_turn;
@@ -267,58 +261,9 @@ void ART_control()
 		}
 
 	}
-	if((!art_turn_flag) && packge4_finish_flag)
+	if(packge4_finish_flag)
 	{
-		packge4_finish_flag = 0;
-		ips114_show_int(40,60,uart4_data_arr[0],4);
-		ips114_show_int(40,80,uart4_data_arr[1],4);
-		ips114_show_int(40,80,uart4_data_arr[2],4);
-		if(uart4_data_arr[0]>=0)	//x大于图像W/2,认为卡片在赛道的右边
-		{
-			move(0,0);	//停车
-			Control_Mode = 4;
-			system_delay_ms(1000);
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = -90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			Control_Mode = 2;	//-------mode = 2------->
-			w = 0;	
-			system_delay_ms(2500);
-			arm_up();
-			arm_hang();
-			
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = 90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			v_x = 0;v_y = 20;
-			Control_Mode = 0;
-		}
-		else
-		{
-			move(0,0);
-			Control_Mode = 4;
-			system_delay_ms(1000);
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = 90;
-			Control_Mode = 3;
-			system_delay_ms(1000);
-			Control_Mode = 2;	//mode = 2
-			move(0,0);
-			system_delay_ms(2500);
-			arm_up();
-			arm_hang();
-			
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = -90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			v_x = 0;v_y = 20;
-			Control_Mode = 0;
-		}
-		//art_turn_flag = 1;
-		//system_delay_ms(2000);
 		
+	
 	}
 }

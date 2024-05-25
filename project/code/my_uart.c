@@ -9,7 +9,7 @@ static  uint8 uart1_rx_state,  uart4_rx_state= 0;
 uint8   packge1_finish_flag = 0, packge4_finish_flag = 0; //数据包接收完成标志
 static  uint32 length1 = 0, length4; //fifo实际的缓存数据长度
 
-int16 uart1_data_arr[2] = {0}; //解析后的数据，依次为class，识别到卡片标志位
+int16 uart1_data_arr[4] = {0}; //解析后的数据，依次为x,y,distance, correct_flag  若x,y,correct_flag为零则说明这一帧没有找到卡片或者找到的卡片的距离大于限定值
 int16 uart4_data_arr[2] = {0}; //解析后的数据，依次为class，识别到卡片标志位
 
 void my_uart_init()
@@ -22,6 +22,7 @@ void my_uart_init()
 
 	uart_rx_interrupt(UART_1, 1);
  	uart_rx_interrupt(UART_4, 1);
+    //uart_tx_interrupt(UART_4, 1);
     
 }
 
@@ -35,7 +36,7 @@ void my_uart_init()
 
 void my_uart_callback(uart_index_enum uart_n)
 {
-    switch (uart_n)
+     switch (uart_n)
     {
         //注意：串口1在与ART传输时一定要断开DAP下载线！！！，否则会接收不到
         //注意：串口1在与ART传输时一定要断开DAP下载线！！！，否则会接收不到
@@ -57,10 +58,9 @@ void my_uart_callback(uart_index_enum uart_n)
                     fifo_write_buffer(&uart1_fifo, "\n", 1);
                     uart1_rx_state = 0;
                     length1 = fifo_used(&uart1_fifo);
-                    if(length1>=3)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
+                    if(length1>=7)//正常数据的最短长度（x + ',' + y + ',' + distance + correct_flag  + '\n'>=7）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart1_buffer, "%c,%d\n",&uart1_data_arr[0], &uart1_data_arr[1]);
-						
+                        sscanf((const char*)uart1_buffer, "%d,%d,%d,%d\n", &uart1_data_arr[0], &uart1_data_arr[1], &uart1_data_arr[2], &uart1_data_arr[3]);
                     }
                     fifo_clear(&uart1_fifo);
                     packge1_finish_flag = 1;
