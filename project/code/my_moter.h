@@ -29,9 +29,8 @@ void move(int16 angle, int8 speed);
 float w_PID(float Target_w, float w);
 void position_correct();
 
-extern uint8 Control_Mode;  
+extern uint8 Control_Mode;   //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式
 extern float angle_now;
 extern float angle_turn;
 extern uint8 turn_flag;
-
 #endif 

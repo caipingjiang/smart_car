@@ -13,6 +13,7 @@
 //-----------------------------------------------------------------------------------------------
 void cross_move_control()
 {
+	Image_Mode = 0;
     if(cross_flag == 2 && turn_flag == 0)
 	{
 		Image_Mode = 4;	//进入休闲模式，关闭十字判别，放
@@ -25,6 +26,33 @@ void cross_move_control()
 		Control_Mode = 3;
 		angle_turn = -cross_dir*90;
 		system_delay_ms(1500);	//等待转向完成
+		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+			{
+				Control_Mode = 2;
+				w = 0;
+				system_delay_ms(2000);//等待矫正完成
+				Control_Mode = 4;
+				move(0,0);
+				if(uart4_data_arr[1]==1)        //识别到卡片
+					{
+						uart_write_byte(UART_4, '0');     
+						system_delay_ms(1000);
+
+					while(uart4_data_arr[1]==1)
+						{
+							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+							Box_In((char)uart4_data_arr[0],1);
+							system_delay_ms(1000);
+						}
+							
+					}
+					Control_Mode=4;
+				v_x = 0;
+				v_y = -20;
+				w = 0;
+				system_delay_ms(500);
+			}
+		Control_Mode = 3;
 		angle_turn *= -1;	//往回转180度
 		system_delay_ms(1500); //等待转向完成
 		turn_flag = 1;
@@ -88,8 +116,28 @@ void roundabout_move_control()
 		system_delay_ms(500);   //等待停车
 		move(90-roundabout_dir*30, 15);
         system_delay_ms(1500);
-		angle_turn = -(roundabout_dir*160);
+		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+			{
+				Control_Mode = 2;
+				w = 0;
+				system_delay_ms(2000);//等待矫正完成
+				Control_Mode = 4;
+				move(0,0);
+				if(uart4_data_arr[1]==1)        //识别到卡片
+					{
+						uart_write_byte(UART_4, '0');     
+						system_delay_ms(1000);
 
+					while(uart4_data_arr[1]==1)
+						{
+							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+							Box_In((char)uart4_data_arr[0],1);
+							system_delay_ms(1000);
+						}
+							
+					}
+			}
+		angle_turn = -(roundabout_dir*160);
         Control_Mode = 3;
         v_x = 0;
 		v_y = 0;
@@ -227,17 +275,22 @@ void ART_control()
 					temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point[0], 2)+pow(uart1_data_arr[1] - finial_point[1], 2));
 					if( temp_distance < 30 ) //小于30，认为矫正成功；若矫正后距离仍然很大，就认为是误识别了，不执行拾取操作
 					{
-						//system_delay_ms(1000);	//等待完成分类识别
-						Box_In((char)'A', 0);
-//						if(packge4_finish_flag) //读取分类的类别
-//						{
-//							char temp_class = (char)uart4_data_arr[3];
-//							Box_In(temp_class, 0);
-//						}
-						
+						if(uart4_data_arr[1]==1)        //识别到卡片
+						{
+							uart_write_byte(UART_4, '0');     
+							system_delay_ms(1000);
+
+							while(uart4_data_arr[1]==1)
+							{
+								ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+								Box_In((char)uart4_data_arr[0],0);
+								system_delay_ms(1000);
+							}
+							
+						}
 					}
 				}
-				
+
 				//回转
 				angle_now = Gyro_Angle.Zdata;
 				angle_turn = - angle_turn;
@@ -259,4 +312,5 @@ void ART_control()
 
 	}
 
+	
 }

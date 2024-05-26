@@ -144,6 +144,7 @@ void arm_hang()
     system_delay_ms(500);
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
+    
 }
 
 void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b
@@ -449,7 +450,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 
                five_Flag=0;
             }
-            for(uint8 i=0;i==five_Flag;i++)
+            for(uint8 i=0;i<five_Flag;i++)
             {
                 Servo_SetAngle(3, 0);
                 system_delay_ms(800);

@@ -35,7 +35,7 @@ int main(void)
 	my_servo_init();
 //	my_key_init();
 	my_image_init();
-    // wireless_uart_init();
+    //wireless_uart_init();
 	//ImagePerspective_Init();
 	my_uart_init();
 	
@@ -52,18 +52,9 @@ int main(void)
 	while(1)
     {		
 		
-		//Control_Mode  =	2;
 		if(mt9v03x_finish_flag)
         {
-		 	//mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
- 			// find_middle();
-			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-			// Slopdabout();e = slope();
-			// cross();
-			// rounabout();
 		}
 		
 
@@ -73,17 +64,36 @@ int main(void)
 		
 		
 		// start_finish_line_control();
-		// cross_move_control();
-		// roundabout_move_control();
+		 cross_move_control();
+		 roundabout_move_control();
 
 		ips114_show_int(0,20,cross_flag,2);
 		ips114_show_int(0,40,roundabout_flag,2);
 		//ips114_show_int(80,20,Slope,3);
 		// ips114_show_int(0,60,lose_point_num_L,3);
-		// ips114_show_int(0,80,lzose_point_num_R,3);
-		ART_control();
-		ips114_show_int(180,90,packge1_finish_flag,2);
-		
+		// ips114_show_int(0,80,lose_point_num_R,3);
+		 ART_control();
+		//ips114_show_int(60,30,uart4_data_arr[1], 2);
+		// if(uart4_data_arr[1]==1)        //Ê¶±ðµ½¿¨Æ¬
+		// {
+		// 	uart_write_byte(UART_4, '0');     
+		// 	Control_Mode=4;
+		// 	system_delay_ms(1000);
+		// 	v_x = 0;
+		// 	v_y = 0;
+		// 	w = 0;
+		// 	while(uart4_data_arr[1]==1)
+		// 	{
+		// 		ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+		// 		Box_In((char)uart4_data_arr[0],0);
+		// 		system_delay_ms(1000);
+		// 	}
+			
+		//  }
+		// uart_write_byte(UART_4, '1'); 
+		//  ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+		//  system_delay_ms(1000);
+		// Box_Out((char)uart4_data_arr[0],0);
     }
 }
 
