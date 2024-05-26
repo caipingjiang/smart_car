@@ -52,18 +52,9 @@ int main(void)
 	while(1)
     {		
 		
-		//Control_Mode  =	2;
 		if(mt9v03x_finish_flag)
         {
-		 	//mt9v03x_finish_flag = 0;
-			//Image_change((uint8 **)mt9v03x_image, MT9V03X_W, MT9V03X_H);
-		 	//image_process();
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
- 			// find_middle();
-			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
-			// Slopdabout();e = slope();
-			// cross();
-			// roun
 		}
 		
 		 
@@ -72,8 +63,8 @@ int main(void)
 		
 		
 		// start_finish_line_control();
-		// cross_move_control();
-		// roundabout_move_control();
+		 cross_move_control();
+		 roundabout_move_control();
 
 		ips114_show_int(0,20,cross_flag,2);
 		ips114_show_int(0,40,roundabout_flag,2);
@@ -102,7 +93,6 @@ int main(void)
 		//  ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 		//  system_delay_ms(1000);
 		// Box_Out((char)uart4_data_arr[0],0);
-
     }
 }
 
