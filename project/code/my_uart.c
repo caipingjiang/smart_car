@@ -10,7 +10,7 @@ uint8   packge1_finish_flag = 0, packge4_finish_flag = 0; //数据包接收完成标志
 static  uint32 length1 = 0, length4; //fifo实际的缓存数据长度
 
 int16 uart1_data_arr[4] = {0}; //解析后的数据，依次为x,y,distance, correct_flag  若x,y,correct_flag为零则说明这一帧没有找到卡片或者找到的卡片的距离大于限定值
-int16 uart4_data_arr[3] = {0}; //解析后的数据，依次为x,y,distance
+int16 uart4_data_arr[4] = {0}; //解析后的数据，依次为x,y,distance,class
 
 void my_uart_init()
 {
@@ -85,7 +85,7 @@ void my_uart_callback(uart_index_enum uart_n)
                     length4 = fifo_used(&uart4_fifo);
                     if(length4>=4)//正常数据的最短长度（x + ',' + y + '\n'>=4）， 如果比这个长度还短就不读取
                     {
-                        sscanf((const char*)uart4_buffer, "%d,%d,%d\n", &uart4_data_arr[0], &uart4_data_arr[1], &uart4_data_arr[2]);
+                        sscanf((const char*)uart4_buffer, "%d,%d,%d,%s\n", &uart4_data_arr[0], &uart4_data_arr[1], &uart4_data_arr[2],  &uart4_data_arr[3]);
                     }
                     fifo_clear(&uart4_fifo);
                     packge4_finish_flag = 1;

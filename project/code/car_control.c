@@ -203,16 +203,18 @@ void ART_control()
 				else angle_turn = -90;
 				Control_Mode = 3;
 				system_delay_ms(1500);    //等待转向完成
-				
+				w = 0;
 				
 				//进入卡片矫正
 				while( !uart1_data_arr[0] )//先确保转弯后矫正前能看到卡片
 				{
-					Control_Mode = 4;
-					if(angle_turn>0)move(0, 20);
-					else move(180, 20);
+					Image_Mode = 2;	//开启边线矫正模式
+					Control_Mode = 1;//开启边线矫正模式
+					if(angle_turn>0)v_x = 10;
+					else v_x = -10;
+					system_delay_ms(20);
 				}
-				
+//				
 				while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 				{
 					Control_Mode = 2;
@@ -225,12 +227,16 @@ void ART_control()
 					temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point[0], 2)+pow(uart1_data_arr[1] - finial_point[1], 2));
 					if( temp_distance < 30 ) //小于30，认为矫正成功；若矫正后距离仍然很大，就认为是误识别了，不执行拾取操作
 					{
-						Box_In('A', 0);
+						//system_delay_ms(1000);	//等待完成分类识别
+						Box_In((char)'A', 0);
+//						if(packge4_finish_flag) //读取分类的类别
+//						{
+//							char temp_class = (char)uart4_data_arr[3];
+//							Box_In(temp_class, 0);
+//						}
+						
 					}
 				}
-				
-				
-				
 				
 				//回转
 				angle_now = Gyro_Angle.Zdata;
@@ -252,58 +258,5 @@ void ART_control()
 		}
 
 	}
-	if((!art_turn_flag) && packge4_finish_flag)
-	{
-		packge4_finish_flag = 0;
-		ips114_show_int(40,60,uart4_data_arr[0],4);
-		ips114_show_int(40,80,uart4_data_arr[1],4);
-		ips114_show_int(40,80,uart4_data_arr[2],4);
-		if(uart4_data_arr[0]>=0)	//x大于图像W/2,认为卡片在赛道的右边
-		{
-			move(0,0);	//停车
-			Control_Mode = 4;
-			system_delay_ms(1000);
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = -90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			Control_Mode = 2;	//-------mode = 2------->
-			w = 0;	
-			system_delay_ms(2500);
-			arm_up();
-			arm_hang();
-			
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = 90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			v_x = 0;v_y = 20;
-			Control_Mode = 0;
-		}
-		else
-		{
-			move(0,0);
-			Control_Mode = 4;
-			system_delay_ms(1000);
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = 90;
-			Control_Mode = 3;
-			system_delay_ms(1000);
-			Control_Mode = 2;	//mode = 2
-			move(0,0);
-			system_delay_ms(2500);
-			arm_up();
-			arm_hang();
-			
-			angle_now = Gyro_Angle.Zdata;
-			angle_turn = -90;
-			Control_Mode = 3;
-			system_delay_ms(1000);	//等待转向完成
-			v_x = 0;v_y = 20;
-			Control_Mode = 0;
-		}
-		//art_turn_flag = 1;
-		//system_delay_ms(2000);
-		
-	}
+
 }

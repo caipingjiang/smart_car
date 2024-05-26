@@ -519,7 +519,9 @@ void pit_handler_2()
 				roundabout();
 				sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 				break;
-			case 2:
+			case 2:	//赛道两边找卡片时的边界矫正
+				find_longest(&longest, &index);
+				sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 			    break;
 			case 3:
 				find_middle();
