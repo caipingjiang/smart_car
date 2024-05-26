@@ -116,8 +116,28 @@ void roundabout_move_control()
 		system_delay_ms(500);   //等待停车
 		move(90-roundabout_dir*30, 15);
         system_delay_ms(1500);
-		angle_turn = -(roundabout_dir*160);
+		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+			{
+				Control_Mode = 2;
+				w = 0;
+				system_delay_ms(2000);//等待矫正完成
+				Control_Mode = 4;
+				move(0,0);
+				if(uart4_data_arr[1]==1)        //识别到卡片
+					{
+						uart_write_byte(UART_4, '0');     
+						system_delay_ms(1000);
 
+					while(uart4_data_arr[1]==1)
+						{
+							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+							Box_In((char)uart4_data_arr[0],1);
+							system_delay_ms(1000);
+						}
+							
+					}
+			}
+		angle_turn = -(roundabout_dir*160);
         Control_Mode = 3;
         v_x = 0;
 		v_y = 0;
