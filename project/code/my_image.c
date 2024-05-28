@@ -454,11 +454,12 @@ void roundabout()
 			}
 		}
 	}
-	else if(roundabout_flag == 1)
+	else if(roundabout_flag == 1 && turn_flag == 1)	//加上后一个条件是为了在车转完成之后再判断
 	{
 		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)))	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
 		{
 			roundabout_flag = 2;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
+			turn_flag = 0;	//不能去除
 		}
 	}
 	else if(roundabout_flag == 2)

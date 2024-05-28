@@ -58,12 +58,19 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     {
         case 1:
             pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(angle));
+            system_delay_ms(50);
+            pwm_set_duty(SERVO_MOTOR_PWM1,0);
             break;
         case 2:
             pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(angle));
+            system_delay_ms(50);
+            pwm_set_duty(SERVO_MOTOR_PWM2,0);
             break;
         case 3:
             pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(angle+BOX_OFFSET));
+            system_delay_ms(50);
+            pwm_set_duty(SERVO_MOTOR_PWM3,0);
+            break;
         default:
             break;
     }

@@ -13,7 +13,7 @@
 //-----------------------------------------------------------------------------------------------
 void cross_move_control()
 {
-	Image_Mode = 0;
+	//Image_Mode = 0;
     if(cross_flag == 2 && turn_flag == 0)
 	{
 		Image_Mode = 4;	//进入休闲模式，关闭十字判别，放
@@ -26,38 +26,38 @@ void cross_move_control()
 		Control_Mode = 3;
 		angle_turn = -cross_dir*90;
 		system_delay_ms(1500);	//等待转向完成
-		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
-			{
-				Control_Mode = 2;
-				w = 0;
-				system_delay_ms(2000);//等待矫正完成
-				Control_Mode = 4;
-				move(0,0);
-				if(uart4_data_arr[1]==1)        //识别到卡片
-					{
-						uart_write_byte(UART_4, '0');     
-						system_delay_ms(1000);
+		// while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+		// {
+		// 	Control_Mode = 2;
+		// 	w = 0;
+		// 	system_delay_ms(2000);//等待矫正完成
+		// 	Control_Mode = 4;
+		// 	move(0,0);
+		// 	if(uart4_data_arr[1]==1)        //识别到卡片
+		// 	{
+		// 		uart_write_byte(UART_4, '0');     
+		// 		system_delay_ms(1000);
 
-					while(uart4_data_arr[1]==1)
-						{
-							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-							Box_In((char)uart4_data_arr[0],1);
-							system_delay_ms(1000);
-						}
-							
-					}
-					Control_Mode=4;
-				v_x = 0;
-				v_y = -20;
-				w = 0;
-				system_delay_ms(500);
-			}
+		// 		while(uart4_data_arr[1]==1)
+		// 		{
+		// 			ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+		// 			Box_In((char)uart4_data_arr[0],1);
+		// 			system_delay_ms(1000);
+		// 		}					
+		// 	}
+		// 	Control_Mode=4;
+		// 	v_x = 0;
+		// 	v_y = -20;
+		// 	w = 0;
+		// 	system_delay_ms(500);
+		// }
 		Control_Mode = 3;
 		angle_turn *= -1;	//往回转180度
 		system_delay_ms(1500); //等待转向完成
 		turn_flag = 1;
 		Control_Mode = 1;
 		v_x = cross_dir*20;
+		v_y = 0;
 		Image_Mode = 1;	//此时进入边界矫正，故需要切换图像处理模式
 	}
 	else if(cross_flag == 3)
@@ -83,13 +83,14 @@ void cross_move_control()
 		Control_Mode = 0;		//先走一段,不判断十字,确保出十字
 		v_x = 0;
 		v_y = 30;
-		system_delay_ms(2000);
-		// Control_Mode = 4;		//先直行一段确保出十字
-		// forward();
-		// system_delay_ms(2000);
-		Control_Mode = 0;
-
+		system_delay_ms(1500);
+//		Control_Mode = 4;		//先直行一段确保出十字
+//		forward();
+//		system_delay_ms(2000);
+		
 		Image_Mode = 0;
+		system_delay_ms(500);
+		Control_Mode = 0;
 		turn_flag = 0;	//走出十字后清零转向标志位
 
 	}
@@ -116,27 +117,27 @@ void roundabout_move_control()
 		system_delay_ms(500);   //等待停车
 		move(90-roundabout_dir*30, 15);
         system_delay_ms(1500);
-		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
-			{
-				Control_Mode = 2;
-				w = 0;
-				system_delay_ms(2000);//等待矫正完成
-				Control_Mode = 4;
-				move(0,0);
-				if(uart4_data_arr[1]==1)        //识别到卡片
-					{
-						uart_write_byte(UART_4, '0');     
-						system_delay_ms(1000);
+//		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+//			{
+//				Control_Mode = 2;
+//				w = 0;
+//				system_delay_ms(2000);//等待矫正完成
+//				Control_Mode = 4;
+//				move(0,0);
+//				if(uart4_data_arr[1]==1)        //识别到卡片
+//					{
+//						uart_write_byte(UART_4, '0');     
+//						system_delay_ms(1000);
 
-					while(uart4_data_arr[1]==1)
-						{
-							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-							Box_In((char)uart4_data_arr[0],1);
-							system_delay_ms(1000);
-						}
-							
-					}
-			}
+//					while(uart4_data_arr[1]==1)
+//						{
+//							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+//							Box_In((char)uart4_data_arr[0],1);
+//							system_delay_ms(1000);
+//						}
+//							
+//					}
+//			}
 		angle_turn = -(roundabout_dir*160);
         Control_Mode = 3;
         v_x = 0;
@@ -157,7 +158,8 @@ void roundabout_move_control()
 		v_y = 0;
 		w = 0;
 		Control_Mode = 4;
-		system_delay_ms(1000);  //等待停下
+		Image_Mode = 4;	//挂起总钻风
+		system_delay_ms(500);  //等待停下
 
         angle_turn = roundabout_dir*90;
         Control_Mode = 3;
@@ -168,26 +170,34 @@ void roundabout_move_control()
         Control_Mode = 4;
         move(90, 10);
         system_delay_ms(1000);
-        move(90+roundabout_dir*90, 20);
-        system_delay_ms(1000);
-        move(0, 0);
-        system_delay_ms(1000);
-        move(90-roundabout_dir*90, 20);
-        system_delay_ms(1500);
+//        move(90+roundabout_dir*90, 20);
+//        system_delay_ms(1000);
+//        move(0, 0);
+//        system_delay_ms(1000);
+//        move(90-roundabout_dir*90, 20);
+//        system_delay_ms(1500);
 
+		Image_Mode = 1;
+		Control_Mode = 1;
+		v_x = -(roundabout_dir*20);
+		system_delay_ms(1000);
+		v_x = roundabout_dir*20;
+		system_delay_ms(1500);
+		
         Control_Mode = 3;
         v_x = 0;
         v_y = 0;
         angle_now = Gyro_Angle.Zdata;
         angle_turn = -roundabout_dir*90;
-        system_delay_ms(1000);//等待转向完成
+        system_delay_ms(1500);//等待转向完成
         turn_flag = 1;
 	}
     else if(roundabout_flag == 3)
     {
         turn_flag = 0;//清零上一状态的标志位
-        Control_Mode = 0;
 		Image_Mode = 0; 
+		system_delay_ms(100);
+		Control_Mode = 0;
         v_x = 0;
         v_y = 30;
     }
@@ -251,18 +261,16 @@ void ART_control()
 				else angle_turn = -90;
 				Control_Mode = 3;
 				system_delay_ms(1500);    //等待转向完成
-				w = 0;
+				
 				
 				//进入卡片矫正
 				while( !uart1_data_arr[0] )//先确保转弯后矫正前能看到卡片
 				{
-					Image_Mode = 2;	//开启边线矫正模式
-					Control_Mode = 1;//开启边线矫正模式
-					if(angle_turn>0)v_x = 10;
-					else v_x = -10;
-					system_delay_ms(20);
+					Control_Mode = 4;
+					if(angle_turn>0)move(0, 20);
+					else move(180, 20);
 				}
-//				
+				
 				while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 				{
 					Control_Mode = 2;
@@ -311,6 +319,5 @@ void ART_control()
 		}
 
 	}
-
 	
 }

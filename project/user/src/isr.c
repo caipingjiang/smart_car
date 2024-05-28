@@ -48,6 +48,7 @@ void CSI_IRQHandler(void)
 void pit_handler_0(void);	//±àÂëÆ÷
 void pit_handler_1(void);	//ÍÓÂİÒÇ
 void pit_handler_2(void);	//ÉãÏñÍ·
+void pit_handler_3(void);   //ÎŞÏß´®¿Ú
 void my_uart_callback(uart_index_enum uart_n);
 
 void PIT_IRQHandler(void)
@@ -73,6 +74,7 @@ void PIT_IRQHandler(void)
     if(pit_flag_get(PIT_CH3))
     {
         pit_flag_clear(PIT_CH3);
+        pit_handler_3();
     }
 
     __DSB();
