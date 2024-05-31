@@ -41,7 +41,7 @@ void my_servo_init(void)
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
 	
 	//电磁铁初始化
-	pwm_init(magnet_PWM, 50, 0);
+	pwm_init(magnet_PWM, 10000, 0);
 	
 }
 //电磁铁， 0关闭， 1开启
@@ -58,18 +58,18 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     {
         case 1:
             pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(angle));
-            system_delay_ms(50);
-            pwm_set_duty(SERVO_MOTOR_PWM1,0);
+            // system_delay_ms(50);
+            // pwm_set_duty(SERVO_MOTOR_PWM1,0);
             break;
         case 2:
             pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(angle));
-            system_delay_ms(50);
-            pwm_set_duty(SERVO_MOTOR_PWM2,0);
+            // system_delay_ms(50);
+            // pwm_set_duty(SERVO_MOTOR_PWM2,0);
             break;
         case 3:
             pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(angle+BOX_OFFSET));
-            system_delay_ms(50);
-            pwm_set_duty(SERVO_MOTOR_PWM3,0);
+            // system_delay_ms(50);
+            // pwm_set_duty(SERVO_MOTOR_PWM3,0);
             break;
         default:
             break;
@@ -351,8 +351,8 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
     //     }
     // }
     if (cross_roundabout_Flag)       //环岛和圆环
-     {
-        if(label_num== temp_class_arr[0][0])
+    {
+        if(label_num == temp_class_arr[0][0])
         {
             if(five_Flag==1)
             {
@@ -402,47 +402,47 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             {
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
-                 Servo_SetAngle(3, 0);
-                 system_delay_ms(800);
-                 arm_down();
-                 arm_hang();
+                    Servo_SetAngle(3, 0);
+                    system_delay_ms(800);
+                    arm_down();
+                    arm_hang();
                 }
             }
 
-        temp_class_arr[0][1]=0;
+            temp_class_arr[0][1]=0;
         }
         else if(label_num== temp_class_arr[1][0])
         {
             for(uint8 i=0;i<temp_class_arr[1][1];i++)
                 {
-                 Servo_SetAngle(3, 90);
-                system_delay_ms(800);
-                arm_down();
-                arm_hang();
+                    Servo_SetAngle(3, 90);
+                    system_delay_ms(800);
+                    arm_down();
+                    arm_hang();
                 }
             temp_class_arr[1][1]=0;
         }
-         else if(label_num== temp_class_arr[2][0])
+        else if(label_num== temp_class_arr[2][0])
         {
             for(uint8 i=0;i<temp_class_arr[2][1];i++)
                 {
-                Servo_SetAngle(3, 180);
-                system_delay_ms(800);
-                arm_down();
-                arm_hang();
+                    Servo_SetAngle(3, 180);
+                    system_delay_ms(800);
+                    arm_down();
+                    arm_hang();
                 }
-             temp_class_arr[2][1]=0;
+            temp_class_arr[2][1]=0;
         }
-         else if(label_num== temp_class_arr[3][0])
+        else if(label_num== temp_class_arr[3][0])
         {
             for(uint8 i=0;i<temp_class_arr[3][1];i++)
                 {
-                Servo_SetAngle(3, 270);
-                system_delay_ms(800);
-                arm_down();
-                arm_hang();
+                    Servo_SetAngle(3, 270);
+                    system_delay_ms(800);
+                    arm_down();
+                    arm_hang();
                 }
-             temp_class_arr[3][1]=0;
+            temp_class_arr[3][1]=0;
         }
         else              //label_num==five_class
         {
@@ -466,17 +466,13 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             }
             five_Flag=0;
         }
-
-     }
-
-
+    }
     else
     {
        
         //最后卸三大类
         if (label_num == '1')        //大类-1
-        {
-            
+        {   
             for (uint8 i = 0; i < (int)store_list[0][9]; i++)
             {
                 Box_Record(0, '1', 0);
@@ -486,15 +482,11 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 system_delay_ms(800);
                 arm_down();
                 arm_hang();
-				
             }
             store_list[0][9] = 0;
-
         }
         else if (label_num == '2')   //大类-2
-        {
-			
-            
+        {         
             for (uint8 i = 0; i < (int)store_list[1][9]; i++)
             {
                 Box_Record(1, '2', 0);
@@ -508,9 +500,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             store_list[1][9] = 0;
         }
         else if (label_num == '3')   //大类-3
-        {
-			
-            
+        {         
             for (uint8 i = 0; i < (int)store_list[2][9]; i++)
             {
                 Box_Record(2, '3', 0);

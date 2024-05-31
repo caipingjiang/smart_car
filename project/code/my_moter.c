@@ -9,8 +9,10 @@
 
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
+float target_angle = 0; //设定的角度值
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
-uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式
+uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
+uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
 float Inc_Kd[4]={0, 0, 0, 0};//1.1
@@ -39,7 +41,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 8000);
+	duty = func_limit(duty, 5000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_HIGH); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -212,21 +214,33 @@ float w_PID(float Target_w, float w)
 
 //-----------------------------------------------------------------------------------------------
 // 函数简介  利用MCX发送的坐标进行车身位置矫正
-// 参数说明  
+// 参数说明  correct_mode:矫正模式， 0--拣卡片时的矫正， 1--放卡片时的矫正
 // 返回参数  void
 // 使用示例  
-// 备注信息  
+// 备注信息  {120, 125}放置区位置; {160, 170}捡卡片位置	
 //-----------------------------------------------------------------------------------------------
-int16 finial_point[2]  = {160, 165};//最终矫正后的点位置，{120, 125}放置区位置;{160, 165};捡卡片位置+	
-void position_correct()
+int16 finial_point_1[2]  = {160, 170};
+int16 finial_point_2[2] = {120, 125};
+void position_correct(uint8 correct_mode)
 {
-	if(uart1_data_arr[0] != 0 && uart1_data_arr[1] != 0)
-	{
-		v_x = (uart1_data_arr[0] - finial_point[0])*0.3;
-		v_y = -(uart1_data_arr[1] - finial_point[1])*0.3;
-	}
+    if(correct_mode == 0)       //拣卡片矫正
+    {
+        if(uart1_data_arr[0] != 0 && uart1_data_arr[1] != 0)
+        {
+            v_x = (uart1_data_arr[0] - finial_point_1[0])*0.25;
+            v_y = -(uart1_data_arr[1] - finial_point_1[1])*0.25;
+        }
+    }
+	else if (correct_mode == 1)  //放卡片矫正 
+    {
+        if(uart1_data_arr[0] != 0 && uart1_data_arr[1] != 0)
+        {
+            v_x = (uart1_data_arr[0] - finial_point_2[0])*0.25;
+            v_y = -(uart1_data_arr[1] - finial_point_2[1])*0.25;
+        }
+    }
     
-    w = 0;
+    
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -251,7 +265,7 @@ void motor_control()
             //w = Angle_PID(Target_Speed, angle);
             break;
         case 2:                         //卡片矫正模式
-            /*if(packge1_finish_flag)*/position_correct();
+            /*if(packge1_finish_flag)*/position_correct(Correct_Mode);
             break;
         case 3:                         //陀螺仪转向模式
             //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
@@ -260,6 +274,13 @@ void motor_control()
             break;
 	    case 4:                         //等待模式
             break;
+        case 5:   //赛道两边识别到卡片，但转弯后未找到卡片，开启边界矫正直到找到卡片
+            roundabout_move(&sideline_angle, &sideline_distance);
+            v_x = (uart1_data_arr[0] - finial_point_1[0])*0.25;
+            v_y = out2;
+            w = out1;
+        case 6://   角度闭环模式，此模式角度会保持角度为目标角度
+            w = Angle_PID(target_angle, Gyro_Angle.Zdata);
     }
     
     car_omni(v_x, v_y, w);

@@ -74,34 +74,34 @@ int main(void)
 		// v_y =slidingFilter(1500/(abs(Slope)+20));
 		// system_delay_ms(10);
 		
-		
-		// start_finish_line_control();
-		cross_move_control();
-		roundabout_move_control();
+		//start_finial_line_car_find();
+		start_finish_line_control();
+//		cross_move_control();
+//		roundabout_move_control();
 
-		ips114_show_int(0,20,cross_flag,2);
-		ips114_show_int(0,40,roundabout_flag,2);
+		// ips114_show_int(0,20,cross_flag,2);
+		// ips114_show_int(0,40,roundabout_flag,2);
 		//ips114_show_int(80,20,Slope,3);
 		// ips114_show_int(0,60,lose_point_num_L,3);
 		// ips114_show_int(0,80,lose_point_num_R,3);
-		 //ART_control();
-		//ips114_show_int(60,30,uart4_data_arr[1], 2);
-		// if(uart4_data_arr[1]==1)        //识别到卡片
-		// {
-		// 	uart_write_byte(UART_4, '0');     
-		// 	Control_Mode=4;
-		// 	system_delay_ms(1000);
-		// 	v_x = 0;
-		// 	v_y = 0;
-		// 	w = 0;
-		// 	while(uart4_data_arr[1]==1)
-		// 	{
-		// 		ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-		// 		Box_In((char)uart4_data_arr[0],0);
-		// 		system_delay_ms(1000);
-		// 	}
-			
-		//  }
+		ART_control();
+		ips114_show_int(60,30,uart4_data_arr[1], 2);
+//		if(uart4_data_arr[1]==1)        //识别到卡片
+//		{
+//			uart_write_byte(UART_4, '0');     
+//			Control_Mode=4;
+//			system_delay_ms(1000);
+//			v_x = 0;
+//			v_y = 0;
+//			w = 0;
+//			while(uart4_data_arr[1]==1)
+//			{
+//				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+//				Box_In((char)uart4_data_arr[0],0);
+//				system_delay_ms(1000);
+//			}
+//			
+//		}
 		// uart_write_byte(UART_4, '1'); 
 		//  ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 		//  system_delay_ms(1000);

@@ -3,6 +3,7 @@
 #define _MY_IMAGE_H_
 
 #define		middle	MT9V03X_W/2
+#define     distance(x1,y1,x2,y2)    ( sqrt( pow((x1)-(x2), 2) + pow((y1)-(y2), 2) ) )   //计算两点之间的距离
 
 void pit_handler_2();
 void my_image_init();
@@ -16,6 +17,7 @@ void roundabout_cross(); //环岛
 uint8 find_start_finish_line();
 void cross();
 void roundabout();
+uint8 start_finial_line_car_find();
 void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
 uint8 otsu(uint8* image, uint16 width, uint16 height);
 

@@ -488,9 +488,9 @@ uint8 find_start_finish_line()
 	{
 		switch(judge_state)
 		{
-			case 0:{if(mt9v03x_image[70][i]>GrayThreshold)judge_state = 1; break;}
-			case 1:{if(mt9v03x_image[70][i]<GrayThreshold)judge_state = 2; break;}
-			case 2:{if(mt9v03x_image[70][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
+			case 0:{if(mt9v03x_image[40][i]>GrayThreshold)judge_state = 1; break;}
+			case 1:{if(mt9v03x_image[40][i]<GrayThreshold)judge_state = 2; break;}
+			case 2:{if(mt9v03x_image[40][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
 		}
 	}
 	//ips114_show_int(70,70,black_block_num, 3);
@@ -498,6 +498,33 @@ uint8 find_start_finish_line()
 	else return 0;
 }
 
+//-----------------------------------------------------------------------------------------------
+// 函数简介  放卡片时，判断当前位置正前方有无放置区卡片
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+#define start_row		30	//开始行
+#define end_row			80	//结束行
+#define white_value		70	//白色灰度值
+uint8 start_finial_line_car_find()
+{
+	static uint8 white_point_cnt;
+	white_point_cnt = 0;
+	for(uint8 i = start_row; i<end_row; i+=3)
+	{
+		if(mt9v03x_image[i][(uint8)MT9V03X_W/2] > white_value)
+		{
+			white_point_cnt++;
+		}
+	}
+	ips114_show_uint(0,60,white_point_cnt,3);
+	ips114_draw_line(90, start_row, 90, end_row, RGB565_BLUE);
+
+	if(white_point_cnt>=4)return 1;
+	else return 0;
+}
 void pit_handler_2()
 {
 	if(mt9v03x_finish_flag)
@@ -530,6 +557,13 @@ void pit_handler_2()
 			    break;
 			case 4:
 			    break;
+			case 5:
+				if(start_finial_line_car_find())
+				{
+					
+				}
+				break;
+
 
 		}
  		
