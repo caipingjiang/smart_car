@@ -41,7 +41,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 5000);
+	duty = func_limit(duty, 8000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_HIGH); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -220,7 +220,7 @@ float w_PID(float Target_w, float w)
 // 备注信息  {120, 125}放置区位置; {160, 170}捡卡片位置	
 //-----------------------------------------------------------------------------------------------
 int16 finial_point_1[2]  = {160, 170};
-int16 finial_point_2[2] = {120, 125};
+int16 finial_point_2[2] = {140, 135}; //120,125
 void position_correct(uint8 correct_mode)
 {
     if(correct_mode == 0)       //拣卡片矫正
@@ -239,7 +239,6 @@ void position_correct(uint8 correct_mode)
             v_y = -(uart1_data_arr[1] - finial_point_2[1])*0.25;
         }
     }
-    
     
 }
 
@@ -276,11 +275,13 @@ void motor_control()
             break;
         case 5:   //赛道两边识别到卡片，但转弯后未找到卡片，开启边界矫正直到找到卡片
             roundabout_move(&sideline_angle, &sideline_distance);
-            v_x = (uart1_data_arr[0] - finial_point_1[0])*0.25;
+            v_x = (uart1_data_arr[0] - finial_point_2[0])*0.25;
             v_y = out2;
             w = out1;
         case 6://   角度闭环模式，此模式角度会保持角度为目标角度
             w = Angle_PID(target_angle, Gyro_Angle.Zdata);
+        case 7:
+            Turn(0,Slope);
     }
     
     car_omni(v_x, v_y, w);

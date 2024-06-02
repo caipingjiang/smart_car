@@ -7,6 +7,7 @@ uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 int16 Slope;						//图像斜率
 uint8 cross_flag = 0, roundabout_flag = 0;//环岛十字的标志位，1为到达此处
 int8 cross_dir = 0, roundabout_dir = 0;			//十字方向，-1：左十字， 1：右十字； 环岛方向，-1: 左环岛， 1: 右环岛
+bool roundabout_card_finished = false;			//环岛弧道的卡片是否拣完
 
 uint8 boder_L[MT9V03X_H - 5];		//左边扫线（左边界 黄色）
 uint8 boder_R[MT9V03X_H - 5];		//右边扫线（右边界 绿色）
@@ -367,7 +368,8 @@ void roundabout_cross()
 	}
 }
 
-#define track_wide_limit		(MT9V03X_W * MT9V03X_H * 4 / 15)	//十字|环岛路段的赛道宽度判断限制
+#define track_wide_limit		(MT9V03X_W * MT9V03X_H * 4 / 15)	//十字路段的赛道宽度判断限制
+#define track_wide_limit_2		(MT9V03X_W * MT9V03X_H * 4 / 16)	//环岛路段的赛道宽度判断限制
 #define start_height 			(MT9V03X_H / 3)						//计算赛道宽度的开始行
 #define end_height 				(MT9V03X_H * 2 / 3)					//计算赛道宽度的结束行
 #define cross_longest_limit 	20		//十字路段最长白列判断限制
@@ -384,7 +386,7 @@ void roundabout_cross()
 void cross()//十字
 {
 	track_wide = 0;	//清零上次计算的赛道宽度
-	if(cross_flag == 0)
+	if(cross_flag == 0 && roundabout_flag == 0)	//环岛和十字同一时间只能有一个置标志位 
 	{
 		for (uint16 i = start_height; i < end_height; i++)
 		{
@@ -412,12 +414,19 @@ void cross()//十字
 	}
 	else if(cross_flag == 2)
 	{
-		if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
+		if(turn_flag == 1)
 		{
-			cross_flag = 3;		//检测到最长白列长度突然变大，说明即将走出十字，下一步90度转向
+			cross_flag = 3;	//捡完卡片， 开始边界矫正
 		}
 	}
 	else if(cross_flag == 3)
+	{	
+		if(longest<5 && (cross_dir > 0?index>(MT9V03X_W/2+30):index<(MT9V03X_W/2)-30))//if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
+		{
+			cross_flag = 4;		//检测到最长白列长度突然变大，说明即将走出十字，下一步90度转向
+		}
+	}
+	else if(cross_flag == 4)
 	{
 		if(Image_Mode == 0)
 		{
@@ -436,9 +445,9 @@ void cross()//十字
 //-----------------------------------------------------------------------------------------------
 void roundabout()
 {
-	if(roundabout_flag == 0)
+	if(roundabout_flag == 0 && cross_flag == 0)		//环岛和十字同一时间只能有一个置标志位 
 	{
-		if(track_wide > track_wide_limit && longest < cross_longest_limit )	//借用十字的赛道宽度判断
+		if(track_wide > track_wide_limit_2 && longest < cross_longest_limit )	//借用十字的赛道宽度判断
 		{
 			//左环岛
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2)
@@ -456,17 +465,21 @@ void roundabout()
 	}
 	else if(roundabout_flag == 1 && turn_flag == 1)	//加上后一个条件是为了在车转完成之后再判断
 	{
-		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)))	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
-		{
-			roundabout_flag = 2;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
-			turn_flag = 0;	//不能去除
-		}
+		roundabout_flag = 2;	//在环岛捡完卡片并转向之后，开始边界矫正放卡片
 	}
 	else if(roundabout_flag == 2)
 	{
-		if(turn_flag == 1)roundabout_flag=3;	//转向完成(继检测到最长白列高度突变后); 用模式1走到环岛对侧的卡片放置区放完卡片在回到原处
+		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2-30): (index > MT9V03X_W/2+30)) && roundabout_card_finished)	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
+		{
+			roundabout_flag = 3;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
+			//turn_flag = 0;	//不能去除
+		}
 	}
 	else if(roundabout_flag == 3)
+	{
+		if(turn_flag == 1)roundabout_flag=4;	//在识别到最长白列突变之后，转向完成标志(标志4用来拣环岛直道一侧的卡片
+	}
+	else if(roundabout_flag == 4)
 	{
 		if(Image_Mode == 0)roundabout_flag=0;	//在回到循迹模式时清除环岛标志位
 	}
@@ -514,7 +527,7 @@ uint8 start_finial_line_car_find()
 	white_point_cnt = 0;
 	for(uint8 i = start_row; i<end_row; i+=3)
 	{
-		if(mt9v03x_image[i][(uint8)MT9V03X_W/2] > white_value)
+		if(mt9v03x_image[i][(uint8)MT9V03X_W/2-30] > white_value)
 		{
 			white_point_cnt++;
 		}

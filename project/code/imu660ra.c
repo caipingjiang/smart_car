@@ -7,14 +7,14 @@ float tra_acc_x, tra_acc_y, tra_acc_z, tra_gyro_x,tra_gyro_y, tra_gyro_z;//×ª»»Î
 
 void imu660_zeroBias(void)//ÍÓÂİÒÇÁãÆ¯
 {
-	Gyro_Bias.Zdata = 0;//³õÊ¼»¯
-	for (uint16_t i = 0; i < 500; i++)
-	{
-		imu660ra_get_gyro();//»ñÈ¡½ÇËÙ¶È
-		Gyro_Bias.Zdata += (imu660ra_gyro_transition(imu660ra_gyro_z)*0.005);//ÀÛ¼ÓÍÓÂİÒÇ
-		system_delay_ms(5);
-	}
-	Gyro_Bias.Zdata /= 500;//È¡Æ½¾ùÊı
+//	Gyro_Bias.Zdata = 0;//³õÊ¼»¯
+//	for (uint16_t i = 0; i < 500; i++)
+//	{
+//		imu660ra_get_gyro();//»ñÈ¡½ÇËÙ¶È
+//		Gyro_Bias.Zdata += (imu660ra_gyro_transition(imu660ra_gyro_z)*0.005);//ÀÛ¼ÓÍÓÂİÒÇ
+//		system_delay_ms(5);
+//	}
+//	Gyro_Bias.Zdata /= 500;//È¡Æ½¾ùÊı
 	
 	pit_ms_init(PIT_CH1, 5);//×¢Òâpit¿ªÆôÊ±¼äÔÚÁãÆ®Ö®ºó£¬±À·ÅÔÚmy_imu660ra_initÀï£¬·ñÔòGyro_Angle.Zdata»á³öÎÊÌâ
 }

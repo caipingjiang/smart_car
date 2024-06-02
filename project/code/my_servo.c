@@ -109,11 +109,17 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 
 void arm_down()
 {
+    Servo_SetAngle(2, 30);
+    system_delay_ms(500);
     Servo_SetAngle(1, 80);
-    Servo_SetAngle(2, 26);
+    system_delay_ms(700);
     magnet_set(1);
-    system_delay_ms(1200);
+    
+    Servo_SetAngle(1, 90);
+    system_delay_ms(500);
     Servo_SetAngle(1, 95);
+    system_delay_ms(200);
+    Servo_SetAngle(2, 35);
     system_delay_ms(200);
     Servo_SetAngle(2, 228);
     system_delay_ms(800);
