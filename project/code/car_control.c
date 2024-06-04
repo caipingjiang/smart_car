@@ -247,18 +247,20 @@ void roundabout_move_control()
 			{
 				system_delay_ms(100);
 			}
-			system_delay_ms(1000);//延时，前面几张给过滤掉
+			// system_delay_ms(1000);//延时，前面几张给过滤掉
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
 				ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
 				ips114_show_string(30,60,"b");
 				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-				uart_write_byte(UART_4, '0');  
+				uart_write_byte(UART_4, '0'); 
+				system_delay_ms(1000); 
 				while(!('A' <= uart4_data_arr[0] && uart4_data_arr[0] <= 'O')) 
 				{
                     system_delay_ms(100);
                 } 
-				system_delay_ms(1000);
+				ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
+				// system_delay_ms(1000);
 				Box_In((char)uart4_data_arr[0],1);
 			}	
 
@@ -851,7 +853,7 @@ void ART_control()
 				//复位循迹
 				Control_Mode = 0;
 				v_x = 0;
-				v_y = 30;
+				v_y = tracking_speed;
 				w = 0;
 				Image_Mode = 0;
 

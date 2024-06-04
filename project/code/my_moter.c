@@ -13,7 +13,7 @@ float target_angle = 0; //设定的角度值
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
 uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
-int16 tracking_speed = 40;  //循迹速度
+int16 tracking_speed = 60;  //循迹速度
 
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
@@ -191,7 +191,9 @@ float Angle_PID(float Target_Angle, float Angle)
 	integral += err;
 	integral = func_limit(integral,100); //积分限幅
 	//return (out>=0) ? (8*sqrt(out)) : (-8*sqrt(func_abs(out)));
-	return 2*out;
+	out = func_limit(out,70);
+    return 2*out;
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -264,6 +266,7 @@ void position_correct(uint8 correct_mode)
 //-----------------------------------------------------------------------------------------------
 void motor_control()
 {
+    static int16 last_speed_y = 0;
     switch(Control_Mode)
     {
         case 0:                         //正常循迹模式
@@ -300,6 +303,26 @@ void motor_control()
             break;
     }
     
+    if(Control_Mode == 0)
+    {
+        
+        
+        v_y = 0.5*v_y + 0.5*last_speed_y;
+        if(abs(Slope)<10)
+        {
+            v_y = func_limit_ab(v_y,40, 60);
+        }
+        else if(abs(Slope)>10 && abs(Slope)<20)
+        {
+            v_y = func_limit_ab(v_y,30, 40);
+        }
+        else if(abs(Slope)>25 && abs(Slope)<35)
+        {
+            v_y = func_limit_ab(v_y,25, 30);
+        }
+        last_speed_y = v_y;
+        tracking_speed = v_y;
+    }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
     motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));
