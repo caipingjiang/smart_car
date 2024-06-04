@@ -185,7 +185,7 @@ void cross_move_control()
 		Image_Mode = 3;
 		Control_Mode = 0;		//先走一段,不判断十字,确保出十字
 		v_x = 0;
-		v_y = 30;
+		v_y = tracking_speed;
 		system_delay_ms(1500);
 //		Control_Mode = 4;		//先直行一段确保出十字
 //		forward();
@@ -459,7 +459,7 @@ void roundabout_move_control()
 						system_delay_ms(200);	//等待把roundabout_flag 置为0
 						Control_Mode = 0;
 						v_x = 0;
-						v_y = 30;
+						v_y = tracking_speed;
 						w = 0;
 						//system_delay_ms(1000);
 					}
@@ -487,13 +487,13 @@ void start_finish_line_control()
     if(find_start_finish_line())
 	{
 		find_times++;
-        // if(find_times == 1)
-        // {
-		// 	Image_Mode = 3;
-        //     system_delay_ms(600);//确保发车成功
-        //     Image_Mode = 0;
-        // }
-        if(find_times == 1) //第二次识别，开始放卡片
+        if(find_times == 1)
+        {
+			Image_Mode = 3;
+            system_delay_ms(600);//确保发车成功
+            Image_Mode = 0;
+        }
+        else if(find_times == 2) //第二次识别，开始放卡片
         {
 			angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 
 			angle_turn = -90;
@@ -588,7 +588,7 @@ void start_finish_line_control()
 			
 			while(1)	//没加总钻风
 			{
-				if(uart1_data_arr[0]- finial_point_2[0]>0&& uart1_data_arr[0]- finial_point_2[0]<40)
+				if(uart1_data_arr[0]- finial_point_2[0]>0 && uart1_data_arr[0]- finial_point_2[0]<40)
 				{
 					int16 temp_distance = 0;//临时距离
 					do
@@ -598,7 +598,7 @@ void start_finish_line_control()
 						system_delay_ms(100);	//等待矫正完成
 						temp_distance = distance(uart1_data_arr[0], uart1_data_arr[1],finial_point_2[0],finial_point_2[1]);
 					}
-					while( temp_distance > 30  && abs(uart1_data_arr[0]- finial_point_2[0]>20));
+					while( temp_distance > 30  || abs(uart1_data_arr[0]- finial_point_2[0]>20));
 
 					Control_Mode = 4;
 					move(0,0);
@@ -638,7 +638,7 @@ void start_finish_line_control()
 							move(0,0);
 							Control_Mode = 3;
 							angle_now = Gyro_Angle.Zdata;
-							angle_turn = - 90;
+							angle_turn = 90;
 							while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
 							{
 								Control_Mode = 3;
@@ -647,10 +647,11 @@ void start_finish_line_control()
 							system_delay_ms(200);
 							move(0,0);
 							Control_Mode = 7;
-							v_y = 40;
-							system_delay_ms(2000);
+							Image_Mode = 3;
+							v_y = 50;
+							system_delay_ms(1500);
 							v_y = 0;
-							system_delay_ms(10000);
+							system_delay_ms(20000);
 							
 							
 						}
@@ -731,6 +732,8 @@ void ART_control()
 			case 0:break;	//未检测到卡片或卡片的距离未小于设定值
 			case 1://转弯和矫正卡片
 			{
+				int8 temp_slope = Slope;
+
 				Image_Mode = 4;	//挂起总钻风，防止误判
 				//停车
 				Control_Mode = 4;
@@ -783,8 +786,20 @@ void ART_control()
 				while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 				{
 					int16 temp_distance = 0;//临时距离
+					time = 0;
 					do
-					{
+					{	
+						//此判断加上去是为了解决转向后卡片坐标却为0，导致矫正时v_x和v_y也为零而一直不动的尴尬情况，这种情况一般可能是由于把黑影误识别了卡片
+						if(uart1_data_arr[0]==0)
+						{
+							time++;
+							if(time>10)	//矫正一直不动超过2s就退出矫正
+							{
+								time = 0;
+								break;
+							}
+						}
+						
 						temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_1[0], 2)+pow(uart1_data_arr[1] - finial_point_1[1], 2));
 						Control_Mode = 2;
 						Correct_Mode = 0;
@@ -792,7 +807,7 @@ void ART_control()
 						system_delay_ms(200);//等待矫正完成
 					}
 					while(temp_distance>30);//距离大于30就一直矫正
-
+					
 
 					//能到这说明距离已经小于30了
 					Control_Mode = 4;
@@ -813,6 +828,17 @@ void ART_control()
 
 				}
 
+				if(abs(temp_slope) > 15)	//如果卡片所处的弯道很急，那么在转弯前先校正车身与赛道边界垂直
+				{
+					Control_Mode = 4;
+					move(-90, 20);
+					system_delay_ms(400);
+					move(0,0);
+					Image_Mode = 2;
+					system_delay_ms(50);
+					Control_Mode = 1;
+					system_delay_ms(800);
+				}
 				//回转
 				angle_now = Gyro_Angle.Zdata;
 				angle_turn = - angle_turn;
@@ -829,7 +855,7 @@ void ART_control()
 				w = 0;
 				Image_Mode = 0;
 
-				//break;
+				break;
 				
 			}
 			

@@ -27,6 +27,7 @@ extern uint8 boder_correct[60];
 extern uint8 longest, index;
 extern uint8 lose_point_num_L, lose_point_num_R;
 extern uint8 Image_Mode;
+extern int16 Slope;
 extern uint32 track_wide;
 extern bool roundabout_card_finished;
 //#define RESULT_ROW 100//结果图行列

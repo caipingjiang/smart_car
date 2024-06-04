@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Mon Jun  3 07:02:33 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Tue Jun  4 19:17:15 2024
 <BR><P>
 <H3>Maximum Stack Usage =        816 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1196,8 +1196,8 @@ Global Symbols
 
 <P><STRONG><a name="[1f8]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[105]"></a>ART_control</STRONG> (Thumb, 840 bytes, Stack size 56 bytes, car_control.o(.text.ART_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = ART_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[105]"></a>ART_control</STRONG> (Thumb, 924 bytes, Stack size 64 bytes, car_control.o(.text.ART_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 744<LI>Call Chain = ART_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips114_show_string
@@ -2378,7 +2378,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[148]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler_2
 </UL>
 
-<P><STRONG><a name="[161]"></a>cross_move_control</STRONG> (Thumb, 1462 bytes, Stack size 56 bytes, car_control.o(.text.cross_move_control))
+<P><STRONG><a name="[161]"></a>cross_move_control</STRONG> (Thumb, 1470 bytes, Stack size 56 bytes, car_control.o(.text.cross_move_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = cross_move_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -2816,7 +2816,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[148]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler_2
 </UL>
 
-<P><STRONG><a name="[ab]"></a>main</STRONG> (Thumb, 312 bytes, Stack size 16 bytes, main.o(.text.main))
+<P><STRONG><a name="[ab]"></a>main</STRONG> (Thumb, 332 bytes, Stack size 16 bytes, main.o(.text.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 816<LI>Call Chain = main &rArr; my_image_init &rArr; mt9v03x_init &rArr; mt9v03x_set_config_sccb &rArr; mt9v03x_read_word_sccb &rArr; soft_iic_sccb_read_register &rArr; soft_iic_read_data &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[18f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips114_show_gray_image
@@ -2843,7 +2843,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[19d]"></a>motor_control</STRONG> (Thumb, 2104 bytes, Stack size 40 bytes, my_moter.o(.text.motor_control))
+<P><STRONG><a name="[19d]"></a>motor_control</STRONG> (Thumb, 1984 bytes, Stack size 40 bytes, my_moter.o(.text.motor_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 520<LI>Call Chain = motor_control &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;position_correct
@@ -3053,7 +3053,7 @@ Global Symbols
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wireless_uart_callback
 </UL>
 
-<P><STRONG><a name="[19e]"></a>position_correct</STRONG> (Thumb, 144 bytes, Stack size 0 bytes, my_moter.o(.text.position_correct))
+<P><STRONG><a name="[19e]"></a>position_correct</STRONG> (Thumb, 158 bytes, Stack size 0 bytes, my_moter.o(.text.position_correct))
 <BR><BR>[Called By]<UL><LI><a href="#[19d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_control
 </UL>
 
@@ -3111,7 +3111,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[148]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler_2
 </UL>
 
-<P><STRONG><a name="[19c]"></a>roundabout_move_control</STRONG> (Thumb, 1902 bytes, Stack size 56 bytes, car_control.o(.text.roundabout_move_control))
+<P><STRONG><a name="[19c]"></a>roundabout_move_control</STRONG> (Thumb, 1910 bytes, Stack size 56 bytes, car_control.o(.text.roundabout_move_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = roundabout_move_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -3239,7 +3239,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[183]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;imu660ra_init
 </UL>
 
-<P><STRONG><a name="[19b]"></a>start_finish_line_control</STRONG> (Thumb, 872 bytes, Stack size 56 bytes, car_control.o(.text.start_finish_line_control))
+<P><STRONG><a name="[19b]"></a>start_finish_line_control</STRONG> (Thumb, 900 bytes, Stack size 56 bytes, car_control.o(.text.start_finish_line_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = start_finish_line_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte

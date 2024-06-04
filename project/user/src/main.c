@@ -58,7 +58,7 @@ int main(void)
 	interrupt_set_priority(LPUART4_IRQn,2);
 	interrupt_global_enable(0);
     // 此处编写用户代码 例如外设初始化代码等
-
+												
 	ips114_draw_line(middle -  30, 20, middle + 30, 20, RGB565_GREEN);
 	while(1)
     {		
@@ -72,6 +72,8 @@ int main(void)
 		ips114_show_int(30,70,turn_flag, 2);
 		ips114_show_int(30,90,cross_flag, 2);
 		ips114_show_int(30,110,Control_Mode, 2);
+
+		ips114_show_int(50,110,Slope, 2);
 		// v_y =slidingFilter(1500/(abs(Slope)+20));
 		// system_delay_ms(10);
 		
