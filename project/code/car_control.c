@@ -267,7 +267,7 @@ void roundabout_move_control()
 		}
 		angle_turn = -(roundabout_dir*180);
         Control_Mode = 3;
-		Image_Mode = 1;		//不能去除，以为要更新roundabout_flag标志位
+		Image_Mode = 1;		//不能去除，因为要更新roundabout_flag标志位
         v_x = 0;
 		v_y = 0;
 		system_delay_ms(1400);	//等待转向完成
@@ -428,13 +428,13 @@ void roundabout_move_control()
 				if(uart4_data_arr[1]==1)        //识别到卡片
 				{
 					uart_write_byte(UART_4, '1');     
-					system_delay_ms(2000);
+					system_delay_ms(1000);
 
 					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 					{
 						system_delay_ms(100);
 					}
-					system_delay_ms(1000);
+					//system_delay_ms(1000);
 					if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 					{
 						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
@@ -448,14 +448,18 @@ void roundabout_move_control()
 						v_x = roundabout_dir*30;
 						v_y = 0;
 						Image_Mode = 2;		//不能为1
-						system_delay_ms(1700);    
+						system_delay_ms(1800);    
 
 						
 						Control_Mode = 3;
 						angle_now = Gyro_Angle.Zdata;
 						move(0,0);
 						angle_turn = -angle_turn;
-						system_delay_ms(1500);	//等待转向完成
+						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
+						{
+							Control_Mode = 3;
+							system_delay_ms(200);    //等待转向完成
+						}
 						
 						Image_Mode = 0;
 						system_delay_ms(200);	//等待把roundabout_flag 置为0
@@ -764,10 +768,11 @@ void ART_control()
 						time = 0;
 						angle_now = Gyro_Angle.Zdata;
 						angle_turn = -angle_turn;
-						Control_Mode = 3;
-						v_x = 0;
-						v_y = 0;
-						system_delay_ms(1500);
+						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
+						{
+							Control_Mode = 3;
+							system_delay_ms(200);    //等待转向完成
+						}
 
 						v_y = 30;
 						w = 0;
