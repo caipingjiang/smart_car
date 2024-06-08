@@ -254,8 +254,10 @@ int16 slope()
 		sum2 += (int16)(MT9V03X_H - 10 - i);
 	}
 	result = 50 * sum1 / (sum2+1); //·ÖÄ¸¼Ó1·ÀÖ¹³ı0;
+	result = func_limit(result, 80);
 	//ips114_show_int(188, 110, (const int32)result, 3);
 	lastresult = result;
+	
 	return result;
 }
 

@@ -10,10 +10,12 @@
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 float target_angle = 0; //设定的角度值
-uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
+float target_slope  = 0;  //目标斜率
+int16 tracking_speed = 60;  //循迹速度
+
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
 uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
-int16 tracking_speed = 60;  //循迹速度
+uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
 
 float Inc_Kp[4]={45, 45, 45, 45};//10//6.5/100
 float Inc_Ki[4]={5.5, 5.5, 5.5, 5.5};//0/64/4.8
@@ -270,7 +272,7 @@ void motor_control()
     switch(Control_Mode)
     {
         case 0:                         //正常循迹模式
-            Turn(0,Slope);               
+            Turn(target_slope,Slope);               
             break;
         case 1:                         //边界矫正模式
             roundabout_move(&sideline_angle, &sideline_distance);

@@ -30,6 +30,12 @@ extern uint8 Image_Mode;
 extern int16 Slope;
 extern uint32 track_wide;
 extern bool roundabout_card_finished;
+
+extern uint8 boder_L[MT9V03X_H - 5];
+extern uint8 boder_R[MT9V03X_H - 5];
+extern uint8 boder_M[MT9V03X_H - 5];
+extern uint8 boder_U[MT9V03X_W];
+
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114
 //#define         USED_ROW                120  //用于透视图的行列

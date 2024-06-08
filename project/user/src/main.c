@@ -14,12 +14,16 @@ int16 Target_Speed=1; //测试用
 
 void pit_handler_3()
 {
-	FW_Data[0].type = 'd';
-	FW_Data[1].type = 'd';
-	FW_Data[2].type = 'd';
-	FW_Data[0].int_data = cross_flag;
-	FW_Data[1].int_data = Control_Mode;
-	FW_Data[2].int_data = Image_Mode;
+	FW_Data[0].type = 'f';
+	FW_Data[1].type = 'f';
+	FW_Data[2].type = 'f';
+	FW_Data[3].type = 'd';
+	FW_Data[4].type = 'd';
+	FW_Data[0].float_data = imu660ra_gyro_x;
+	FW_Data[1].float_data = imu660ra_gyro_y;
+	FW_Data[2].float_data =  imu660ra_gyro_z;
+	FW_Data[3].int_data =  track_wide;
+	FW_Data[4].int_data =  Slope;
 	FireWater_Send();
 }
 
@@ -44,8 +48,8 @@ int main(void)
 	my_servo_init();
 //	my_key_init();
 	my_image_init();
-    //wireless_uart_init();
-	//pit_ms_init(PIT_CH3, 20);
+    wireless_uart_init();
+	pit_ms_init(PIT_CH3, 20);
 	//ImagePerspective_Init();
 	my_uart_init();
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
@@ -60,55 +64,33 @@ int main(void)
     // 此处编写用户代码 例如外设初始化代码等
 												
 	ips114_draw_line(middle -  30, 20, middle + 30, 20, RGB565_GREEN);
+	ips114_draw_line(0,40,187+40,40,RGB565_PURPLE);
+	ips114_draw_line(0,80,187+40,80,RGB565_PURPLE);
 	while(1)
     {		
 		if(mt9v03x_finish_flag)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
 		}
-		
-		ips114_show_int(30,30,roundabout_flag, 2);
-		ips114_show_int(30,50,track_wide, 5);
-		ips114_show_int(30,70,turn_flag, 2);
-		ips114_show_int(30,90,cross_flag, 2);
-		ips114_show_int(30,110,Control_Mode, 2);
 
-		ips114_show_int(50,110,Slope, 2);
-		// v_y =slidingFilter(1500/(abs(Slope)+20));
+//		ips114_show_float(60, 60, tra_acc_x, 2, 2);
+//		ips114_show_float(60, 80, tra_acc_y, 2, 2);
+//		ips114_show_float(60, 100, tra_acc_z, 2, 2);
+//		ips114_show_float(120, 60, imu660ra_gyro_x, 4, 2);
+//		ips114_show_float(120, 80, imu660ra_gyro_y, 4, 2);
+//		ips114_show_float(120, 100, imu660ra_gyro_z, 4, 2);
+//		ips114_show_int(50,110,Slope, 2);
 		// system_delay_ms(10);
 		
-		// start_finial_line_car_find();
-		start_finish_line_control();
-		cross_move_control();
-		roundabout_move_control();
+		// start_finish_line_control();
+		// cross_move_control();
+		// roundabout_move_control();
+		// ART_control();
+		
+		ramp_control();
+		barrier_control();
+		//system_delay_ms(5);
 
-		// ips114_show_int(0,20,cross_flag,2);
-		// ips114_show_int(0,40,roundabout_flag,2);
-		//ips114_show_int(80,20,Slope,3);
-		// ips114_show_int(0,60,lose_point_num_L,3);
-		// ips114_show_int(0,80,lose_point_num_R,3);
-		ART_control();
-		ips114_show_int(60,30,uart4_data_arr[1], 2);
-//		if(uart4_data_arr[1]==1)        //识别到卡片
-//		{
-//			uart_write_byte(UART_4, '0');     
-//			Control_Mode=4;
-//			system_delay_ms(1000);
-//			v_x = 0;
-//			v_y = 0;
-//			w = 0;
-//			while(uart4_data_awrr[1]==1)
-//			{
-//				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-//				Box_In((char)uart4_data_arr[0],0);
-//				system_delay_ms(1000);
-//			}
-//			
-//		}
-		// uart_write_byte(UART_4, '1'); 
-		//  ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-		//  system_delay_ms(1000);
-		// Box_Out((char)uart4_data_arr[0],0);
     }
 }
 
@@ -119,6 +101,15 @@ int main(void)
 
 
 //------------------------------测试代码------------------------------------
+
+// ips114_show_int(30,30,roundabout_flag, 2);
+// ips114_show_int(30,50,track_wide, 5);
+// ips114_show_int(30,70,turn_flag, 2);
+// ips114_show_int(30,90,cross_flag, 2);
+// ips114_show_int(30,110,Control_Mode, 2);
+
+
+
 // system_delay_ms(10);
 // for(uint8 i = 0; i<=3; i++)
 // {

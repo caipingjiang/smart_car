@@ -271,7 +271,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
             //若仓位不为空，则判断本次拾取的卡片是否属于该仓位
             else if (card_class == temp_class_arr[i][0] )
             {
-                if (five_Flag == 1 &&i==0)    //第五张是第五类并且第六张是第一类
+                if (five_Flag == 1 && i==0)    //第五张是第五类并且第六张是第一类
                 {
                     five_Flag += 2;
 					Servo_SetAngle(3, i*90);
@@ -309,8 +309,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
 void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 {
     //环岛十字
-    // if (cross_roundabout_Flag)
-    // {
+    // if (cross_roundabout_Flag)    // {
     //     //先卸货第5类
     //     if (!five_unload_finish_Flag)
     //     {
@@ -369,9 +368,10 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                  system_delay_ms(800);
                  arm_down();
                  arm_hang();
+                 
                 }
                 arm_exchange(1,0);
-
+                
             }
             else if(five_Flag==2)
             {
@@ -414,41 +414,44 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     arm_hang();
                 }
             }
-
-            temp_class_arr[0][1]=0;
+            temp_class_arr[0][0] = 0;
+            temp_class_arr[0][1] = 0;
         }
         else if(label_num== temp_class_arr[1][0])
         {
             for(uint8 i=0;i<temp_class_arr[1][1];i++)
-                {
-                    Servo_SetAngle(3, 90);
-                    system_delay_ms(800);
-                    arm_down();
-                    arm_hang();
-                }
-            temp_class_arr[1][1]=0;
+            {
+                Servo_SetAngle(3, 90);
+                system_delay_ms(800);
+                arm_down();
+                arm_hang();
+            }
+            temp_class_arr[1][0] = 0;
+            temp_class_arr[1][1] = 0;
         }
         else if(label_num== temp_class_arr[2][0])
         {
             for(uint8 i=0;i<temp_class_arr[2][1];i++)
-                {
-                    Servo_SetAngle(3, 180);
-                    system_delay_ms(800);
-                    arm_down();
-                    arm_hang();
-                }
-            temp_class_arr[2][1]=0;
+            {
+                Servo_SetAngle(3, 180);
+                system_delay_ms(800);
+                arm_down();
+                arm_hang();
+            }
+            temp_class_arr[2][0] = 0;
+            temp_class_arr[2][1] = 0;
         }
         else if(label_num== temp_class_arr[3][0])
         {
             for(uint8 i=0;i<temp_class_arr[3][1];i++)
-                {
-                    Servo_SetAngle(3, 270);
-                    system_delay_ms(800);
-                    arm_down();
-                    arm_hang();
-                }
-            temp_class_arr[3][1]=0;
+            {
+                Servo_SetAngle(3, 270);
+                system_delay_ms(800);
+                arm_down();
+                arm_hang();
+            }
+            temp_class_arr[3][0] = 0;
+            temp_class_arr[3][1] = 0;
         }
         else              //label_num==five_class
         {
@@ -470,8 +473,12 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 arm_down();
                 arm_hang();
             }
+            //清零
+            five_class = 0;
             five_Flag=0;
         }
+
+
     }
     else
     {

@@ -35,8 +35,8 @@ extern int16 tracking_speed;
 extern float angle_now;
 extern float angle_turn;
 extern float target_angle;
+extern float target_slope;
 extern uint8 turn_flag;
-
 extern int16 finial_point_1[2];
 extern int16 finial_point_2[2];
 
