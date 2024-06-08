@@ -33,7 +33,7 @@ void cross_move_control()
 		}
 
 		Control_Mode = 4;
-		move(90,10);
+		move(90,20);
 		system_delay_ms(500);
 		move(0,0);
 		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
@@ -195,6 +195,7 @@ void cross_move_control()
 		system_delay_ms(500);
 		Control_Mode = 0;
 		turn_flag = 0;	//走出十字后清零转向标志位
+	
 
 	}
 	
@@ -243,24 +244,25 @@ void roundabout_move_control()
 
 			Control_Mode = 4;
 			move(0,0);
-			while(uart4_data_arr[1]!=1)
-			{
-				system_delay_ms(100);
-			}
+			// while(uart4_data_arr[1]!=1)
+			// {
+			// 	system_delay_ms(100);
+			// }
 			// system_delay_ms(1000);//延时，前面几张给过滤掉
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
-				ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
+				//ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
 				ips114_show_string(30,60,"b");
-				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+				//ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 				uart_write_byte(UART_4, '0'); 
 				system_delay_ms(1000); 
 				while(!('A' <= uart4_data_arr[0] && uart4_data_arr[0] <= 'O')) 
 				{
                     system_delay_ms(100);
                 } 
-				ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
+				//ips114_show_string(200,(uart4_data_arr[0]-65)*8,(const char*)&uart4_data_arr[0]);
 				// system_delay_ms(1000);
+				ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 				Box_In((char)uart4_data_arr[0],1);
 			}	
 
@@ -486,10 +488,10 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
+static uint8 find_times  = 0;	//起始线识别次数
+static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 void start_finish_line_control()
 {
-    static uint8 find_times  = 0;	//起始线识别次数
-	static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
     if(find_start_finish_line())
 	{
 		find_times++;
@@ -869,5 +871,113 @@ void ART_control()
 		}
 
 	}
+	
+}
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  坡道运动控制
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+void ramp_control()
+{
+	// static float data_record[5] = {0};
+	// float sum = 0.0f;
+	// sum += imu660ra_gyro_y;
+	// sum -= data_record[0];
+	// for(uint8 i = 0; i < 4; i++)
+	// {
+	// 	data_record[i]  = data_record[i + 1];
+	// }
+	// data_record[4] = imu660ra_gyro_y;
+	// sum /= 5;
+
+	if(imu660ra_gyro_y<-500)
+	{
+		target_angle = Gyro_Angle.Zdata;
+		Control_Mode = 6;
+		Image_Mode = 4;
+		move(-90,20);
+		system_delay_ms(700);
+		move(0,30);
+		system_delay_ms(600);
+		move(90,50);
+		system_delay_ms(1700);
+		move(180,30);
+		system_delay_ms(800);
+		move(0,0);
+		Image_Mode = 0;
+		system_delay_ms(50);
+		Control_Mode = 0;
+		v_x = 0;
+		w = 0;
+		tracking_speed = 60;
+		
+	}
+}
+
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  障碍物检测及控制
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+#define barrier_width_limit1	3200	//判断障碍物的宽度限制，小于此值认为肯能有障碍
+#define barrier_width_limit2	1000
+#define barrier_slope_limit		20		//判断障碍物的斜率限制，比如小于此值才能进行斜率判断
+#define diff_limit				20//差值限制
+void barrier_control()
+{
+	static uint16 sum_L = 0, sum_R = 0;		//求和
+	static uint8 mean_L = 0, mean_R = 0;	//均值
+	static uint16 var_L = 0, var_R = 0;		//方差
+	if(Control_Mode == 0 ) //&& find_times == 1
+	{
+		if(track_wide < barrier_width_limit1 
+		&& track_wide > barrier_width_limit2
+		&& abs(Slope) < barrier_slope_limit)
+		{
+			if(boder_L[70] - boder_L[80] > diff_limit && abs(boder_R[70] - boder_R[80])<10)
+			{
+				//target_slope = 15;
+				//v_x = 20; 
+				Image_Mode = 4;
+				Control_Mode = 4;
+				move(0,20);
+				system_delay_ms(500);
+				move(90,30);
+				system_delay_ms(700);
+				move(180,20);
+				system_delay_ms(500);
+				v_y = tracking_speed;
+				v_x = 0;
+				Image_Mode = 0;
+				system_delay_ms(50);
+				Control_Mode = 0;
+			}
+			else if(boder_R[80] - boder_R[90] < -(diff_limit) && abs(boder_L[80] - boder_L[90])<10)
+			{
+				Image_Mode = 4;
+				Control_Mode = 4;
+				move(180,20);
+				system_delay_ms(500);
+				move(90,30);
+				system_delay_ms(700);
+				move(0,20);
+				system_delay_ms(500);
+				v_y = tracking_speed;
+				v_x = 0;
+				Image_Mode = 0;
+				system_delay_ms(50);
+				Control_Mode = 0;
+			}
+		}
+		ips114_show_int(50,30,boder_L[80] - boder_L[90], 3);
+		ips114_show_int(50,50,boder_R[80] - boder_R[90], 3);
+	} 
 	
 }
