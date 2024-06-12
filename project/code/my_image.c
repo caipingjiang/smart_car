@@ -7,7 +7,8 @@ uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 int16 Slope;						//图像斜率
 uint8 cross_flag = 0, roundabout_flag = 0;//环岛十字的标志位，1为到达此处
 int8 cross_dir = 0, roundabout_dir = 0;			//十字方向，-1：左十字， 1：右十字； 环岛方向，-1: 左环岛， 1: 右环岛
-bool roundabout_card_finished = false;			//环岛弧道的卡片是否拣完
+bool roundabout_card_releaseFinish = false;			//环岛弧道卡片是否卸载完成
+bool cross_card_releaseFinish = false;				//十字卡片是否卸载完成
 
 uint8 boder_L[MT9V03X_H - 5];		//左边扫线（左边界 黄色）
 uint8 boder_R[MT9V03X_H - 5];		//右边扫线（右边界 绿色）
@@ -423,7 +424,7 @@ void cross()//十字
 	}
 	else if(cross_flag == 3)
 	{	
-		if(longest<5 && (cross_dir > 0?index>(MT9V03X_W/2+30):index<(MT9V03X_W/2)-30))//if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
+		if(longest<5 && (cross_dir > 0?index>(MT9V03X_W/2+30):index<(MT9V03X_W/2)-30) && cross_card_releaseFinish)//if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
 		{
 			cross_flag = 4;		//检测到最长白列长度突然变大，说明即将走出十字，下一步90度转向
 		}
@@ -471,7 +472,7 @@ void roundabout()
 	}
 	else if(roundabout_flag == 2)
 	{
-		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2-30): (index > MT9V03X_W/2+30)) && roundabout_card_finished)	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
+		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2-30): (index > MT9V03X_W/2+30)) && roundabout_card_releaseFinish)	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
 		{
 			roundabout_flag = 3;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
 			//turn_flag = 0;	//不能去除

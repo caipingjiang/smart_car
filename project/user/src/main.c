@@ -48,8 +48,8 @@ int main(void)
 	my_servo_init();
 //	my_key_init();
 	my_image_init();
-    wireless_uart_init();
-	pit_ms_init(PIT_CH3, 20);
+    //wireless_uart_init();
+	//pit_ms_init(PIT_CH3, 20);
 	//ImagePerspective_Init();
 	my_uart_init();
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
@@ -82,10 +82,10 @@ int main(void)
 //		ips114_show_int(50,110,Slope, 2);
 		// system_delay_ms(10);
 		
-		// start_finish_line_control();
-		// cross_move_control();
-		// roundabout_move_control();
-		// ART_control();
+		start_finish_line_control();
+		cross_move_control();
+		roundabout_move_control();
+		ART_control();
 		
 		ramp_control();
 		barrier_control();

@@ -124,7 +124,7 @@
 
 //===================================================用户自定义文件===================================================
 //RT-Thread headfile
-#include "rtthread.h"
+//#include "rtthread.h"
 
 #include "my_moter.h"
 #include "my_encoder.h"

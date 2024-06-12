@@ -4,6 +4,7 @@
 #include "my_image.h"
 #include <math.h>
 
+
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
 
@@ -282,7 +283,7 @@ void motor_control()
             //w = Angle_PID(Target_Speed, angle);
             break;
         case 2:                         //卡片矫正模式
-            /*if(packge1_finish_flag)*/position_correct(Correct_Mode);
+            position_correct(Correct_Mode);
             break;
         case 3:                         //陀螺仪转向模式
             //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
@@ -300,16 +301,14 @@ void motor_control()
         case 6://   角度闭环模式，此模式角度会保持角度为目标角度
             w = Angle_PID(target_angle, Gyro_Angle.Zdata);
             break;
-        case 7:
-            Turn(0,Slope);
-            break;
     }
     
     if(Control_Mode == 0)
     {
         
-        
+        //v_y = 2000/(34+Slope);
         v_y = 0.5*v_y + 0.5*last_speed_y;
+        
         if(abs(Slope)<10)
         {
             v_y = func_limit_ab(v_y,40, 60);

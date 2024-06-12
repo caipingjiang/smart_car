@@ -29,7 +29,8 @@ extern uint8 lose_point_num_L, lose_point_num_R;
 extern uint8 Image_Mode;
 extern int16 Slope;
 extern uint32 track_wide;
-extern bool roundabout_card_finished;
+extern bool roundabout_card_releaseFinish;
+extern bool cross_card_releaseFinish;
 
 extern uint8 boder_L[MT9V03X_H - 5];
 extern uint8 boder_R[MT9V03X_H - 5];
