@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Jun 12 10:51:14 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sun Jun 16 15:32:56 2024
 <BR><P>
 <H3>Maximum Stack Usage =        816 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1251,7 +1251,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[10c]"></a>Box_In</STRONG> (Thumb, 468 bytes, Stack size 16 bytes, my_servo.o(.text.Box_In))
-<BR><BR>[Stack]<UL><LI>Max Depth = 512<LI>Call Chain = Box_In &rArr; arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<BR><BR>[Stack]<UL><LI>Max Depth = 504<LI>Call Chain = Box_In &rArr; arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
 <LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
@@ -1263,7 +1263,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[11b]"></a>Box_Out</STRONG> (Thumb, 1640 bytes, Stack size 40 bytes, my_servo.o(.text.Box_Out))
-<BR><BR>[Stack]<UL><LI>Max Depth = 568<LI>Call Chain = Box_Out &rArr; arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<BR><BR>[Stack]<UL><LI>Max Depth = 576<LI>Call Chain = Box_Out &rArr; arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
 <LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
@@ -2325,7 +2325,7 @@ Global Symbols
 <LI><a href="#[1bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;spi_iomuxc
 </UL>
 
-<P><STRONG><a name="[11c]"></a>arm_down</STRONG> (Thumb, 188 bytes, Stack size 16 bytes, my_servo.o(.text.arm_down))
+<P><STRONG><a name="[11c]"></a>arm_down</STRONG> (Thumb, 208 bytes, Stack size 16 bytes, my_servo.o(.text.arm_down))
 <BR><BR>[Stack]<UL><LI>Max Depth = 496<LI>Call Chain = arm_down &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
@@ -2334,8 +2334,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 </UL>
 
-<P><STRONG><a name="[11d]"></a>arm_exchange</STRONG> (Thumb, 412 bytes, Stack size 48 bytes, my_servo.o(.text.arm_exchange))
-<BR><BR>[Stack]<UL><LI>Max Depth = 528<LI>Call Chain = arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[11d]"></a>arm_exchange</STRONG> (Thumb, 460 bytes, Stack size 56 bytes, my_servo.o(.text.arm_exchange))
+<BR><BR>[Stack]<UL><LI>Max Depth = 536<LI>Call Chain = arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
@@ -2343,8 +2343,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 </UL>
 
-<P><STRONG><a name="[11a]"></a>arm_up</STRONG> (Thumb, 190 bytes, Stack size 16 bytes, my_servo.o(.text.arm_up))
-<BR><BR>[Stack]<UL><LI>Max Depth = 496<LI>Call Chain = arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[11a]"></a>arm_up</STRONG> (Thumb, 194 bytes, Stack size 8 bytes, my_servo.o(.text.arm_up))
+<BR><BR>[Stack]<UL><LI>Max Depth = 488<LI>Call Chain = arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms

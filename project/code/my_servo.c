@@ -109,42 +109,43 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 
 void arm_down()
 {
-    Servo_SetAngle(2, 30);
+    Servo_SetAngle(2, 29);
     system_delay_ms(500);
     Servo_SetAngle(1, 80);
     system_delay_ms(700);
-    magnet_set(1);
-    
-    Servo_SetAngle(1, 90);
-    system_delay_ms(500);
-    Servo_SetAngle(1, 95);
-    system_delay_ms(200);
-    Servo_SetAngle(2, 35);
+    magnet_set(1);    
+	Servo_SetAngle(1, 90);
+	system_delay_ms(100);
+	Servo_SetAngle(1, 95);
+	Servo_SetAngle(2, 35);
+	system_delay_ms(100);
+    Servo_SetAngle(1, 100);
+	Servo_SetAngle(2, 40);
     system_delay_ms(200);
     Servo_SetAngle(2, 228);
-    system_delay_ms(800);
+    system_delay_ms(300);
     Servo_SetAngle(1, 130);
     system_delay_ms(300);
     magnet_set(0);
-	system_delay_ms(50);
 }
 
 void arm_up()
 {
 	Servo_SetAngle(1, 150);
     Servo_SetAngle(2, 234);
-	system_delay_ms(800);
+	system_delay_ms(500);
     magnet_set(1);
-	Servo_SetAngle(1, 162);
-	system_delay_ms(400);
+	Servo_SetAngle(1, 163);
+	system_delay_ms(600);
 	Servo_SetAngle(1, 130);
 	system_delay_ms(100);
-	Servo_SetAngle(2, 70);
-	system_delay_ms(500);
-	Servo_SetAngle(1, 100);
-    system_delay_ms(800);
+	Servo_SetAngle(2, 60);
+	system_delay_ms(400);
+	Servo_SetAngle(1, 115);
+    system_delay_ms(150);
+	Servo_SetAngle(1, 90);
+	system_delay_ms(50);
     Servo_SetAngle(2, 28);
-    Servo_SetAngle(1, 90);
     system_delay_ms(500);
     magnet_set(0);
 }
@@ -163,28 +164,33 @@ void arm_hang()
 void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b
 {
     Servo_SetAngle(3, a*90);
-    system_delay_ms(800);
-	Servo_SetAngle(1, 80);
-    Servo_SetAngle(2, 26);
-    magnet_set(1);
-    system_delay_ms(1200);
-    Servo_SetAngle(1, 95);
+	Servo_SetAngle(2, 29);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 80);
+    system_delay_ms(700);
+    magnet_set(1);    
+	Servo_SetAngle(1, 90);
+	system_delay_ms(100);
+	Servo_SetAngle(1, 95);
+	Servo_SetAngle(2, 35);
+	system_delay_ms(100);
+    Servo_SetAngle(1, 100);
+	Servo_SetAngle(2, 40);
     system_delay_ms(200);
-    Servo_SetAngle(2, 228);
-	system_delay_ms(500);
+	Servo_SetAngle(2, 150);
+    system_delay_ms(200);
+    Servo_SetAngle(1, 115);
     Servo_SetAngle(3, b*90);
     system_delay_ms(800);
-    Servo_SetAngle(1, 130);
-	system_delay_ms(100);
-	Servo_SetAngle(2, 70);
-	system_delay_ms(500);
-	Servo_SetAngle(1, 100);
-    system_delay_ms(800);
+	Servo_SetAngle(2, 60);
+	system_delay_ms(200);
+	Servo_SetAngle(1, 90);
+	system_delay_ms(50);
     Servo_SetAngle(2, 28);
-    Servo_SetAngle(1, 90);
     system_delay_ms(500);
     magnet_set(0);
-    arm_hang();
+	arm_hang();
+
 }
 
 

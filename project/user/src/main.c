@@ -91,6 +91,7 @@ int main(void)
 		barrier_control();
 		//system_delay_ms(5);
 
+		
     }
 }
 
