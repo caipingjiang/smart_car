@@ -71,6 +71,7 @@ uint8 find_white_point(uint8 image_array[][188])
 // 备注信息  本函数在下面的find_middle()函数中被调用
 //-----------------------------------------------------------------------------------------------
 uint8 y_threshold = 22;//12 纵向扫线对比度阈值
+#define y_MIN	(MT9V03X_H*2/5)		//边界矫正限制采样点的最小值，正常边界矫正时，其y坐标相对固定在一定范围内，不可能太小
 void find_longest(uint8* longest, uint8* index)
 {
 	// //----------------找左右边界起点-----------------
@@ -122,7 +123,8 @@ void find_longest(uint8* longest, uint8* index)
 
 				if (i >= middle - 30 && i < middle + 30)
 				{  
-					boder_correct[i - middle + 30] = j;
+					if(j<y_MIN)boder_correct[i - middle + 30] = y_MIN;	//限幅处理
+					else boder_correct[i - middle + 30] = j;
 				}
 
 				if (j < *longest) //更新最长白列
@@ -424,7 +426,7 @@ void cross()//十字
 	}
 	else if(cross_flag == 3)
 	{	
-		if(longest<5 && (cross_dir > 0?index>(MT9V03X_W/2+30):index<(MT9V03X_W/2)-30) && cross_card_releaseFinish)//if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
+		if(longest<5 && (cross_dir > 0?index>(MT9V03X_W/2+10):index<(MT9V03X_W/2)-10) && cross_card_releaseFinish)//if(longest<5 && turn_flag == 1)	//出十字判断，一般情况出十字最长白列会突然变长（直接到图像最上方）
 		{
 			cross_flag = 4;		//检测到最长白列长度突然变大，说明即将走出十字，下一步90度转向
 		}
@@ -472,7 +474,7 @@ void roundabout()
 	}
 	else if(roundabout_flag == 2)
 	{
-		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2-30): (index > MT9V03X_W/2+30)) && roundabout_card_releaseFinish)	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
+		if(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)) && roundabout_card_releaseFinish)	//(index < roundabout_dir*MT9V03X_W/2)-->防止进入环岛刚转向时识别为出环岛
 		{
 			roundabout_flag = 3;		//检测到最长白列长度突然变大，说明即将走出环岛，下一步90度转向
 			//turn_flag = 0;	//不能去除
