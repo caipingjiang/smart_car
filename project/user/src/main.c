@@ -16,14 +16,14 @@ void pit_handler_3()
 {
 	FW_Data[0].type = 'f';
 	FW_Data[1].type = 'f';
-	FW_Data[2].type = 'f';
-	FW_Data[3].type = 'd';
-	FW_Data[4].type = 'd';
-	FW_Data[0].float_data = imu660ra_gyro_x;
-	FW_Data[1].float_data = imu660ra_gyro_y;
-	FW_Data[2].float_data =  imu660ra_gyro_z;
-	FW_Data[3].int_data =  track_wide;
-	FW_Data[4].int_data =  Slope;
+	// FW_Data[2].type = 'f';
+	// FW_Data[3].type = 'd';
+	// FW_Data[4].type = 'd';
+	FW_Data[0].float_data = Kp_cor;
+	FW_Data[1].float_data = Kd_cor;
+	// FW_Data[2].float_data =  imu660ra_gyro_z;
+	// FW_Data[3].int_data =  track_wide;
+	// FW_Data[4].int_data =  Slope;
 	FireWater_Send();
 }
 
@@ -48,7 +48,7 @@ int main(void)
 	my_servo_init();
 //	my_key_init();
 	my_image_init();
-    //wireless_uart_init();
+    wireless_uart_init();
 	//pit_ms_init(PIT_CH3, 20);
 	//ImagePerspective_Init();
 	my_uart_init();
@@ -72,7 +72,6 @@ int main(void)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
 		}
-
 //		ips114_show_float(60, 60, tra_acc_x, 2, 2);
 //		ips114_show_float(60, 80, tra_acc_y, 2, 2);
 //		ips114_show_float(60, 100, tra_acc_z, 2, 2);
@@ -80,6 +79,10 @@ int main(void)
 //		ips114_show_float(120, 80, imu660ra_gyro_y, 4, 2);
 //		ips114_show_float(120, 100, imu660ra_gyro_z, 4, 2);
 //		ips114_show_int(50,110,Slope, 2);
+		ips114_show_float(50,110,Kp_cor, 2,2);
+		ips114_show_float(90,110,Kd_cor, 2,2);
+		ips114_show_int(50,40,uart1_data_arr[0], 4);
+		ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
 		
 		start_finish_line_control();
@@ -89,6 +92,7 @@ int main(void)
 		
 		ramp_control();
 		barrier_control();
+		
 		//system_delay_ms(5);
 
     }

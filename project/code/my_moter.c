@@ -228,6 +228,8 @@ float w_PID(float Target_w, float w)
 //-----------------------------------------------------------------------------------------------
 int16 finial_point_1[2]  = {160, 170};
 int16 finial_point_2[2] = {140, 135}; //120,125
+float Kp_cor = 0.25;
+float Kd_cor = 0; 
 void position_correct(uint8 correct_mode)
 {
     if(correct_mode == 0)       //拣卡片矫正
@@ -257,6 +259,28 @@ void position_correct(uint8 correct_mode)
             v_y = 0;
         }
     }
+    else if(correct_mode == 2)
+    {
+        static int16 err_x = 0, last_err_x = 0;
+        static int16 err_y = 0, last_err_y = 0;
+        if(uart1_data_arr[0] != 0 && uart1_data_arr[1] != 0)
+        {
+            err_x = (uart1_data_arr[0] - finial_point_1[0]);
+            err_y = -(uart1_data_arr[1] - finial_point_1[1]);
+
+            v_x = Kp_cor*err_x + Kd_cor*(err_x - last_err_x);
+            v_y = Kp_cor*err_y + Kd_cor*(err_y - last_err_y);
+
+            last_err_x = err_x;
+            last_err_y = err_y;
+        }
+        else
+        {
+            v_x = 0;
+            v_y = 0;
+        }
+        
+    }
     
 }
 
@@ -269,6 +293,7 @@ void position_correct(uint8 correct_mode)
 //-----------------------------------------------------------------------------------------------
 void motor_control()
 {
+	static uint8 cnt = 0;
     static int16 last_speed_y = 0;
     switch(Control_Mode)
     {
@@ -283,11 +308,13 @@ void motor_control()
             //w = Angle_PID(Target_Speed, angle);
             break;
         case 2:                         //卡片矫正模式
-            position_correct(Correct_Mode);
+            position_correct(Correct_Mode);          
             break;
         case 3:                         //陀螺仪转向模式
             //w = (int16)w_PID(Angle_PID(angle_now, Gyro_Angle.Zdata), tra_gyro_z);
             //w = (int16)w_PID(20, tra_gyro_z);
+            // if(angle_now>360)angle_now -= 360;
+            // else if (angle_now<-360)angle_now += 360;
             w = Angle_PID(angle_now + angle_turn, Gyro_Angle.Zdata);
             break;
 	    case 4:                         //等待模式
@@ -306,21 +333,21 @@ void motor_control()
     if(Control_Mode == 0)
     {
         
-        //v_y = 2000/(34+Slope);
-        v_y = 0.5*v_y + 0.5*last_speed_y;
+        v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
+        v_y = 0.3*v_y + 0.7*last_speed_y;
         
-        if(abs(Slope)<10)
-        {
-            v_y = func_limit_ab(v_y,40, 60);
-        }
-        else if(abs(Slope)>10 && abs(Slope)<20)
-        {
-            v_y = func_limit_ab(v_y,30, 40);
-        }
-        else if(abs(Slope)>25 && abs(Slope)<35)
-        {
-            v_y = func_limit_ab(v_y,25, 30);
-        }
+        // if(abs(Slope)<10)
+        // {
+        //     v_y = func_limit_ab(v_y,50, 70);
+        // }
+        // else if(abs(Slope)>10 && abs(Slope)<20)
+        // {
+        //     v_y = func_limit_ab(v_y,40, 50);
+        // }
+        // else if(abs(Slope)>25 && abs(Slope)<35)
+        // {
+        //     v_y = func_limit_ab(v_y,30, 35);
+        // }
         last_speed_y = v_y;
         tracking_speed = v_y;
     }

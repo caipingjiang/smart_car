@@ -153,6 +153,8 @@ extern int16 Target_Speed;
 extern float Kp_correct1, Kd_correct1, Kp_correct2, Kd_correct2; 
 
 //Í¼ÏñÏà¹Ø
+extern float Kp_cor;
+extern float Kd_cor; 
 extern int16 Slope;
 extern float Kp_T, Kd_T;
 extern uint8 t_b, k;

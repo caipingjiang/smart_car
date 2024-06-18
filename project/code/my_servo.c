@@ -3,7 +3,7 @@
 #define SERVO_MOTOR_PWM1             (PWM4_MODULE2_CHA_C30)  //机械臂舵机1                     // 定义主板上舵机对应引脚
 #define SERVO_MOTOR_PWM2             (PWM2_MODULE1_CHA_C8)   //机械臂舵机2
 #define SERVO_MOTOR_PWM3             (PWM2_MODULE0_CHB_C7)   //储物舱舵机
-#define magnet_PWM             		 (PWM1_MODULE3_CHA_B10)  //电磁铁
+#define magnet_PWM             		  (PWM1_MODULE3_CHA_B10)  //PWM2_MODULE3_CHA_B9 //(PWM1_MODULE3_CHA_B10)  //电磁铁
 
 
 #define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
@@ -41,7 +41,7 @@ void my_servo_init(void)
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
 	
 	//电磁铁初始化
-	pwm_init(magnet_PWM, 10000, 0);
+	pwm_init(magnet_PWM, 10000, 8000);
 	
 }
 //电磁铁， 0关闭， 1开启
@@ -109,82 +109,88 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 
 void arm_down()
 {
-    Servo_SetAngle(2, 30);
+    Servo_SetAngle(2, 29);
     system_delay_ms(500);
     Servo_SetAngle(1, 80);
     system_delay_ms(700);
     magnet_set(1);
-    
     Servo_SetAngle(1, 90);
-    system_delay_ms(500);
+    system_delay_ms(100);
     Servo_SetAngle(1, 95);
-    system_delay_ms(200);
     Servo_SetAngle(2, 35);
+    system_delay_ms(100);
+    Servo_SetAngle(1, 100);
+    Servo_SetAngle(2, 40);
     system_delay_ms(200);
     Servo_SetAngle(2, 228);
-    system_delay_ms(800);
+    system_delay_ms(300);
     Servo_SetAngle(1, 130);
     system_delay_ms(300);
     magnet_set(0);
-	system_delay_ms(50);
 }
 
 void arm_up()
 {
-	Servo_SetAngle(1, 150);
+    Servo_SetAngle(1, 150);
     Servo_SetAngle(2, 234);
-	system_delay_ms(800);
+    system_delay_ms(500);
     magnet_set(1);
-	Servo_SetAngle(1, 162);
-	system_delay_ms(400);
-	Servo_SetAngle(1, 130);
-	system_delay_ms(100);
-	Servo_SetAngle(2, 70);
-	system_delay_ms(500);
-	Servo_SetAngle(1, 100);
-    system_delay_ms(800);
-    Servo_SetAngle(2, 28);
+    Servo_SetAngle(1, 163);
+    system_delay_ms(600);
+    Servo_SetAngle(1, 130);
+    system_delay_ms(100);
+    Servo_SetAngle(2, 60);
+    system_delay_ms(400);
+    Servo_SetAngle(1, 115);
+    system_delay_ms(150);
     Servo_SetAngle(1, 90);
+    system_delay_ms(50);
+    Servo_SetAngle(2, 28);
     system_delay_ms(500);
     magnet_set(0);
 }
+
 
 
 
 void arm_hang()
 {
     magnet_set(0);
-    system_delay_ms(500);
+    //system_delay_ms(500);
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
-    
 }
 
-void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b
+void arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
 {
     Servo_SetAngle(3, a*90);
-    system_delay_ms(800);
-	Servo_SetAngle(1, 80);
-    Servo_SetAngle(2, 26);
+    Servo_SetAngle(2, 29);
+    system_delay_ms(500);
+    Servo_SetAngle(1, 80);
+    system_delay_ms(700);
     magnet_set(1);
-    system_delay_ms(1200);
+    Servo_SetAngle(1, 90);
+    system_delay_ms(100);
     Servo_SetAngle(1, 95);
+    Servo_SetAngle(2, 35);
+    system_delay_ms(100);
+    Servo_SetAngle(1, 100);
+    Servo_SetAngle(2, 40);
     system_delay_ms(200);
-    Servo_SetAngle(2, 228);
-	system_delay_ms(500);
+    Servo_SetAngle(2, 150);
+    system_delay_ms(200);
+    Servo_SetAngle(1, 115);
     Servo_SetAngle(3, b*90);
     system_delay_ms(800);
-    Servo_SetAngle(1, 130);
-	system_delay_ms(100);
-	Servo_SetAngle(2, 70);
-	system_delay_ms(500);
-	Servo_SetAngle(1, 100);
-    system_delay_ms(800);
-    Servo_SetAngle(2, 28);
+    Servo_SetAngle(2, 60);
+    system_delay_ms(200);
     Servo_SetAngle(1, 90);
+    system_delay_ms(50);
+    Servo_SetAngle(2, 28);
     system_delay_ms(500);
     magnet_set(0);
     arm_hang();
+
 }
 
 
@@ -194,7 +200,18 @@ void arm_exchange(uint8 a,uint8 b)        //取仓a一张卡片放仓b
 static char store_list[4][10] = { {0} };
 
 //环岛十字储存信息，4个仓（ >>>不包含第五类<<< ），每个仓储存两个信息：[0]表示每个仓对应的临时类别， [1]表示每个仓在环岛十字的临时卡片数量
-static char temp_class_arr[4][2] = { {0} };      
+
+
+
+
+
+
+
+
+
+
+
+char temp_class_arr[4][2] = { {0} };      
 static uint8 temp_cnt = 0;                      //环岛十字记录拾取卡片的次数
 static uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-有1张第五类；  2-有两张第五类； 3-有1张第五类，且第6张是第1类
 static char five_class = 0;                     //第五类的类别
@@ -308,53 +325,6 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
 //  卡片取出逻辑
 void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 {
-    //环岛十字
-    // if (cross_roundabout_Flag)    // {
-    //     //先卸货第5类
-    //     if (!five_unload_finish_Flag)
-    //     {
-    //         //根据five_Flag进行分类
-    //         if (five_Flag == 1 || five_Flag == 2)
-    //         {
-    //             //Servo_SetAngle(3, 0);
-    //             //arm_unload();
-    //             if (five_Flag == 2)
-    //             {
-    //                 //arm_unload();
-    //             }
-    //         }
-    //         else if (five_Flag == 3)
-    //         {
-    //             //Servo_SetAngle(3, 0);
-    //             //arm_unload();
-
-    //             //等待到达下一位置
-
-    //             //Servo_SetAngle(3, 0);
-    //             //arm_unload();
-    //         }
-    //         five_Flag = 0;
-    //         five_class = 0;
-    //         five_unload_finish_Flag = 1;
-    //         return;//再前面进行卸第5类时，卸完可直接结束此函数调用，等待走到下一放置处，故此时调用此函数 参数没有意义
-    //     }
-        
-    //     //再卸前四类
-    //     for (uint8 i = 0; i < 4; i++)
-    //     {
-    //         if (label_num == temp_class_arr[i][0])
-    //         {
-    //             //Servo_SetAngle(3, i*90);
-    //             for (uint8 j = 0; j < (int)temp_class_arr[i][1]; j++)
-    //             {
-    //                 //arm_unload();
-    //             }
-    //             temp_class_arr[i][1] = 0;  //卸完清零
-    //             temp_class_arr[i][0] = 0;   //卸完清零
-    //             break;
-    //         }
-    //     }
-    // }
     if (cross_roundabout_Flag)       //环岛和圆环
     {
         if(label_num == temp_class_arr[0][0])
@@ -364,11 +334,10 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 arm_exchange(0,1);
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
-                 Servo_SetAngle(3, 0);
-                 system_delay_ms(800);
-                 arm_down();
-                 arm_hang();
-                 
+                    Servo_SetAngle(3, 0);
+                    system_delay_ms(800);
+                    arm_down();
+                    arm_hang();
                 }
                 arm_exchange(1,0);
                 
@@ -402,7 +371,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 arm_hang();
                 arm_exchange(1,0);
                 five_Flag=1;
-                
+
             }
             else
             {
@@ -478,17 +447,15 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             five_Flag=0;
         }
 
-
     }
     else
     {
-       
         //最后卸三大类
         if (label_num == '1')        //大类-1
         {   
             for (uint8 i = 0; i < (int)store_list[0][9]; i++)
             {
-                Box_Record(0, '1', 0);
+                //Box_Record(0, '1', 0);
                 //arm_unload();
                 store_list[0][i] = 0;
                 Servo_SetAngle(3, 0);
@@ -502,7 +469,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
         {         
             for (uint8 i = 0; i < (int)store_list[1][9]; i++)
             {
-                Box_Record(1, '2', 0);
+                //Box_Record(1, '2', 0);
                 //arm_unload();
                 store_list[1][i] = 0;
                 Servo_SetAngle(3, 90);
@@ -516,7 +483,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
         {         
             for (uint8 i = 0; i < (int)store_list[2][9]; i++)
             {
-                Box_Record(2, '3', 0);
+                //Box_Record(2, '3', 0);
                 //arm_unload();
                 store_list[2][i] = 0;
                 Servo_SetAngle(3, 180);

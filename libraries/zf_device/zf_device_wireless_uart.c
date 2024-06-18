@@ -272,6 +272,11 @@ void wireless_uart_callback (void)
         else if(wireless_uart_data == ':') {Kd_correct2 += 0.1;}
         else if(wireless_uart_data == '\"') {Kd_correct2 -= 0.1;}
         
+        else if(wireless_uart_data == '*') {Kp_cor += 0.05;}
+        else if(wireless_uart_data == '/') {Kp_cor -= 0.05;}
+        else if(wireless_uart_data == '#') {Kd_cor += 0.1;}
+        else if(wireless_uart_data == '`') {Kd_cor -= 0.1;}
+        
 		else if(wireless_uart_data == 'z') 
 		{
            clock_init(SYSTEM_CLOCK_600M);  // ²»¿ÉÉ¾³ý

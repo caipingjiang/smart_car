@@ -102,24 +102,7 @@
   ..\..\libraries\sdk\drives\fsl_usdhc.h \
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
-  ..\..\libraries\sdk\board\clock_config.h \
-  ..\..\libraries\rt-thread\include\rtthread.h \
-  ..\..\libraries\rt-thread\bsp\imxrt\imxrt1064-nxp-evk\rtconfig.h \
-  ..\..\libraries\rt-thread\include\rtdebug.h \
-  ..\..\libraries\rt-thread\include\rtdef.h \
-  ..\..\libraries\rt-thread\include\rtlibc.h \
-  ..\..\libraries\rt-thread\include\libc\libc_stat.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\time.h \
-  ..\..\libraries\rt-thread\include\libc\libc_errno.h \
-  ..\..\libraries\rt-thread\include\libc\libc_fcntl.h \
-  ..\..\libraries\rt-thread\include\libc\libc_ioctl.h \
-  ..\..\libraries\rt-thread\include\libc\libc_dirent.h \
-  ..\..\libraries\rt-thread\include\libc\libc_signal.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\signal.h \
-  ..\..\libraries\rt-thread\include\libc\libc_fdset.h \
-  ..\..\libraries\rt-thread\include\rtservice.h \
-  ..\..\libraries\rt-thread\include\rtm.h \
-  ..\..\libraries\rt-thread\components\finsh\finsh_api.h \
-  ..\code\my_moter.h ..\code\my_encoder.h ..\code\my_image.h \
-  ..\code\vofa.h ..\code\my_uart.h ..\code\my_servo.h ..\code\filter.h \
-  ..\code\image.h D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\math.h
+  ..\..\libraries\sdk\board\clock_config.h ..\code\my_moter.h \
+  ..\code\my_encoder.h ..\code\my_image.h ..\code\vofa.h \
+  ..\code\my_uart.h ..\code\my_servo.h ..\code\filter.h ..\code\image.h \
+  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\math.h

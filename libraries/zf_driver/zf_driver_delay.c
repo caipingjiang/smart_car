@@ -35,7 +35,7 @@
 // ------------------
 //ÒÆÖ²rt-tread
 //-------------------
-#include "rtthread.h"
+//#include "rtthread.h"
 
 #include "zf_common_clock.h"
 #include "fsl_gpt.h"
