@@ -1,21 +1,12 @@
 ./objects/zf_driver_delay.o: ..\..\libraries\zf_driver\zf_driver_delay.c \
   ..\..\libraries\zf_common\zf_common_clock.h \
   ..\..\libraries\zf_common\zf_common_typedef.h \
-<<<<<<< HEAD
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdio.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdbool.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdarg.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\string.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
-=======
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdio.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdint.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdbool.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdarg.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\string.h \
-  D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdlib.h \
->>>>>>> bd2f02ca94d12d495e2dba6bdfc07b0be3b340bc
   ..\..\libraries\sdk\drives\fsl_common.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\assert.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \

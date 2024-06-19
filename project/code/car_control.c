@@ -276,13 +276,13 @@ void cross_move_control()
 		Control_Mode = 0;		//先走一段,不判断十字,确保出十字
 		v_x = 0;
 		v_y = tracking_speed;
-		system_delay_ms(1500);
+		system_delay_ms(1000);
 //		Control_Mode = 4;		//先直行一段确保出十字
 //		forward();
 //		system_delay_ms(2000);
 		
 		Image_Mode = 0;
-		system_delay_ms(500);
+		system_delay_ms(300);
 		Control_Mode = 0;
 
 		turn_flag = 0;						//走出十字后清零转向标志位
@@ -628,14 +628,13 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-#define MOVE_MODE	2		//到达三大类的移动方式：0为3张卡片都在内测，1为3张卡片都在外侧，2为内外侧都有
+#define MOVE_MODE	0		//到达三大类的移动方式：0为3张卡片都在内测，1为3张卡片都在外侧，2为内外侧都有
 static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 void start_finish_line_control()
 {
     if(find_start_finish_line())
 	{
-		uart_write_byte(UART_4, '1'); 
 		find_times++;
         if(find_times == 1)
         {
@@ -645,7 +644,7 @@ void start_finish_line_control()
         }
         else if(find_times == 2) //第二次识别，开始放卡片
         {
-
+			uart_write_byte(UART_4, '1'); 
 		#if		MOVE_MODE == 0
 			angle_turn = -90;
 			angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 

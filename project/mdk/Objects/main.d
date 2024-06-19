@@ -105,9 +105,5 @@
   ..\..\libraries\sdk\board\clock_config.h ..\code\my_moter.h \
   ..\code\my_encoder.h ..\code\my_image.h ..\code\vofa.h \
   ..\code\my_uart.h ..\code\my_servo.h ..\code\filter.h ..\code\my_key.h \
-<<<<<<< HEAD
   ..\code\image.h C:\keil5\ARM\ARMCLANG\Bin\..\include\math.h \
-=======
-  ..\code\image.h D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\math.h \
->>>>>>> bd2f02ca94d12d495e2dba6bdfc07b0be3b340bc
   ..\code\imu660ra.h ..\code\car_control.h

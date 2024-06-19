@@ -85,16 +85,15 @@ int main(void)
 		ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
 		
-		start_finish_line_control();
-		cross_move_control();
-		roundabout_move_control();
-		ART_control();
+		 start_finish_line_control();
+		 cross_move_control();
+		 roundabout_move_control();
+		 ART_control();
 		
-		ramp_control();
-		barrier_control();
+		 ramp_control();
+		 barrier_control();
 		
-		//system_delay_ms(5);
-
+//		system_delay_ms(5);
 		
     }
 }
