@@ -1,7 +1,7 @@
 #ifndef _vofa_h_
 #define _vofa_h_
 
-#define CH_COUNT    2               //自定义通道数量
+#define CH_COUNT    3               //自定义通道数量
 
 
 // type： 'd'-->整数 , 'f'-->浮点数  

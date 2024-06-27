@@ -12,7 +12,7 @@ float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 float target_angle = 0; //设定的角度值
 float target_slope  = 0;  //目标斜率
-int16 tracking_speed = 60;  //循迹速度
+int16 tracking_speed = 40;//60;  //循迹速度
 
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
 uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
@@ -46,7 +46,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 8000);
+	duty = func_limit(duty, 5000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_HIGH); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -57,12 +57,11 @@ void motor_set_duty(uint8 motor_num, int16 duty)
     }
     else           //反转
     {
-		int16 abs_duty = -duty;
-        if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_LOW); pwm_set_duty(MOTOR1_PWM, (uint32_t)abs_duty);}
-        if(motor_num == 2) { gpio_set_level(MOTOR2_DIR, GPIO_LOW); pwm_set_duty(MOTOR2_PWM, (uint32_t)abs_duty);}
+        if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_LOW); pwm_set_duty(MOTOR1_PWM, (uint32_t)-duty);}
+        if(motor_num == 2) { gpio_set_level(MOTOR2_DIR, GPIO_LOW); pwm_set_duty(MOTOR2_PWM, (uint32_t)-duty);}
 
-        if(motor_num == 3) { gpio_set_level(MOTOR3_DIR, GPIO_HIGH); pwm_set_duty(MOTOR3_PWM, (uint32_t)abs_duty);}//gpio_set_level(MOTOR3_DIR, GPIO_HIGH); pwm_set_duty(MOTOR3_PWM, (uint32_t)abs_duty);
-        if(motor_num == 4) { gpio_set_level(MOTOR4_DIR, GPIO_HIGH); pwm_set_duty(MOTOR4_PWM, (uint32_t)abs_duty);}//gpio_set_level(MOTOR4_DIR, GPIO_HIGH); pwm_set_duty(MOTOR4_PWM, (uint32_t)abs_duty);
+        if(motor_num == 3) { gpio_set_level(MOTOR3_DIR, GPIO_HIGH); pwm_set_duty(MOTOR3_PWM, (uint32_t)-duty);}//gpio_set_level(MOTOR3_DIR, GPIO_HIGH); pwm_set_duty(MOTOR3_PWM, (uint32_t)abs_duty);
+        if(motor_num == 4) { gpio_set_level(MOTOR4_DIR, GPIO_HIGH); pwm_set_duty(MOTOR4_PWM, (uint32_t)-duty);}//gpio_set_level(MOTOR4_DIR, GPIO_HIGH); pwm_set_duty(MOTOR4_PWM, (uint32_t)abs_duty);
     }   
 }
 
@@ -77,8 +76,8 @@ int16 Incremental_PI (uint8 motor_num, int16 Encoder, int16 Target)
     motor_bias_last[motor_num-1] = bias;
     
     //积分限幅
-    if(Pwm[motor_num-1]> 8000)Pwm[motor_num-1]= 8000;
-    if(Pwm[motor_num-1]<-8000)Pwm[motor_num-1]=-8000;
+    if(Pwm[motor_num-1]> 5000)Pwm[motor_num-1]= 5000;
+    if(Pwm[motor_num-1]<-5000)Pwm[motor_num-1]=-5000;
 	
     return (int16)Pwm[motor_num-1];
 }
@@ -169,7 +168,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
     out1 = func_limit(out1, 200); //限幅
 
     //赛道边线距离矫正pid
-    err2 = (450-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）
+    err2 = (430-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）//450 400
     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
     err_last2 = err2;
     out2 = func_limit(out2, 400); //限幅
@@ -333,8 +332,8 @@ void motor_control()
     if(Control_Mode == 0)
     {
         
-        v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
-        v_y = 0.3*v_y + 0.7*last_speed_y;
+        //v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
+        //v_y = 0.7*v_y + 0.3*last_speed_y;//0.3*v_y + 0.7*last_speed_y;
         
         // if(abs(Slope)<10)
         // {
@@ -348,8 +347,9 @@ void motor_control()
         // {
         //     v_y = func_limit_ab(v_y,30, 35);
         // }
-        last_speed_y = v_y;
-        tracking_speed = v_y;
+        // last_speed_y = v_y;
+        // tracking_speed = v_y;
+        v_y = tracking_speed;
     }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));

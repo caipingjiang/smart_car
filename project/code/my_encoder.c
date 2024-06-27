@@ -13,7 +13,6 @@
 #define ENCODER_4_A                 (QTIMER3_ENCODER2_CH1_B18)//QTIMER2_ENCODER2_CH1_C5
 #define ENCODER_4_B                 (QTIMER3_ENCODER2_CH2_B19)//QTIMER2_ENCODER2_CH2_C25//
 
-#define PIT_CH                      (PIT_CH0 )                                 // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
 int16 encoder_data[4];
 int16 encoder_data_last[4]={0};
 void my_encoder_init(void)
@@ -22,7 +21,6 @@ void my_encoder_init(void)
     encoder_quad_init(ENCODER_2,ENCODER_2_A,ENCODER_2_B);
     encoder_quad_init(ENCODER_3,ENCODER_3_A,ENCODER_3_B);
     encoder_quad_init(ENCODER_4,ENCODER_4_A,ENCODER_4_B);
-    pit_ms_init(PIT_CH,3);
 }
 
 void pit_handler_0 (void)

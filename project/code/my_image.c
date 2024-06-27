@@ -29,11 +29,21 @@ uint8 lose_point_num_L = 0, lose_point_num_R= 0;		//左、右边线丢线点数
 
 void my_image_init()
 {
-	mt9v03x_init();
+	while(1)
+	{
+		if(mt9v03x_init())
+		{
+			ips114_show_string(0,0,"camera init error");
+		}
+		else
+		{
+			break;
+		}
+		system_delay_ms(500);
+	}
 	mt9v03x_set_exposure_time(320);//120
 	system_delay_ms(100);
 	//设置自动曝光时间以应对差异较大的光线环境？？？
-	pit_ms_init(PIT_CH2,5);	//计算斜率、环岛十字的周期
 }
 
 //计算白色参考阈值
@@ -381,6 +391,7 @@ void roundabout_cross()
 #define cross_slope_limit		12		//十字路段最大斜率判断限制
 #define lose_point_num_limit_1	70		//丢线点数限制1
 #define lose_point_num_limit_2	5		//丢线点数限制2
+
 //-----------------------------------------------------------------------------------------------
 // 函数简介  十字路段状态机
 // 参数说明  
@@ -441,6 +452,7 @@ void cross()//十字
 }
 
 
+#define step					2		//采样点的步距
 //-----------------------------------------------------------------------------------------------
 // 函数简介  环岛路段状态机
 // 参数说明  
@@ -454,17 +466,68 @@ void roundabout()
 	{
 		if(track_wide > track_wide_limit_2 && longest < cross_longest_limit )	//借用十字的赛道宽度判断
 		{
+			int32 mean_x = 0, mean_y = 59;//(20+100)/2;
+			int32 temp_sum[3] = {0};
+			float r = 0;	//线性相关系数，绝对值在0到1之间，越接近1越线性相关
 			//左环岛
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2)
 			{
 				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
-				roundabout_dir = -1;		//标记环岛方向
+				roundabout_dir = -1;
+
+				// // 累加左环岛边缘值
+				// for(uint8 j = 20; j < 100; j += 2)
+				// {
+				// 	mean_x += (int32)boder_R[j];
+				// }
+				// mean_x /= 40; // 计算均值
+				// for(uint8 j = 20; j < 100; j += 2)
+				// {
+				// 	temp_sum[0] += ((int32)(boder_R[j] - mean_x) * ((int32)j - mean_y));
+				// 	temp_sum[1] += pow((int32)boder_R[j] - mean_x, 2);
+				// 	temp_sum[2] += pow((int32)j - mean_y, 2);
+				// }
+				// r = (float)temp_sum[0] / (sqrt(temp_sum[1] * temp_sum[2]) + 1);
+				// if(abs(r)>0.99)
+				// {
+				// 	roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
+				// 	roundabout_dir = -1;		//标记环岛方向
+				// 	// uint16 temp_width = 0;
+				// 	// for(uint8 i = 120*2/3;i <120;i++)
+				// 	// {
+				// 	// 	temp_width += (boder_R[i] - boder_L[i]);
+				// 	// }
+				// 	// if(temp_width/track_wide>1.3)
+				// 	// {
+				// 	// 	roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
+				// 	// 	roundabout_dir = -1;		//标记环岛方向
+				// 	// }
+				// }
+				
 			}
 			//右环岛
 			else if(lose_point_num_L < lose_point_num_limit_2 && lose_point_num_R > lose_point_num_limit_1)
 			{
 				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
-				roundabout_dir = 1;			//标记环岛方向
+				roundabout_dir = 1;
+				// for(uint8 j = 20; j < 100; j += 2)
+				// {
+				// 	mean_x += (int32)boder_L[j];
+				// }
+				// mean_x /= 40; // 计算均值
+				// for(uint8 j = 20; j < 100; j += 2)
+				// {
+				// 	temp_sum[0] += ((int32)(boder_L[j] - mean_x) * ((int32)j - mean_y));
+				// 	temp_sum[1] += pow((int32)boder_L[j] - mean_x, 2);
+				// 	temp_sum[2] += pow((int32)j - mean_y, 2);
+				// }
+				// r = (float)temp_sum[0] / (sqrt(temp_sum[1] *temp_sum[2]) + 1);
+				// if(abs(r)>0.99)
+				// {
+				// 	roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
+				// 	roundabout_dir = 1;			//标记环岛方向
+				// }
+				
 			}
 		}
 	}

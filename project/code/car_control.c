@@ -20,8 +20,10 @@ void cross_move_control()
 	int16 temp_distance = 0;		//临时距离
 	static uint8 cross_card_release_cnt = 0;		//环岛卡片释放次数(到了放置区不管有没有真的放卡片都会加1)
 	//Image_Mode = 0;
+	static uint8 time = 0;
 	if(cross_flag == 1)
 	{
+		time = 0;
 		Image_Mode = 3;
 		Control_Mode = 0;
 		move(90,25);
@@ -101,7 +103,32 @@ void cross_move_control()
 		{
 			temp_distance = 0;//临时距离
 			do
-			{		
+			{	
+				if(uart1_data_arr[0]==0)
+				{
+					time++;
+					if(time>20)	//矫正一直不动超过3s就退出矫正
+					{
+						Control_Mode = 4;
+						while(!uart1_data_arr[0])
+						{
+							time++;
+							if(time>30)
+							{
+								time = 0;
+								break;
+							}
+							move(90,20);
+							system_delay_ms(300);
+
+							move(-90,20);
+							system_delay_ms(300);
+						}
+						move(0,0);
+						time = 0;
+						break;
+					}
+				}
 				Control_Mode = 2;
 				Correct_Mode = 0;
 				w = 0;
@@ -276,7 +303,7 @@ void cross_move_control()
 		Control_Mode = 0;		//先走一段,不判断十字,确保出十字
 		v_x = 0;
 		v_y = tracking_speed;
-		system_delay_ms(1000);
+		system_delay_ms(600);
 //		Control_Mode = 4;		//先直行一段确保出十字
 //		forward();
 //		system_delay_ms(2000);
@@ -307,9 +334,10 @@ void roundabout_move_control()
 {
 	int16 temp_distance = 0;
 	static uint8 roundabout_card_release_cnt = 0;	//环岛放完卡片类别计数
-    if(roundabout_flag == 1 && turn_flag==0)
+    static uint8 time = 0;
+	if(roundabout_flag == 1 && turn_flag==0)
 	{
-		
+		time = 0;
 		angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 
     	v_x = 0;
 		v_y = 0;
@@ -318,7 +346,7 @@ void roundabout_move_control()
 		Image_Mode = 4;
 		//system_delay_ms(500);   //等待停车
 		move(90-roundabout_dir*30, 20);
-        system_delay_ms(1000);
+        system_delay_ms(900);
 
 		move(0,0);
 
@@ -364,8 +392,10 @@ void roundabout_move_control()
 			return;		//直接退出
 		}
 
+		
 		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 		{	
+			time = 0;
 			uart_write_byte(UART_4, '0');
 			temp_distance = 0;	//临时距离
 			do
@@ -422,6 +452,7 @@ void roundabout_move_control()
 	}
 	else if(roundabout_flag == 2)
 	{
+		time = 0;
 		uart_write_byte(UART_4, '1'); 
 		turn_flag = 0;	//清零上次的标志位
 		Control_Mode = 1;
@@ -445,11 +476,36 @@ void roundabout_move_control()
 			temp_distance = 0;	//临时距离
 			do
 			{
+				if(uart1_data_arr[0]==0)
+				{
+					time++;
+					if(time>20)	//矫正一直不动超过3s就退出矫正
+					{
+						Control_Mode = 4;
+						while(!uart1_data_arr[0])
+						{
+							time++;
+							if(time>30)
+							{
+								time = 0;
+								break;
+							}
+							move(90,20);
+							system_delay_ms(300);
+
+							move(-90,20);
+							system_delay_ms(300);
+						}
+						move(0,0);
+						time = 0;
+						break;
+					}
+				}
 				temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
 				Control_Mode = 2;
 				Correct_Mode = 1;
 				w = 0;
-				system_delay_ms(200);//等待矫正完成
+				system_delay_ms(100);//等待矫正完成
 			}
 			while(temp_distance>30);//距离大于30就一直矫正
 
@@ -523,8 +579,8 @@ void roundabout_move_control()
 
 		//以下，原本在roundabout_flag == 4里
 		Control_Mode = 4;	
-        move(90, 15);
-        system_delay_ms(700);
+        move(90, 20);
+        system_delay_ms(500);
 		move(0,0);
 		
     }
@@ -628,7 +684,7 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-#define MOVE_MODE	0		//到达三大类的移动方式：0为3张卡片都在内测，1为3张卡片都在外侧，2为内外侧都有
+#define MOVE_MODE	2		//到达三大类的移动方式：0为3张卡片都在内测，1为3张卡片都在外侧，2为内外侧都有
 static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 void start_finish_line_control()
@@ -969,132 +1025,146 @@ void ART_control()
 			case 1://转弯和矫正卡片
 			{
 				uart_write_byte(UART_4, '0'); 
-				int8 temp_slope = Slope;
-
-				Image_Mode = 4;	//挂起总钻风，防止误判
-				//停车
-				Control_Mode = 4;
-				move(0,0);
-				//system_delay_ms(1000);	
-
-				//90度转向
-				angle_now = Gyro_Angle.Zdata;
-				if(uart1_data_arr[0]<160)angle_turn = 90;
-				else angle_turn = -90;
-				while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
+				if(uart1_data_arr[2]<150)
 				{
-					Control_Mode = 3;
-					system_delay_ms(200);    //等待转向完成
-				}
-				
-				
-				
-				//进入卡片矫正
-				time = 0;//清零上次值
-				while( !uart1_data_arr[0] )//先确保转弯后矫正前能看到卡片
-				{
-					
-					if(time>60)	//如果三秒过后还没看到卡片就原路回转
-					{
-						time = 0;
-						angle_now = Gyro_Angle.Zdata;
-						angle_turn = -angle_turn;
-						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
-						{
-							Control_Mode = 3;
-							system_delay_ms(200);    //等待转向完成
-						}
+									
+					int8 temp_slope = Slope;
 
-						v_y = 30;
-						w = 0;
-						Image_Mode = 0;
-						system_delay_ms(50);
-						Control_Mode = 0;
-						return;
-					}
-
-					Image_Mode = 2;
-					Control_Mode = 1;
-					if(angle_turn>0)v_x = 20;
-					else v_x = -20;
-					system_delay_ms(50);
-					time += 1;
-				}
-				
-				while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
-				{
-					int16 temp_distance = 0;//临时距离
-					time = 0;
-					do
-					{	
-						//此判断加上去是为了解决转向后卡片坐标却为0，导致矫正时v_x和v_y也为零而一直不动的尴尬情况，这种情况一般可能是由于把黑影误识别了卡片
-						if(uart1_data_arr[0]==0)
-						{
-							time++;
-							if(time>40)	//矫正一直不动超过2s就退出矫正
-							{
-								time = 0;
-								break;
-							}
-						}
-						
-						temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_1[0], 2)+pow(uart1_data_arr[1] - finial_point_1[1], 2));
-						Control_Mode = 2;
-						Correct_Mode = 0;
-						w = 0;
-						system_delay_ms(50);//等待矫正完成
-						uart_write_byte(UART_4, '0');     
-					}
-					while(temp_distance>10);//距离大于30就一直矫正
-					
-
-					//能到这说明距离已经小于30了
+					Image_Mode = 4;	//挂起总钻风，防止误判
+					//停车
 					Control_Mode = 4;
-					move(0,0);				
-					if(uart4_data_arr[1]==1)        //识别到卡片
-					{
-						uart_write_byte(UART_4, '0');     
-						system_delay_ms(1000);
-
-						if(uart4_data_arr[1]==1)
-						{
-							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-							Box_In((char)uart4_data_arr[0],0);
-							//system_delay_ms(1000);
-						}
-						
-					}
-
-				}
-
-				if(abs(temp_slope) > 15)	//如果卡片所处的弯道很急，那么在转弯前先校正车身与赛道边界垂直
-				{
-					Control_Mode = 4;
-					move(-90, 20);
-					system_delay_ms(400);
 					move(0,0);
-					Image_Mode = 2;
-					system_delay_ms(50);
-					Control_Mode = 1;
-					system_delay_ms(800);
-				}
-				//回转
-				angle_now = Gyro_Angle.Zdata;
-				angle_turn = - angle_turn;
-				while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
-				{
-					Control_Mode = 3;
-					system_delay_ms(200);    //等待转向完成
-				}
-				
-				//复位循迹
-				Control_Mode = 0;
-				v_x = 0;
-				v_y = tracking_speed;
-				w = 0;
-				Image_Mode = 0;
+					//system_delay_ms(1000);	
 
-				break;
+					//90度转向
+					angle_now = Gyro_Angle.Zdata;
+					if(uart1_data_arr[0]<160)angle_turn = 90;
+					else angle_turn = -90;
+					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
+					{
+						Control_Mode = 3;
+						system_delay_ms(100);    //等待转向完成
+					}
+					
+					
+					
+					//进入卡片矫正
+					time = 0;//清零上次值
+					while( !uart1_data_arr[0] )//先确保转弯后矫正前能看到卡片
+					{
+						
+						if(time>30)	//如果1.5秒过后还没看到卡片就原路回转
+						{
+							time = 0;
+							angle_now = Gyro_Angle.Zdata;
+							angle_turn = -angle_turn;
+							move(0,0);
+							while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
+							{
+								Control_Mode = 3;
+								system_delay_ms(200);    //等待转向完成
+							}
+
+							w = 0;
+							Image_Mode = 0;
+							system_delay_ms(50);
+							Control_Mode = 0;
+							v_y = tracking_speed;
+							w = 0;
+							return;
+						}
+
+						Image_Mode = 2;
+						Control_Mode = 1;
+						if(angle_turn>0)v_x = 25;
+						else v_x = -25;
+						system_delay_ms(50);
+						time += 1;
+					}
+					
+					uint8 temp_cnt = 0;		//记录本次卡片拾取次数，如果本次卡片大于5次还没有拾取上来，就不拣卡片了
+					while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+					{
+						int16 temp_distance = 0;//临时距离
+						time = 0;
+						do
+						{	
+							//此判断加上去是为了解决转向后卡片坐标却为0，导致矫正时v_x和v_y也为零而一直不动的尴尬情况，这种情况一般可能是由于把黑影误识别了卡片
+							if(uart1_data_arr[0]==0)
+							{
+								time++;
+								if(time>40)	//矫正一直不动超过2s就退出矫正
+								{
+									time = 0;
+									break;
+								}
+							}
+							
+							temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_1[0], 2)+pow(uart1_data_arr[1] - finial_point_1[1], 2));
+							Control_Mode = 2;
+							Correct_Mode = 0;
+							w = 0;
+							system_delay_ms(50);//等待矫正完成
+							uart_write_byte(UART_4, '0');     
+						}
+						while(temp_distance>10);//距离大于30就一直矫正
+						
+
+						//能到这说明距离已经小于30了
+						Control_Mode = 4;
+						move(0,0);				
+						if(uart4_data_arr[1]==1)        //识别到卡片
+						{
+							uart_write_byte(UART_4, '0');     
+							system_delay_ms(1000);
+
+							if(uart4_data_arr[1]==1)
+							{
+								temp_cnt++;
+								
+								ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+								Box_In((char)uart4_data_arr[0],0);
+								if(temp_cnt>=5)//如果本次卡片大于5次还没有拾取上来，就不拣卡片了
+								{
+									temp_cnt = 0;
+									break;
+								}
+							}
+							
+						}
+
+					}
+
+					if(abs(temp_slope) > 15)	//如果卡片所处的弯道很急，那么在转弯前先校正车身与赛道边界垂直
+					{
+						Control_Mode = 4;
+						move(-90, 20);
+						system_delay_ms(400);
+						move(0,0);
+						Image_Mode = 2;
+						system_delay_ms(50);
+						Control_Mode = 1;
+						system_delay_ms(600);
+					}
+					//回转
+					angle_now = Gyro_Angle.Zdata;
+					angle_turn = - angle_turn;
+					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
+					{
+						Control_Mode = 3;
+						system_delay_ms(100);    //等待转向完成
+					}
+					
+					//复位循迹
+					Control_Mode = 0;
+					v_x = 0;
+					v_y = tracking_speed;
+					w = 0;
+					Image_Mode = 0;
+
+					break;
+				}
+
 				
 			}
 			
@@ -1113,18 +1183,8 @@ void ART_control()
 //-----------------------------------------------------------------------------------------------
 void ramp_control()
 {
-	// static float data_record[5] = {0};
-	// float sum = 0.0f;
-	// sum += imu660ra_gyro_y;
-	// sum -= data_record[0];
-	// for(uint8 i = 0; i < 4; i++)
-	// {
-	// 	data_record[i]  = data_record[i + 1];
-	// }
-	// data_record[4] = imu660ra_gyro_y;
-	// sum /= 5;
 
-	if(imu660ra_gyro_y<-500)
+	if(Gyro_Angle.Ydata<-7)//if(imu660ra_gyro_y<-500)
 	{
 		target_angle = Gyro_Angle.Zdata;
 		Control_Mode = 6;

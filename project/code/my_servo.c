@@ -41,7 +41,10 @@ void my_servo_init(void)
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
 	
 	//电磁铁初始化
-	pwm_init(magnet_PWM, 10000, 8000);
+	pwm_init(magnet_PWM, 10000, 0);
+
+    //pwm_init(PWM2_MODULE3_CHA_B9, 1000, 9000);
+    gpio_init(B9, GPO, 1, GPO_PUSH_PULL);
 	
 }
 //电磁铁， 0关闭， 1开启
@@ -113,7 +116,7 @@ void arm_down()
     system_delay_ms(200);
     Servo_SetAngle(1, 80);
 	magnet_set(1); 
-    system_delay_ms(400);   
+    system_delay_ms(550);   
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
 	Servo_SetAngle(1, 95);
@@ -132,8 +135,8 @@ void arm_down()
 void arm_up()
 {
     Servo_SetAngle(1, 150);
-    Servo_SetAngle(2, 239);
-	system_delay_ms(400);
+    Servo_SetAngle(2, 236);
+	system_delay_ms(600);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
 	system_delay_ms(600);
