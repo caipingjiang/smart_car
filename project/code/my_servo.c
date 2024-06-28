@@ -30,6 +30,8 @@
 #define Box_Servo_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange2))
 
 #define BOX_OFFSET	85
+#define SERVO_SPEED	1		//舵机打角速度，0为正常模式，1为slow模式
+
 //用于在Servo_SetAngle_Slow里记录角度	
 static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
 
@@ -45,6 +47,9 @@ void my_servo_init(void)
 
     //pwm_init(PWM2_MODULE3_CHA_B9, 1000, 9000);
     gpio_init(B9, GPO, 1, GPO_PUSH_PULL);
+	current_angle[0] = 100;
+	current_angle[1] = 40;
+	current_angle[2] = 0+BOX_OFFSET;
 	
 }
 //电磁铁， 0关闭， 1开启
@@ -97,21 +102,25 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
         {
             case 1:
                 pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(current_angle[servo_num-1]));
+				system_delay_ms(7);
                 break;
             case 2:
                 pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(current_angle[servo_num-1]));
+				system_delay_ms(2);
                 break;
             case 3:
                 pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(current_angle[servo_num-1]));
             default:
                 break;
         }
-        system_delay_ms(5);       //设置的延时时间
+        //system_delay_ms(5);       //设置的延时时间
     }
 }   
 
 void arm_down()
 {
+#if SERVO_SPEED == 0
+	
     Servo_SetAngle(2, 29);
     system_delay_ms(200);
     Servo_SetAngle(1, 80);
@@ -126,17 +135,32 @@ void arm_down()
 	Servo_SetAngle(2, 40);
     system_delay_ms(50);
     Servo_SetAngle(2, 240);
-    system_delay_ms(200);
-    Servo_SetAngle(1, 120);
+    system_delay_ms(400);
+    Servo_SetAngle(1, 130);
     system_delay_ms(400);
     magnet_set(0);
+	
+#elif SERVO_SPEED == 1
+
+	Servo_SetAngle_Slow(2, 29);
+    Servo_SetAngle_Slow(1, 83);
+	magnet_set(1); 
+	Servo_SetAngle_Slow(1, 95);
+	Servo_SetAngle_Slow(2, 35);
+    Servo_SetAngle_Slow(2, 240);
+    Servo_SetAngle_Slow(1, 150);
+    magnet_set(0);
+	
+	#endif
 }
 
 void arm_up()
 {
-    Servo_SetAngle(1, 150);
+#if SERVO_SPEED == 0
+	
+	Servo_SetAngle(1, 155);
     Servo_SetAngle(2, 236);
-	system_delay_ms(600);
+	system_delay_ms(400);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
 	system_delay_ms(600);
@@ -151,6 +175,22 @@ void arm_up()
     Servo_SetAngle(2, 28);
     system_delay_ms(500);
     magnet_set(0);
+	
+#elif SERVO_SPEED == 1
+
+	Servo_SetAngle_Slow(2, 236);
+	Servo_SetAngle_Slow(1, 170);
+    magnet_set(1);
+	Servo_SetAngle_Slow(1, 135);
+	Servo_SetAngle_Slow(2, 70);
+    Servo_SetAngle_Slow(1, 100);
+    Servo_SetAngle_Slow(2, 50);
+	Servo_SetAngle_Slow(1, 90);
+    Servo_SetAngle_Slow(2, 28);
+    magnet_set(0);
+	
+#endif
+
 }
 
 
@@ -158,45 +198,107 @@ void arm_up()
 
 void arm_hang()
 {
+#if SERVO_SPEED == 0
+
     magnet_set(0);
-    //system_delay_ms(500);
+    
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
+    system_delay_ms(700);
+#elif SERVO_SPEED == 1
+
+    magnet_set(0);
+    Servo_SetAngle_Slow(2, 100);
+    Servo_SetAngle_Slow(1, 100);
+
+#endif
 }
 
 void arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
 {
     Servo_SetAngle(3, a*90);
 	Servo_SetAngle(2, 29);
+	current_angle[1] = 29;
     system_delay_ms(500);
     Servo_SetAngle(1, 80);
+	current_angle[0] = 80;
     system_delay_ms(700);
     magnet_set(1);    
 	Servo_SetAngle(1, 90);
+    current_angle[0] = 90;
 	system_delay_ms(100);
 	Servo_SetAngle(1, 95);
 	Servo_SetAngle(2, 35);
+    current_angle[0] = 95;
+    current_angle[1] = 35;
 	system_delay_ms(100);
     Servo_SetAngle(1, 100);
 	Servo_SetAngle(2, 40);
+    current_angle[0] = 100;
+    current_angle[1] = 40;
     system_delay_ms(200);
 	Servo_SetAngle(2, 150);
+    current_angle[1] = 150;
     system_delay_ms(200);
     Servo_SetAngle(1, 115);
-    Servo_SetAngle(1, 115);
+    current_angle[0] = 115;
     Servo_SetAngle(3, b*90);
     system_delay_ms(800);
 	Servo_SetAngle(2, 60);
+    current_angle[1] = 60;
 	system_delay_ms(200);
 	Servo_SetAngle(1, 90);
+    current_angle[0] = 90;
 	system_delay_ms(50);
     Servo_SetAngle(2, 28);
+    current_angle[1] = 28;
     system_delay_ms(500);
     magnet_set(0);
 	arm_hang();
 
 }
 
+void arm_up_slow()
+{
+    Servo_SetAngle_Slow(1, 170);
+    Servo_SetAngle_Slow(2, 236);
+	//system_delay_ms(600);
+    magnet_set(1);
+	Servo_SetAngle_Slow(1, 163);
+	//system_delay_ms(600);
+	Servo_SetAngle_Slow(1, 135);
+	//system_delay_ms(100);
+	Servo_SetAngle_Slow(2, 70);
+	//system_delay_ms(400);
+	Servo_SetAngle_Slow(1, 125);
+    //system_delay_ms(150);
+	Servo_SetAngle_Slow(1, 90);
+	//system_delay_ms(50);
+    Servo_SetAngle_Slow(2, 28);
+    //system_delay_ms(500);
+    magnet_set(0);
+}
+void arm_down_slow()
+{
+    Servo_SetAngle_Slow(2, 29);
+	//system_delay_ms(200);
+    Servo_SetAngle_Slow(1, 80);
+	magnet_set(1); 
+    //system_delay_ms(550);   
+	Servo_SetAngle_Slow(1, 90);
+	//system_delay_ms(50);
+	Servo_SetAngle_Slow(1, 95);
+	Servo_SetAngle_Slow(2, 35);
+	//system_delay_ms(50);
+    Servo_SetAngle_Slow(1, 95);
+	Servo_SetAngle_Slow(2, 45);
+    //system_delay_ms(50);
+    Servo_SetAngle_Slow(2, 240);
+	//system_delay_ms(400);
+    Servo_SetAngle_Slow(1, 150);
+    //system_delay_ms(400);
+    magnet_set(0);
+}
 
 // 储物舱全局记录------------------------------------------->
 

@@ -565,7 +565,7 @@ uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态
 	uint8 black_block_num = 0;	//统计的斑马线黑色块数量
-	for(uint8 i = 0; i<MT9V03X_W; i++)
+	for(uint8 i = 10; i<MT9V03X_W-10; i++)
 	{
 		switch(judge_state)
 		{

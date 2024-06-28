@@ -99,8 +99,10 @@ void cross_move_control()
 			return;		//直接退出
 		}
 
-		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+		while(isSame(uart1_data_arr[0]))	//如果识别到了有卡片就一直拾取，直到拾取完
 		{
+			time = 0;
+			uart_write_byte(UART_4, '0');
 			temp_distance = 0;//临时距离
 			do
 			{	
@@ -135,7 +137,7 @@ void cross_move_control()
 				system_delay_ms(100);//等待矫正完成
 				temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_1[0], 2)+pow(uart1_data_arr[1] - finial_point_1[1], 2));
 			}
-			while(temp_distance>10);//距离大于30就一直矫正
+			while(temp_distance>10 && isSame(uart1_data_arr[0]));//距离大于30就一直矫正
 
 			//能到这说明距离已经小于30了
 			Control_Mode = 4;
@@ -143,10 +145,10 @@ void cross_move_control()
 
 			uart_write_byte(UART_4, '0'); 
 			system_delay_ms(500);
-			while(uart4_data_arr[1]!=1)
-			{
-				system_delay_ms(100);
-			}
+			// while(uart4_data_arr[1]!=1)
+			// {
+			// 	system_delay_ms(100);
+			// }
 			//system_delay_ms(1000);//延时，前面几张给过滤掉
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
@@ -393,7 +395,7 @@ void roundabout_move_control()
 		}
 
 		
-		while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
+		while(isSame(uart1_data_arr[0]))	//如果识别到了有卡片就一直拾取，直到拾取完
 		{	
 			time = 0;
 			uart_write_byte(UART_4, '0');
@@ -406,7 +408,7 @@ void roundabout_move_control()
 				w = 0;
 				system_delay_ms(50);//等待矫正完成
 			}
-			while(temp_distance>10);//距离大于30就一直矫正
+			while(temp_distance>10 && isSame(uart1_data_arr[0]));//距离大于30就一直矫正
 			//system_delay_ms(500); 	//等待几秒让art先进几张图片冲刷一下以前的图片
 			Control_Mode = 4;
 			move(0,0);
@@ -445,7 +447,7 @@ void roundabout_move_control()
 
 		Control_Mode = 4;
 		move(90,15);
-		system_delay_ms(700);
+		system_delay_ms(400);
 		move(0,0);
         turn_flag = 1;
         
@@ -581,6 +583,10 @@ void roundabout_move_control()
 		Control_Mode = 4;	
         move(90, 20);
         system_delay_ms(500);
+		Image_Mode = 2;
+		Control_Mode = 1;
+		v_x = -(roundabout_dir*15);
+		system_delay_ms(400);
 		move(0,0);
 		
     }
@@ -625,10 +631,10 @@ void roundabout_move_control()
 					uart_write_byte(UART_4, '1');     
 					system_delay_ms(1000);
 
-					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
-					{
-						system_delay_ms(100);
-					}
+					// while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+					// {
+					// 	system_delay_ms(100);
+					// }
 					//system_delay_ms(1000);
 					if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 					{
@@ -689,7 +695,7 @@ static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 void start_finish_line_control()
 {
-    if(find_start_finish_line())
+    if(find_start_finish_line() && !(cross_flag || roundabout_flag))
 	{
 		find_times++;
         if(find_times == 1)
@@ -1203,7 +1209,7 @@ void ramp_control()
 		Control_Mode = 0;
 		v_x = 0;
 		w = 0;
-		tracking_speed = 60;
+		//tracking_speed = 60;
 		
 	}
 }

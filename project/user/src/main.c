@@ -80,7 +80,8 @@ int main(void)
 	ips114_draw_line(188,20,187+40,20,RGB565_GREEN);
 	ips114_draw_line(188,100,187+40,100,RGB565_GREEN);
 	while(1)
-    {		
+    {	
+			ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
@@ -105,7 +106,7 @@ int main(void)
 //		//ips114_show_int(0,80,(const int32)mean_x,10);
 //		ips114_show_float(0,80,(float)temp_sum[0],8,2);
 
-	}
+		}
 
 //		ips114_show_int(50,110,Slope, 2);
 		// ips114_show_int(50,40,uart1_data_arr[0], 4);
@@ -119,7 +120,7 @@ int main(void)
 		
 		ramp_control();
 		barrier_control();
-		
+
 //		system_delay_ms(5);
 		
     }
