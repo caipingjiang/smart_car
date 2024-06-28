@@ -631,11 +631,11 @@ void roundabout_move_control()
 					uart_write_byte(UART_4, '1');     
 					system_delay_ms(1000);
 
-					// while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
-					// {
-					// 	system_delay_ms(100);
-					// }
-					//system_delay_ms(1000);
+					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+					{
+						system_delay_ms(100);
+					}
+					system_delay_ms(1000);
 					if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 					{
 						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
