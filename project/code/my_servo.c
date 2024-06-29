@@ -4,7 +4,7 @@
 #define SERVO_MOTOR_PWM2             (PWM2_MODULE1_CHA_C8)   //机械臂舵机2
 #define SERVO_MOTOR_PWM3             (PWM2_MODULE0_CHB_C7)   //储物舱舵机
 #define magnet_PWM             		  (PWM1_MODULE3_CHA_B10)  //PWM2_MODULE3_CHA_B9 //(PWM1_MODULE3_CHA_B10)  //电磁铁
-
+//#define LED_PWM             		  (PWM2_MODULE3_CHA_B9)  
 
 #define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
 #define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
@@ -39,6 +39,8 @@ void my_servo_init(void)
     pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(40));
     system_delay_ms(200);
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
+	
+	//pwm_init(LED_PWM, 1000, 8000);
 	
 	//电磁铁初始化
 	pwm_init(magnet_PWM, 10000, 8000);
@@ -113,7 +115,7 @@ void arm_down()
     system_delay_ms(200);
     Servo_SetAngle(1, 80);
 	magnet_set(1); 
-    system_delay_ms(400);   
+    system_delay_ms(600);   
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
 	Servo_SetAngle(1, 95);
@@ -132,8 +134,8 @@ void arm_down()
 void arm_up()
 {
     Servo_SetAngle(1, 150);
-    Servo_SetAngle(2, 239);
-	system_delay_ms(400);
+    Servo_SetAngle(2, 236);
+	system_delay_ms(600);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
 	system_delay_ms(600);
