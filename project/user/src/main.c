@@ -119,8 +119,8 @@ int main(void)
 		ART_control();
 		
 		ramp_control();
-		barrier_control();
-
+		
+		//barrier_control();
 //		system_delay_ms(5);
 		
     }

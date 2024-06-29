@@ -246,13 +246,22 @@ void cross_move_control()
 			move(0,0);		
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
+				time = 0;
 				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 				{
+					time++;
+					if(time>30)
+					{
+						time = 0;
+						goto Flag0;
+						break;
+					}
 					system_delay_ms(100);
 				}
 				//system_delay_ms(1000);
 				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 				{
+					Flag0:
 					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 					Box_Out((char)uart4_data_arr[0],1);
 					cross_card_release_cnt++;	//记录到放置区停下来的次数
@@ -518,13 +527,21 @@ void roundabout_move_control()
 			
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
+				time = 0;
 				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 				{
+					time++;
+					if(time>30)	//如果3s过后还是没有正确数据（此时大概率没有找到矩形，uart4_data_arr[0]为0），就不再等待了
+					{
+						time = 0;
+						goto Flag1;
+					}
 			 		system_delay_ms(100);
 				}
 				//system_delay_ms(1000);
 				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 				{
+					Flag1:
 					roundabout_card_release_cnt ++;	//注意：是到了一个放置区就加1
 					ips114_show_int(80,80,roundabout_card_release_cnt,2);
 					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
@@ -593,7 +610,6 @@ void roundabout_move_control()
 	else if(roundabout_flag == 4)
 	{
 		turn_flag = 0;	//清零上次的标志位
-		
 		Image_Mode = 2;
 		Control_Mode = 1;
 		v_x = -(roundabout_dir*15);
@@ -619,62 +635,57 @@ void roundabout_move_control()
 
 			Control_Mode = 4;
 			move(0,0);	
-			if(uart4_data_arr[0])	//只要还有卡片就一直执行下面的操作
+			//能到这说明距离已经小于30了
+			Control_Mode = 4;
+			move(0,0);		
+			
+			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
+				uart_write_byte(UART_4, '1');     
+				system_delay_ms(500);
 
-				//能到这说明距离已经小于30了
-				Control_Mode = 4;
-				move(0,0);		
-				
-				if(uart4_data_arr[1]==1)        //识别到卡片
+				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 				{
-					uart_write_byte(UART_4, '1');     
-					system_delay_ms(1000);
+					system_delay_ms(100);
+				}
+				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
+				{
+					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+					Box_Out((char)uart4_data_arr[0],1);
 
-					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+					
+					Control_Mode = 4;  
+					move(-90,10);
+					system_delay_ms(500);       
+					Control_Mode = 1;
+					v_x = roundabout_dir*30;
+					v_y = 0;
+					Image_Mode = 2;		//不能为1
+					system_delay_ms(1800);    
+
+					
+					Control_Mode = 3;
+					angle_now = Gyro_Angle.Zdata;
+					move(0,0);
+					angle_turn = -angle_turn;
+					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
 					{
-						system_delay_ms(100);
-					}
-					system_delay_ms(1000);
-					if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
-					{
-						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-						Box_Out((char)uart4_data_arr[0],1);
-
-						
-						Control_Mode = 4;  
-						move(-90,10);
-						system_delay_ms(500);       
-						Control_Mode = 1;
-						v_x = roundabout_dir*30;
-						v_y = 0;
-						Image_Mode = 2;		//不能为1
-						system_delay_ms(1800);    
-
-						
 						Control_Mode = 3;
-						angle_now = Gyro_Angle.Zdata;
-						move(0,0);
-						angle_turn = -angle_turn;
-						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度就认为转向完成
-						{
-							Control_Mode = 3;
-							system_delay_ms(200);    //等待转向完成
-						}
-						
-						Image_Mode = 0;
-						system_delay_ms(200);	//等待把roundabout_flag 置为0
-						Control_Mode = 0;
-						v_x = 0;
-						v_y = tracking_speed;
-						w = 0;
-
-						roundabout_card_release_cnt = 0;	//清零上一状态
-						roundabout_card_releaseFinish = false;
-						memset(temp_class_arr, 0, sizeof(temp_class_arr));	//在出环岛和十字时将记录数组全部清零，即使本次环岛（十字）出错也不影响下次环岛（十字）的记录与判别
+						system_delay_ms(200);    //等待转向完成
 					}
+					
+					Image_Mode = 0;
+					system_delay_ms(200);	//等待把roundabout_flag 置为0
+					Control_Mode = 0;
+					v_x = 0;
+					v_y = tracking_speed;
+					w = 0;
 
-				}		
+					roundabout_card_release_cnt = 0;	//清零上一状态
+					roundabout_card_releaseFinish = false;
+					memset(temp_class_arr, 0, sizeof(temp_class_arr));	//在出环岛和十字时将记录数组全部清零，即使本次环岛（十字）出错也不影响下次环岛（十字）的记录与判别
+				}
+	
 			}
 			
 			

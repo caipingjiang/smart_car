@@ -7,8 +7,6 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle);
 void arm_down();
 void arm_up();
 void arm_hang();
-void arm_up_slow();
-void arm_down_slow();
 void magnet_set(uint8 state);
 void Box_In(char card_class, uint8 cross_roundabout_Flag);
 void Box_Out(char label_num, uint8 cross_roundabout_Flag);
