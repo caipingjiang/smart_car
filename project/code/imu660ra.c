@@ -22,13 +22,13 @@ void imu660_zeroBias(void)//陀螺仪零漂
 	Gyro_Bias.Zdata /= 500;//取平均数
 #endif	
 
-	pit_ms_init(PIT_CH1, 5);//注意pit开启时间在零飘之后，不要放在my_imu660ra_init里，否则Gyro_Angle.Zdata会出问题
 }
 
 void my_imu660ra_init()
 {
 	imu660ra_init();
 	Gyro_Angle.Zdata = 0;
+	Gyro_Angle.Ydata = 0;
 	Gyro_Bias.Zdata = 0;
 }
 void pit_handler_1()
@@ -50,10 +50,9 @@ void pit_handler_1()
 	imu660ra_get_acc();
 	imu660ra_get_gyro();      
     tra_gyro_z = imu660ra_gyro_transition(imu660ra_gyro_z);//转换为度每秒后的角速度
-	tra_acc_x = imu660ra_acc_transition(imu660ra_acc_x);
-	tra_acc_y = imu660ra_acc_transition(imu660ra_acc_y);
-	tra_acc_z = imu660ra_acc_transition(imu660ra_acc_z);
+	tra_gyro_y = imu660ra_gyro_transition(imu660ra_gyro_y);
 	Gyro_Angle.Zdata += (tra_gyro_z*0.005-Gyro_Bias.Zdata);
+	Gyro_Angle.Ydata += (tra_gyro_y*0.005-Gyro_Bias.Ydata);
 	//ips114_show_float(0,20,Gyro_Angle.Zdata,6,3);中断不要放任何显示
 
 }

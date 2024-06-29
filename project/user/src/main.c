@@ -14,13 +14,15 @@ int16 Target_Speed=1; //测试用
 
 void pit_handler_3()
 {
-	FW_Data[0].type = 'f';
-	FW_Data[1].type = 'f';
+	FW_Data[0].type = 'd';
+	FW_Data[1].type = 'd';
+	FW_Data[2].type = 'd';
 	// FW_Data[2].type = 'f';
 	// FW_Data[3].type = 'd';
 	// FW_Data[4].type = 'd';
-	FW_Data[0].float_data = Kp_cor;
-	FW_Data[1].float_data = Kd_cor;
+	FW_Data[0].int_data = track_wide;
+	FW_Data[1].int_data = lose_point_num_L;
+	FW_Data[2].int_data = lose_point_num_R;
 	// FW_Data[2].float_data =  imu660ra_gyro_z;
 	// FW_Data[3].int_data =  track_wide;
 	// FW_Data[4].int_data =  Slope;
@@ -47,52 +49,78 @@ int main(void)
 	imu660_zeroBias();
 	my_servo_init();
 //	my_key_init();
-	my_image_init();
+	
     wireless_uart_init();
-	//pit_ms_init(PIT_CH3, 20);
+	
 	//ImagePerspective_Init();
 	my_uart_init();
+	//下面三个初始化放在最后，因为含有pit初始化
+	
+	my_image_init();
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	//timer_init(GPT_TIM_1,TIMER_US);
 	
- 	//interrupt_set_priority(LPUART8_IRQn,4);
+ 	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 0);
 	interrupt_set_priority(LPUART1_IRQn,1);
 	interrupt_set_priority(LPUART4_IRQn,2);
 	interrupt_global_enable(0);
+
+	pit_ms_init(PIT_CH0, 3);	//编码器
+	pit_ms_init(PIT_CH1, 5);	//陀螺仪
+	pit_ms_init(PIT_CH2, 5);	//总钻风
+	//pit_ms_init(PIT_CH3, 20);	//无线串口发送
+
     // 此处编写用户代码 例如外设初始化代码等
 												
 	ips114_draw_line(middle -  30, 20, middle + 30, 20, RGB565_GREEN);
 	ips114_draw_line(0,40,187+40,40,RGB565_PURPLE);
 	ips114_draw_line(0,80,187+40,80,RGB565_PURPLE);
+	ips114_draw_line(188,20,187+40,20,RGB565_GREEN);
+	ips114_draw_line(188,100,187+40,100,RGB565_GREEN);
 	while(1)
-    {		
+    {	
+			ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+		
+		// uint16 temp_width = 0;
+		// uint16 temp_width1 = 0, temp_width2 = 0;
+		// for(uint8 i = 120*2/3;i <120;i++)
+		// {
+		// 	temp_width += (boder_R[i] - boder_L[i]);
+		// 	temp_width1 += boder_R[i];
+		// 	temp_width2 += boder_R[i-40];
+		// }
+		// ips114_show_float(0,80,(float)track_wide/temp_width,2,3);
+		// ips114_show_int(0,100,temp_width1-temp_width2,4);
+
+		//r = (float)temp_sum[0] / (sqrt((float)temp_sum[1] * sqrt(temp_sum[2])));
+		//if(r>0.7);
+//		ips114_show_float(60,0,r,5,3);ips114_show_float(140,0,r*r,5,3);
+//		ips114_show_int(0,20,(const int32)temp_sum[0],10);
+//		ips114_show_int(0,40,(const int32)temp_sum[1],10);
+//		ips114_show_int(0,60,(const int32)temp_sum[2],10);
+//		//ips114_show_int(0,80,(const int32)mean_x,10);
+//		ips114_show_float(0,80,(float)temp_sum[0],8,2);
+
 		}
-//		ips114_show_float(60, 60, tra_acc_x, 2, 2);
-//		ips114_show_float(60, 80, tra_acc_y, 2, 2);
-//		ips114_show_float(60, 100, tra_acc_z, 2, 2);
-//		ips114_show_float(120, 60, imu660ra_gyro_x, 4, 2);
-//		ips114_show_float(120, 80, imu660ra_gyro_y, 4, 2);
-//		ips114_show_float(120, 100, imu660ra_gyro_z, 4, 2);
+
 //		ips114_show_int(50,110,Slope, 2);
-		ips114_show_float(50,110,Kp_cor, 2,2);
-		ips114_show_float(90,110,Kd_cor, 2,2);
-		ips114_show_int(50,40,uart1_data_arr[0], 4);
-		ips114_show_int(90,40,uart1_data_arr[1], 4);
+		// ips114_show_int(50,40,uart1_data_arr[0], 4);
+		// ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
+		ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
+		start_finish_line_control();
+		cross_move_control();
+		roundabout_move_control();
+		ART_control();
 		
-		 start_finish_line_control();
-		 cross_move_control();
-		 roundabout_move_control();
-		 ART_control();
+		ramp_control();
 		
-		 ramp_control();
-		 barrier_control();
-		
+		//barrier_control();
 //		system_delay_ms(5);
 
 		//system_delay_ms(2000);
