@@ -1,0 +1,142 @@
+/*!
+@page middleware_log Middleware Change Log
+@section tensorflow_lite eIQ TensorFlow Lite for Microcontrollers library
+  Current version is 23-09-18
+
+  - 22-09-18
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version
+        from the 18th of September 2023
+      - Updated third party library source codes:
+        - CMSIS-NN
+
+  - 22-03-23
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version
+        from the 23rd of March 2023
+      - Updated third party library source codes:
+        - CMSIS-NN
+        - Xtensa NN library
+
+  - 22-09-19
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version
+        from the 19th of September 2022
+      - Updated third party library source codes:
+        - CMSIS-NN
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+        - Ruy
+        - Xtensa NN library
+    - Improvements
+      - Shortened example names
+
+  - 22-02-16
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version
+        from the 16th of February 2022
+      - Updated third party library source codes:
+        - CMSIS-NN
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+        - Ruy
+        - Xtensa NN library
+
+  - 2.6.0
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version 2.6.0
+      - Updated third party library source codes:
+        - CMSIS-NN
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+        - Ruy
+        - Xtensa NN library
+
+  - 2.4.1
+    - New Features
+      - Updated eIQ TensorFlow Lite for Microcontrollers library to version 2.4.1
+      - Removed source codes related to TensorFlow Lite library only
+      - Updated third party library source codes:
+        - CMSIS-NN
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+        - Ruy
+      - Converted TensorFlow Lite examples to TensorFlow Lite for
+        Microcontrollers (changed API use)
+
+  - 2.3.1
+    - New Features
+      - Updated eIQ TensorFlow Lite library to version based
+        on the TensorFlow Lite library version 2.3.1
+      - Added TensorFlow Lite for Microcontrollers library source codes
+      - Updated third party library source codes:
+        - Abseil
+        - Eigen
+        - Farmhash
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+      - Added third party library source codes:
+        - CMSIS-NN
+        - Ruy
+      - Added examples:
+        - tensorflow_lite_micro_label_image
+
+  - 2.1.0
+    - New Features
+      - Updated eIQ TensorFlow Lite library to version based
+        on the TensorFlow Lite library version 2.1.0
+      - Updated third party library source codes:
+        - Eigen
+        - Farmhash
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+      - Added third party library source codes:
+        - Abseil
+      - Added examples:
+        - tensorflow_lite_benchmark
+
+  - 1.14.0
+    - New Features
+      - Updated eIQ TensorFlow Lite library to version based
+        on the TensorFlow Lite library version 1.14.0
+      - Updated third party library source codes:
+        - Eigen
+        - Farmhash
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+      - Added examples:
+        - tensorflow_lite_adt
+    - Improvements
+      - Extended examples:
+        - tensorflow_lite_cifar10
+          - Added camera and LCD support
+          - Realtime camera image inference
+        - tensorflow_lite_kws
+          - Added microphone and headphone support
+          - Realtime audio inference
+        - tensorflow_lite_label_image
+          - Added camera and LCD support
+          - Realtime camera image inference
+
+  - 1.11.0
+    - New Features
+      - Added eIQ TensorFlow Lite library based on TensorFlow Lite version 1.11.0
+      - Added third party library source codes:
+        - Eigen
+        - Farmhash
+        - FFT2D
+        - FlatBuffers
+        - Gemmlowp
+      - Added examples:
+        - tensorflow_lite_cifar10
+        - tensorflow_lite_kws
+        - tensorflow_lite_label_image
+        - tensorflow_lite_lib
+*/

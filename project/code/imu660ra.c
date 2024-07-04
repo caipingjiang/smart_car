@@ -1,10 +1,13 @@
 #include "zf_common_headfile.h"
 #include "imu660ra.h"
-
-#define isZero_Bias		0	//是否开启零漂，0-关闭， 1-开启
+#include "math.h"
+#define isZero_Bias		1	//是否开启零漂，0-关闭， 1-开启
 gyro_param_t Gyro_Bias;    //陀螺仪零飘
 gyro_param_t Gyro_Angle;   //陀螺仪实时角度
+gyro_param_t Acc_Angle;
+gyro_param_t Fusion_Angle;	//数据融合后角度
 float tra_acc_x, tra_acc_y, tra_acc_z, tra_gyro_x,tra_gyro_y, tra_gyro_z;//转换为度每秒后的角速度
+float K = 0.1f;	//互补滤波系数
 
 void imu660_zeroBias(void)//陀螺仪零漂
 {
@@ -30,6 +33,10 @@ void my_imu660ra_init()
 	Gyro_Angle.Zdata = 0;
 	Gyro_Angle.Ydata = 0;
 	Gyro_Bias.Zdata = 0;
+	Acc_Angle.Xdata = 0;
+	Acc_Angle.Ydata = 0;
+	Acc_Angle.Zdata = 0;
+	Fusion_Angle.Ydata = 0;
 }
 void pit_handler_1()
 {           
@@ -53,7 +60,15 @@ void pit_handler_1()
 	tra_gyro_y = imu660ra_gyro_transition(imu660ra_gyro_y);
 	Gyro_Angle.Zdata += (tra_gyro_z*0.005-Gyro_Bias.Zdata);
 	Gyro_Angle.Ydata += (tra_gyro_y*0.005-Gyro_Bias.Ydata);
-	//ips114_show_float(0,20,Gyro_Angle.Zdata,6,3);中断不要放任何显示
+
+	// tra_acc_x = imu660ra_acc_transition(imu660ra_acc_x);
+	// tra_acc_z = imu660ra_acc_transition(imu660ra_acc_z);
+	// if (imu660ra_acc_z == 0)
+	// 	Acc_Angle.Ydata = 90;
+    // else
+	// 	Acc_Angle.Ydata = atan((float)imu660ra_acc_x/imu660ra_acc_z)*180/3.14;
+
+	// Fusion_Angle.Ydata = K*Acc_Angle.Ydata + (1-K)*Gyro_Angle.Ydata;
+
 
 }
-

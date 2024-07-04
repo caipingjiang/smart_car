@@ -15,6 +15,7 @@ void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_di
 void find_start_point(uint8 image[][188]);
 void roundabout_cross(); //»·µº
 uint8 find_start_finish_line();
+uint32 curvity_calculate(uint8* slide_line, uint8* longest);
 void cross();
 void roundabout();
 uint8 start_finial_line_car_find();

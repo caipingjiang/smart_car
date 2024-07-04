@@ -8,7 +8,7 @@
 #include "math.h"
 #include "imu660ra.h"
 #include "car_control.h"
-
+#include "my_buzzer.h"
 uint8 data_buffer[32];//≤‚ ‘”√
 int16 Target_Speed=1; //≤‚ ‘”√
 
@@ -49,7 +49,7 @@ int main(void)
 	imu660_zeroBias();
 	my_servo_init();
 //	my_key_init();
-	
+	buzzer_init();
     wireless_uart_init();
 	
 	//ImagePerspective_Init();
@@ -81,7 +81,7 @@ int main(void)
 	ips114_draw_line(188,100,187+40,100,RGB565_GREEN);
 	while(1)
     {	
-			ips114_show_uint(90,90,track_wide,4);
+		ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
@@ -108,19 +108,24 @@ int main(void)
 
 		}
 
-//		ips114_show_int(50,110,Slope, 2);
+		ips114_show_int(50,110,Slope, 2);
 		// ips114_show_int(50,40,uart1_data_arr[0], 4);
 		// ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
-		ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
+		
+		// ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
+		// ips114_show_float(0,20,Acc_Angle.Ydata,3,2);
+		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
 		ART_control();
 		
 		ramp_control();
-		
-		//barrier_control();
+		barrier_control();
+//		arm_up();
+//		arm_hang();
+		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);
 		
     }

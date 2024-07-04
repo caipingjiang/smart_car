@@ -6,7 +6,7 @@
 #define magnet_PWM             		  (PWM1_MODULE3_CHA_B10)  //PWM2_MODULE3_CHA_B9 //(PWM1_MODULE3_CHA_B10)  //电磁铁
 
 
-#define SERVO_MOTOR_FREQ            (50 )                   // 定义主板上舵机频率  请务必注意范围 50-300
+#define SERVO_MOTOR_FREQ            (150)                   // 定义主板上舵机频率  请务必注意范围 50-300
 #define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
 #define SERVO_MOTOR_MaxRange2       (360)                   //360度舵机  (储物舱的舵机)
 #define SERVO_MOTOR_MaxRange3       (360)                   //360度舵机(可控制角度)  (机械臂上面的舵机)
@@ -107,11 +107,11 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
         {
             case 1:
                 pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(current_angle[servo_num-1]));
-				system_delay_ms(5);
+				system_delay_ms(4);
                 break;
             case 2:
                 pwm_set_duty(SERVO_MOTOR_PWM2,(uint32)Arm_Servo2_Angle(current_angle[servo_num-1]));
-				system_delay_ms(2.5);
+				system_delay_us(2000);
                 break;
             case 3:
                 pwm_set_duty(SERVO_MOTOR_PWM3,(uint32)Box_Servo_Angle(current_angle[servo_num-1]));
@@ -149,8 +149,9 @@ void arm_down()
 #elif SERVO_SPEED == 1
 
 	Servo_SetAngle_Slow(2, 29);
-    Servo_SetAngle_Slow(1, 83);
+    Servo_SetAngle_Slow(1, 80);
 	magnet_set(1); 
+    system_delay_ms(100);
 	Servo_SetAngle_Slow(1, 95);
 	Servo_SetAngle_Slow(2, 35);
     Servo_SetAngle_Slow(2, 240);
@@ -184,15 +185,22 @@ void arm_up()
 	
 #elif SERVO_SPEED == 1
 
-	Servo_SetAngle_Slow(2, 236);
+	//Servo_SetAngle_Slow(2, 236);
+    Servo_SetAngle(2, 236);
+    system_delay_ms(300);
 	Servo_SetAngle_Slow(1, 170);
     magnet_set(1);
+    system_delay_ms(200);
 	Servo_SetAngle_Slow(1, 135);
-	Servo_SetAngle_Slow(2, 70);
+	//Servo_SetAngle_Slow(2, 70);
+    Servo_SetAngle(2, 70);
+    system_delay_ms(400);
     Servo_SetAngle_Slow(1, 100);
-    Servo_SetAngle_Slow(2, 50);
-	Servo_SetAngle_Slow(1, 90);
-    Servo_SetAngle_Slow(2, 28);
+    // Servo_SetAngle_Slow(2, 50);
+	// Servo_SetAngle_Slow(2, 28);
+    Servo_SetAngle(2, 28);
+    system_delay_ms(300);
+    Servo_SetAngle_Slow(1, 90);
     magnet_set(0);
 	
 #endif
@@ -210,7 +218,7 @@ void arm_hang()
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
-    system_delay_ms(700);
+    system_delay_ms(100);
 #elif SERVO_SPEED == 1
 
     magnet_set(0);
@@ -310,15 +318,25 @@ void Box_Record(uint8 box_num, char card_class, uint8 operate)
 
 
 
-//  卡片放入逻辑
-void Box_In(char card_class, uint8 cross_roundabout_Flag)
+//-----------------------------------------------------------------------------------------------
+// 函数简介 卡片放入以及记录
+// 参数说明  card_class，识别的卡片类别
+// 参数说明  cross_roundabout_Flag，是否为环岛十字
+// 参数说明  isRecord，是否记录
+// 返回参数  void
+// 使用示例  
+// 备注信息  赛道两边可选择是否记录，环岛十字默认都会记录
+//-----------------------------------------------------------------------------------------------
+void Box_In(char card_class, uint8 cross_roundabout_Flag, bool isRecord)
 {
-    
     if (!cross_roundabout_Flag) //赛道两边
     {
         if ('A' <= card_class && card_class <= 'E')        //大类-1
         {
-            Box_Record(0, '1', 1);
+            if(isRecord)
+            {
+                Box_Record(0, '1', 1);
+            }
             // Servo_SetAngle(3, 0);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 0);
@@ -327,7 +345,10 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
-            Box_Record(1, '2', 1);
+            if(isRecord)
+            {
+                Box_Record(1, '2', 1);
+            }
             // Servo_SetAngle(3, 90);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 90);
@@ -336,7 +357,10 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
-            Box_Record(2, '3', 1);
+            if(isRecord)
+            {
+                 Box_Record(2, '3', 1);
+            }
             // Servo_SetAngle(3, 180);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 180);
@@ -373,7 +397,7 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
                     Servo_SetAngle_Slow(3, i*90);
 					arm_up();
 					arm_hang();
-
+                    temp_class_arr[i][1]++;
                     break;
                 }
                 temp_class_arr[i][1]++;
@@ -432,8 +456,8 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 Servo_SetAngle_Slow(3, 0);
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
-                 arm_down();
-                 arm_hang();
+                    arm_down();
+                    arm_hang();
                 }
                 arm_exchange(1,0);
                 arm_exchange(1,0);
@@ -457,7 +481,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 five_Flag=1;
 
             }
-            else
+            else    //five_Flag==0
             {
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(1000);
@@ -471,7 +495,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             temp_class_arr[0][0] = 0;
             temp_class_arr[0][1] = 0;
         }
-        else if(label_num== temp_class_arr[1][0])
+        else if(label_num == temp_class_arr[1][0])
         {
             // Servo_SetAngle(3, 90);
             // system_delay_ms(1000);
@@ -484,7 +508,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             temp_class_arr[1][0] = 0;
             temp_class_arr[1][1] = 0;
         }
-        else if(label_num== temp_class_arr[2][0])
+        else if(label_num == temp_class_arr[2][0])
         {
             // Servo_SetAngle(3, 180);
             // system_delay_ms(1000);
@@ -497,7 +521,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             temp_class_arr[2][0] = 0;
             temp_class_arr[2][1] = 0;
         }
-        else if(label_num== temp_class_arr[3][0])
+        else if(label_num == temp_class_arr[3][0])
         {
             // Servo_SetAngle(3, 270);
             // system_delay_ms(1000);
@@ -510,13 +534,15 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             temp_class_arr[3][0] = 0;
             temp_class_arr[3][1] = 0;
         }
-        else              //label_num==five_class
+        else if(label_num == five_class)              //label_num==five_class
         {
             if(five_Flag==3)
             {
                 arm_exchange(0,1);
-                Servo_SetAngle(3, 0);
-                system_delay_ms(1000);
+                // Servo_SetAngle(3, 0);
+                // system_delay_ms(1000);
+                Servo_SetAngle_Slow(3, 0);
+                
                 arm_down();
                 arm_hang();
                 arm_exchange(1,0);

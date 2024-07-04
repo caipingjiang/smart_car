@@ -293,7 +293,7 @@ void position_correct(uint8 correct_mode)
 void motor_control()
 {
 	static uint8 cnt = 0;
-    static int16 last_speed_y = 0;
+    static int16 last_speed_y = 40;
     switch(Control_Mode)
     {
         case 0:                         //正常循迹模式
@@ -332,8 +332,8 @@ void motor_control()
     if(Control_Mode == 0)
     {
         
-        //v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
-        //v_y = 0.7*v_y + 0.3*last_speed_y;//0.3*v_y + 0.7*last_speed_y;
+        tracking_speed = 1700/(40+abs(Slope));//v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
+        v_y = 0.7*tracking_speed + 0.3*last_speed_y + 5;//0.3*v_y + 0.7*last_speed_y;
         
         // if(abs(Slope)<10)
         // {
@@ -347,9 +347,9 @@ void motor_control()
         // {
         //     v_y = func_limit_ab(v_y,30, 35);
         // }
-        // last_speed_y = v_y;
+        //last_speed_y = v_y;
         // tracking_speed = v_y;
-        v_y = tracking_speed;
+        // v_y = tracking_speed;
     }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));

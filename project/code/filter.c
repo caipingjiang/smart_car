@@ -53,11 +53,13 @@ slidingFilter_struct slidingFilter_1 = {
 
 bool isSame(int16 newData)
 {
-    static int16 dataRecord[3] = {0};
-    dataRecord[0] = dataRecord[1];
-    dataRecord[1] = dataRecord[2];
-    dataRecord[2] = newData;
-    if(newData == 0 && newData ==  dataRecord[0] && newData ==  dataRecord[1])
+    static int16 dataRecord[5] = {1,1,1,1,1};
+    for(uint8 i = 0; i < 4; i++)
+    {
+        dataRecord[i] = dataRecord[i+1];
+    }
+    dataRecord[4] = newData;
+    if(newData == 0 && dataRecord[0]*dataRecord[1]*dataRecord[2]*dataRecord[3] == 0)
         return false;
     else 
         return true;
