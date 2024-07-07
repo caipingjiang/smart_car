@@ -3,11 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<<<<<<< HEAD
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu Jun 27 22:23:05 2024
-=======
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sat Jun 29 06:50:48 2024
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sun Jun 30 02:10:38 2024
 <BR><P>
 <H3>Maximum Stack Usage =        816 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1268,20 +1264,12 @@ Global Symbols
 <LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cross_move_control
 </UL>
 
-<<<<<<< HEAD
-<P><STRONG><a name="[11b]"></a>Box_Out</STRONG> (Thumb, 1454 bytes, Stack size 32 bytes, my_servo.o(.text.Box_Out))
-<BR><BR>[Stack]<UL><LI>Max Depth = 568<LI>Call Chain = Box_Out &rArr; arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
-</UL>
-<BR>[Calls]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
-<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
-=======
 <P><STRONG><a name="[11c]"></a>Box_Out</STRONG> (Thumb, 1964 bytes, Stack size 48 bytes, my_servo.o(.text.Box_Out))
 <BR><BR>[Stack]<UL><LI>Max Depth = 600<LI>Call Chain = Box_Out &rArr; arm_exchange &rArr; arm_hang &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_hang
 <LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 <LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
 </UL>
@@ -2338,13 +2326,8 @@ Global Symbols
 <LI><a href="#[1ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_iomuxc
 </UL>
 
-<<<<<<< HEAD
-<P><STRONG><a name="[11d]"></a>arm_down</STRONG> (Thumb, 204 bytes, Stack size 16 bytes, my_servo.o(.text.arm_down))
-<BR><BR>[Stack]<UL><LI>Max Depth = 496<LI>Call Chain = arm_down &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
-=======
 <P><STRONG><a name="[11e]"></a>arm_down</STRONG> (Thumb, 632 bytes, Stack size 32 bytes, my_servo.o(.text.arm_down))
 <BR><BR>[Stack]<UL><LI>Max Depth = 512<LI>Call Chain = arm_down &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
@@ -2352,10 +2335,6 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 </UL>
 
-<<<<<<< HEAD
-<P><STRONG><a name="[11c]"></a>arm_exchange</STRONG> (Thumb, 468 bytes, Stack size 56 bytes, my_servo.o(.text.arm_exchange))
-<BR><BR>[Stack]<UL><LI>Max Depth = 536<LI>Call Chain = arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
-=======
 <P><STRONG><a name="[11d]"></a>arm_exchange</STRONG> (Thumb, 1048 bytes, Stack size 40 bytes, my_servo.o(.text.arm_exchange))
 <BR><BR>[Stack]<UL><LI>Max Depth = 552<LI>Call Chain = arm_exchange &rArr; arm_hang &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
@@ -2368,7 +2347,6 @@ Global Symbols
 
 <P><STRONG><a name="[11b]"></a>arm_hang</STRONG> (Thumb, 232 bytes, Stack size 32 bytes, my_servo.o(.text.arm_hang))
 <BR><BR>[Stack]<UL><LI>Max Depth = 512<LI>Call Chain = arm_hang &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
@@ -3161,16 +3139,10 @@ Global Symbols
 <LI><a href="#[1a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_control
 <LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_In
-<<<<<<< HEAD
-<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
-<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
-=======
 <LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_hang
 <LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
 <LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 </UL>
 
 <P><STRONG><a name="[175]"></a>qtimer_iomuxc</STRONG> (Thumb, 780 bytes, Stack size 32 bytes, zf_driver_encoder.o(.text.qtimer_iomuxc))
@@ -3326,13 +3298,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[184]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;imu660ra_init
 </UL>
 
-<<<<<<< HEAD
-<P><STRONG><a name="[19f]"></a>start_finish_line_control</STRONG> (Thumb, 920 bytes, Stack size 56 bytes, car_control.o(.text.start_finish_line_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = start_finish_line_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
-=======
 <P><STRONG><a name="[1a0]"></a>start_finish_line_control</STRONG> (Thumb, 1128 bytes, Stack size 72 bytes, car_control.o(.text.start_finish_line_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 752<LI>Call Chain = start_finish_line_control &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
 <LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;find_start_finish_line
@@ -3364,19 +3331,11 @@ Global Symbols
 <LI><a href="#[1a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mt9v03x_init
 <LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_In
-<<<<<<< HEAD
-<LI><a href="#[11c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
-<LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
-<LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
-<LI><a href="#[15a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;barrier_control
-<LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ramp_control
-=======
 <LI><a href="#[11d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_exchange
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_hang
 <LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
 <LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
 <LI><a href="#[1a2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ramp_control
->>>>>>> a4c0ca12726eb7dba2a30219c6a0aae6afd93ef9
 <LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ART_control
 <LI><a href="#[1a1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roundabout_move_control
 <LI><a href="#[162]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cross_move_control
@@ -3481,8 +3440,8 @@ Global Symbols
 <LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clock_init
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memset
 </UL>
-<BR>[Address Reference Count : 2]<UL><LI> zf_device_wireless_uart.o(.text.wireless_uart_init)
-<LI> zf_device_type.o(.data.wireless_module_uart_handler)
+<BR>[Address Reference Count : 2]<UL><LI> zf_device_type.o(.data.wireless_module_uart_handler)
+<LI> zf_device_wireless_uart.o(.text.wireless_uart_init)
 </UL>
 <P><STRONG><a name="[198]"></a>wireless_uart_init</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, zf_device_wireless_uart.o(.text.wireless_uart_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 592<LI>Call Chain = wireless_uart_init &rArr; uart_init &rArr; uart_iomuxc &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
