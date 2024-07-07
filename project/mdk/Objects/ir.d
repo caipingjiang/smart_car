@@ -1,4 +1,4 @@
-./objects/my_buzzer.o: ..\code\my_buzzer.c \
+./objects/ir.o: ..\code\IR.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdint.h \

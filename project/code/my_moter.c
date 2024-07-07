@@ -226,7 +226,7 @@ float w_PID(float Target_w, float w)
 // 备注信息  {120, 125}放置区位置; {160, 170}捡卡片位置	
 //-----------------------------------------------------------------------------------------------
 int16 finial_point_1[2]  = {160, 170};
-int16 finial_point_2[2] = {140, 135}; //120,125
+int16 finial_point_2[2] = {140, 135+10}; //120,125
 float Kp_cor = 0.25;
 float Kd_cor = 0; 
 void position_correct(uint8 correct_mode)
@@ -258,7 +258,7 @@ void position_correct(uint8 correct_mode)
             v_y = 0;
         }
     }
-    else if(correct_mode == 2)
+    else if(correct_mode == 2)  //带pid的矫正(弃用)
     {
         static int16 err_x = 0, last_err_x = 0;
         static int16 err_y = 0, last_err_y = 0;

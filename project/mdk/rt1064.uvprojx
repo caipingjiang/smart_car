@@ -534,6 +534,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\my_buzzer.h</FilePath>
             </File>
+            <File>
+              <FileName>IR.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\IR.c</FilePath>
+            </File>
+            <File>
+              <FileName>IR.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\IR.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -10,7 +10,7 @@ void my_image_init();
 uint8 find_white_point(uint8 image_array[][188]);
 void find_longest(uint8* longest, uint8* index);
 void find_middle();
-int16 slope();
+int16 slope(uint8 slope_mode);
 void sideline_correct(uint8* side_point, int16* sideline_err, int16* sideline_distance);
 void find_start_point(uint8 image[][188]);
 void roundabout_cross(); //»·µº
@@ -28,6 +28,7 @@ extern uint8 boder_correct[60];
 extern uint8 longest, index;
 extern uint8 lose_point_num_L, lose_point_num_R;
 extern uint8 Image_Mode;
+extern uint8 Slope_Mode;
 extern int16 Slope;
 extern uint32 track_wide;
 extern bool roundabout_card_releaseFinish;

@@ -134,6 +134,7 @@
 #include "my_servo.h"
 #include "my_buzzer.h"
 #include "filter.h"
+#include "IR.h"
 //±àÂëÆ÷Ïà¹Ø
 extern int16 encoder_data[4];
 extern int16 encoder_data_last[4];

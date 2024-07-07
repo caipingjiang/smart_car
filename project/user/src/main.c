@@ -48,9 +48,10 @@ int main(void)
 	my_imu660ra_init();
 	imu660_zeroBias();
 	my_servo_init();
+	
 //	my_key_init();
 	buzzer_init();
-    wireless_uart_init();
+    //wireless_uart_init();
 	
 	//ImagePerspective_Init();
 	my_uart_init();
@@ -60,7 +61,8 @@ int main(void)
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	//timer_init(GPT_TIM_1,TIMER_US);
-	
+	IR_init();
+
  	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 0);
 	interrupt_set_priority(LPUART1_IRQn,1);
@@ -108,7 +110,7 @@ int main(void)
 
 		}
 
-		ips114_show_int(50,110,Slope, 2);
+		//ips114_show_int(50,110,Slope, 2);
 		// ips114_show_int(50,40,uart1_data_arr[0], 4);
 		// ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
@@ -116,6 +118,8 @@ int main(void)
 		// ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
 		// ips114_show_float(0,20,Acc_Angle.Ydata,3,2);
 		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
+		//Slope_Mode = 2;
+		//target_slope  = -30;
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
@@ -123,8 +127,9 @@ int main(void)
 		
 		ramp_control();
 		barrier_control();
-//		arm_up();
-//		arm_hang();
+		//arm_down();
+		//arm_exchange(0,1);
+		//arm_hang();
 		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);
 		
