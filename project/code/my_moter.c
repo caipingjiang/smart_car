@@ -226,7 +226,7 @@ float w_PID(float Target_w, float w)
 // 备注信息  {120, 125}放置区位置; {160, 170}捡卡片位置	
 //-----------------------------------------------------------------------------------------------
 int16 finial_point_1[2]  = {160, 170};
-int16 finial_point_2[2] = {140, 135}; //120,125
+int16 finial_point_2[2] = {140, 135+10}; //120,125
 float Kp_cor = 0.25;
 float Kd_cor = 0; 
 void position_correct(uint8 correct_mode)
@@ -258,7 +258,7 @@ void position_correct(uint8 correct_mode)
             v_y = 0;
         }
     }
-    else if(correct_mode == 2)
+    else if(correct_mode == 2)  //带pid的矫正(弃用)
     {
         static int16 err_x = 0, last_err_x = 0;
         static int16 err_y = 0, last_err_y = 0;
@@ -293,7 +293,7 @@ void position_correct(uint8 correct_mode)
 void motor_control()
 {
 	static uint8 cnt = 0;
-    static int16 last_speed_y = 0;
+    static int16 last_speed_y = 40;
     switch(Control_Mode)
     {
         case 0:                         //正常循迹模式
@@ -332,8 +332,8 @@ void motor_control()
     if(Control_Mode == 0)
     {
         
-        //v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
-        //v_y = 0.7*v_y + 0.3*last_speed_y;//0.3*v_y + 0.7*last_speed_y;
+        tracking_speed = 1700/(40+abs(Slope));//v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
+        v_y = 0.7*tracking_speed + 0.3*last_speed_y + 5;//0.3*v_y + 0.7*last_speed_y;
         
         // if(abs(Slope)<10)
         // {
@@ -347,9 +347,9 @@ void motor_control()
         // {
         //     v_y = func_limit_ab(v_y,30, 35);
         // }
-        // last_speed_y = v_y;
+        //last_speed_y = v_y;
         // tracking_speed = v_y;
-        v_y = tracking_speed;
+        // v_y = tracking_speed;
     }
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));

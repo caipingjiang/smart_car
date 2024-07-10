@@ -104,5 +104,6 @@
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
   ..\..\libraries\sdk\board\clock_config.h ..\code\my_moter.h \
   ..\code\my_encoder.h ..\code\my_image.h ..\code\vofa.h \
-  ..\code\my_uart.h ..\code\my_servo.h ..\code\filter.h \
+  ..\code\my_uart.h ..\code\my_servo.h ..\code\my_buzzer.h \
+  ..\code\filter.h ..\code\IR.h ..\code\car_control.h \
   C:\keil5\ARM\ARMCLANG\Bin\..\include\math.h

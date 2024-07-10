@@ -8,7 +8,7 @@
 #include "math.h"
 #include "imu660ra.h"
 #include "car_control.h"
-
+#include "my_buzzer.h"
 uint8 data_buffer[32];//测试用
 int16 Target_Speed=1; //测试用
 
@@ -48,9 +48,10 @@ int main(void)
 	my_imu660ra_init();
 	imu660_zeroBias();
 	my_servo_init();
-//	my_key_init();
 	
-    wireless_uart_init();
+//	my_key_init();
+	buzzer_init();
+    //wireless_uart_init();
 	
 	//ImagePerspective_Init();
 	my_uart_init();
@@ -60,7 +61,8 @@ int main(void)
 	my_motor_init();	//--->>>>>>>>>注意这里的D12-D15引脚与ips200的csi重复使用，不能同时使用
  	my_encoder_init();	//对屏幕显示可能也有影响
 	//timer_init(GPT_TIM_1,TIMER_US);
-	
+	IR_init();
+
  	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 0);
 	interrupt_set_priority(LPUART1_IRQn,1);
@@ -81,7 +83,7 @@ int main(void)
 	ips114_draw_line(188,100,187+40,100,RGB565_GREEN);
 	while(1)
     {	
-			ips114_show_uint(90,90,track_wide,4);
+		ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
@@ -108,19 +110,27 @@ int main(void)
 
 		}
 
-//		ips114_show_int(50,110,Slope, 2);
+		//ips114_show_int(50,110,Slope, 2);
 		// ips114_show_int(50,40,uart1_data_arr[0], 4);
 		// ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
-		ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
+		
+		// ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
+		// ips114_show_float(0,20,Acc_Angle.Ydata,3,2);
+		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
+		//Slope_Mode = 2;
+		//target_slope  = -30;
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
 		ART_control();
 		
 		ramp_control();
-		
-		//barrier_control();
+		barrier_control();
+		//arm_down();
+		//arm_exchange(0,1);
+		//arm_hang();
+		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);
 
 		//system_delay_ms(2000);

@@ -1,9 +1,10 @@
 #include "zf_common_headfile.h"
 #include "my_image.h"
+#include "car_control.h"
 #include <math.h>
 
 uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
-
+uint8 Slope_Mode = 0;				//计算斜率的模式
 int16 Slope;						//图像斜率
 uint8 cross_flag = 0, roundabout_flag = 0;//环岛十字的标志位，1为到达此处
 int8 cross_dir = 0, roundabout_dir = 0;			//十字方向，-1：左十字， 1：右十字； 环岛方向，-1: 左环岛， 1: 右环岛
@@ -255,25 +256,131 @@ void find_middle()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-int16 slope()
+int16 slope(uint8 slope_mode)
 {
 	static int16 lastresult;
-	if(longest>SHORTEST)return lastresult;	//小于最短值，认为跑出赛道了，就返回上次斜率，
-	
-	int16 sum1 = 0, sum2 = 0, result;
-	for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
+
+	if(slope_mode == 0)		//中线巡线
 	{
-		sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
-		sum2 += (int16)(MT9V03X_H - 10 - i);
-	}
-	result = 50 * sum1 / (sum2+1); //分母加1防止除0;
-	result = func_limit(result, 80);
-	//ips114_show_int(188, 110, (const int32)result, 3);
-	lastresult = result;
+		if(longest>SHORTEST)return lastresult;	//小于最短值，认为跑出赛道了，就返回上次斜率，
 	
-	return result;
+		int16 sum1 = 0, sum2 = 0, result;
+		
+		if(longest < 15 && (cross_flag*roundabout_flag) == 0)
+		{
+			for (uint8 i = longest+30; i <= MT9V03X_H - 10; i++)
+			{
+				sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
+				sum2 += (int16)(MT9V03X_H - 10 - i);
+			}
+		}
+		else
+		{
+			for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
+			{
+				sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
+				sum2 += (int16)(MT9V03X_H - 10 - i);
+			}
+		}
+		
+		
+		result = 50 * sum1 / (sum2+1); //分母加1防止除0;
+		result = func_limit(result, 80);
+		//ips114_show_int(188, 110, (const int32)result, 3);
+		lastresult = result;
+		
+		return result;
+	}
+	else if(slope_mode == 1)	//左边线巡线
+	{
+		int16 sum1 = 0, sum2 = 0, result;
+		for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
+		{
+			sum1 += (int16)(boder_L[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
+			sum2 += (int16)(MT9V03X_H - 10 - i);
+		}
+		result = 50 * sum1 / (sum2+1); //分母加1防止除0;
+		result = func_limit(result, 80);
+		return result;
+	}
+	else if(slope_mode == 2)	//右边线巡线
+	{
+		int16 sum1 = 0, sum2 = 0, result;
+		for (uint8 i = longest; i <= MT9V03X_H - 10; i++)
+		{
+			sum1 += (int16)(boder_R[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
+			sum2 += (int16)(MT9V03X_H - 10 - i);
+		}
+		result = 50 * sum1 / (sum2+1); //分母加1防止除0;
+		result = func_limit(result, 80);
+		return result;
+	}
+	else return 0;
+	
 }
 
+
+//-----------------------------------------------------------------------------------------------
+// 函数简介  计算左/右边线的曲率
+// 参数说明  
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+uint32 curvity_calculate(uint8* slide_line, uint8* longest)
+{
+	int16 x1 = 0, x2 = 0, y1 = 0, y2 = 0;	//拟合直线的两端点坐标
+	int16 x = 0;
+	int16 b = 0;	//纵轴截距
+	uint32 var = 0;	//残差
+	//float k = 0;	//拟合直线的斜率
+	float m = 0;	//斜率的倒数
+
+	for (uint8 i = 0; i < 5; i++)
+	{
+		x1 += slide_line[*longest + 5 + i];
+		x2 += slide_line[MT9V03X_H - 20 - i];
+		y1 += ((*longest) + 5 + i);
+		y2 += (MT9V03X_H - 20 - i);
+	}
+	x1 /= 5;
+	x2 /= 5;
+	y1 /= 5;
+	y2 /= 5;
+	
+	//k = (float)(y2 - y1) / (x2 - x1);
+	m = (float)(x2 - x1) / (y2 - y1);
+	if (m == 0)
+	{
+		if (x1 > MT9V03X_H - 5)
+		{
+			x = MT9V03X_W - 1;
+		}
+		else if (x1 < 5)
+		{
+			x = 0;
+		}
+		for (uint8 i = *longest + 10; i < MT9V03X_H - 20; i++)
+		{
+			var += pow(slide_line[i] - x, 2);
+		}
+		ips114_show_int(20, 20, var, 10);
+		return var;
+	}
+	b = (int16)(y1 - ((float)1/m*x1));
+
+	// ips114_show_float(100, 80, m, 2, 2);
+	// ips114_show_float(100, 100, b, 2, 2);
+
+	for (uint8 i = *longest+10; i < MT9V03X_H - 20; i++)
+	{
+		x = m * (i - b);
+		var += pow(slide_line[i] - x, 2);
+	}
+	// ips114_draw_line(x1,y1,x2,y2,RGB565_WHITE);
+	ips114_show_int(20, 20, var, 10);
+	return var;
+}
 
 
 //-----------------------------------------------------------------------------------------------
@@ -387,7 +494,7 @@ void roundabout_cross()
 #define track_wide_limit_2		(MT9V03X_W * MT9V03X_H * 4 / 16)	//环岛路段的赛道宽度判断限制
 #define start_height 			(MT9V03X_H / 3)						//计算赛道宽度的开始行
 #define end_height 				(MT9V03X_H * 2 / 3)					//计算赛道宽度的结束行
-#define cross_longest_limit 	20		//十字路段最长白列判断限制
+#define cross_longest_limit 	10		//十字路段最长白列判断限制
 #define cross_slope_limit		12		//十字路段最大斜率判断限制
 #define lose_point_num_limit_1	70		//丢线点数限制1
 #define lose_point_num_limit_2	5		//丢线点数限制2
@@ -470,7 +577,7 @@ void roundabout()
 			int32 temp_sum[3] = {0};
 			float r = 0;	//线性相关系数，绝对值在0到1之间，越接近1越线性相关
 			//左环岛
-			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2)
+			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R < lose_point_num_limit_2 && curvity_calculate(boder_R, &longest) < var_limit2)
 			{
 				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
 				roundabout_dir = -1;
@@ -506,7 +613,7 @@ void roundabout()
 				
 			}
 			//右环岛
-			else if(lose_point_num_L < lose_point_num_limit_2 && lose_point_num_R > lose_point_num_limit_1)
+			else if(lose_point_num_L < lose_point_num_limit_2 && lose_point_num_R > lose_point_num_limit_1 && curvity_calculate(boder_L,&longest) < var_limit2)
 			{
 				roundabout_flag = 1;		//检测到环岛路段宽度变化且左右边线只有一边丢线
 				roundabout_dir = 1;
@@ -565,15 +672,19 @@ uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态
 	uint8 black_block_num = 0;	//统计的斑马线黑色块数量
-	for(uint8 i = 10; i<MT9V03X_W-10; i++)
+	if(!(cross_flag || roundabout_flag))
 	{
-		switch(judge_state)
+		for(uint8 i = 10; i<MT9V03X_W-10; i++)
 		{
-			case 0:{if(mt9v03x_image[40][i]>GrayThreshold)judge_state = 1; break;}
-			case 1:{if(mt9v03x_image[40][i]<GrayThreshold)judge_state = 2; break;}
-			case 2:{if(mt9v03x_image[40][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
+			switch(judge_state)
+			{
+				case 0:{if(mt9v03x_image[40][i]>GrayThreshold)judge_state = 1; break;}
+				case 1:{if(mt9v03x_image[40][i]<GrayThreshold)judge_state = 2; break;}
+				case 2:{if(mt9v03x_image[40][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
+			}
 		}
 	}
+	
 	//ips114_show_int(70,70,black_block_num, 3);
 	if(black_block_num>7)return 1;//黑色块大于7个就认为是斑马线了
 	else return 0;
@@ -618,7 +729,7 @@ void pit_handler_2()
 		{
 			case 0:
 			    find_middle();
-				Slope = slope();
+				Slope = slope(Slope_Mode);
 				cross();
 				roundabout();
 			    break;
@@ -634,17 +745,10 @@ void pit_handler_2()
 			    break;
 			case 3:
 				find_middle();
-				Slope = slope();
+				Slope = slope(Slope_Mode);
 			    break;
 			case 4:
 			    break;
-			case 5:
-				if(start_finial_line_car_find())
-				{
-					
-				}
-				break;
-
 
 		}
  		
