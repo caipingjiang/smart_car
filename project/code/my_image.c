@@ -678,9 +678,9 @@ uint8 find_start_finish_line()
 		{
 			switch(judge_state)
 			{
-				case 0:{if(mt9v03x_image[40][i]>GrayThreshold)judge_state = 1; break;}
-				case 1:{if(mt9v03x_image[40][i]<GrayThreshold)judge_state = 2; break;}
-				case 2:{if(mt9v03x_image[40][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
+				case 0:{if(mt9v03x_image[30][i]>GrayThreshold)judge_state = 1; break;}//40
+				case 1:{if(mt9v03x_image[30][i]<GrayThreshold)judge_state = 2; break;}
+				case 2:{if(mt9v03x_image[30][i]>GrayThreshold){judge_state = 1;black_block_num++;} break;}
 			}
 		}
 	}

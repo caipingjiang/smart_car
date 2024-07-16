@@ -32,6 +32,7 @@ void position_correct(uint8 correct_mode);
 extern uint8 Control_Mode;   //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式
 extern uint8 Correct_Mode;  //卡片矫正模式
 extern int16 tracking_speed;
+extern int16 last_speed_y;
 extern float angle_now;
 extern float angle_turn;
 extern float target_angle;

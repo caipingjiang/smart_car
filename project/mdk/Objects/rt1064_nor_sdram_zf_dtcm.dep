@@ -105,8 +105,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -115,7 +115,7 @@ I (..\code\my_buzzer.h)(0x6680353F)
 I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
 I (..\user\inc\isr.h)(0x64D44208)
-F (..\user\src\main.c)(0x668996EC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/main.o -MD)
+F (..\user\src\main.c)(0x66960FAC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/main.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -220,8 +220,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -237,7 +237,7 @@ I (..\code\car_control.h)(0x668693D1)
 F (..\user\inc\isr.h)(0x64D44208)()
 F (..\..\libraries\rt-thread\bsp\imxrt\imxrt1064-nxp-evk\rtconfig.h)(0x00000000)()
 F (..\code\my_servo.h)(0x668A80E3)()
-F (..\code\my_servo.c)(0x668A8174)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_servo.o -MD)
+F (..\code\my_servo.c)(0x668E9C19)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_servo.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -342,8 +342,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -351,7 +351,7 @@ I (..\code\my_servo.h)(0x668A80E3)
 I (..\code\my_buzzer.h)(0x6680353F)
 I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
-F (..\code\my_encoder.h)(0x662FDB19)()
+F (..\code\my_encoder.h)(0x668BAA66)()
 F (..\code\my_encoder.c)(0x667D62D2)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_encoder.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
@@ -457,8 +457,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -466,7 +466,7 @@ I (..\code\my_servo.h)(0x668A80E3)
 I (..\code\my_buzzer.h)(0x6680353F)
 I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
-F (..\code\my_moter.c)(0x66894664)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_moter.o -MD)
+F (..\code\my_moter.c)(0x66960F9A)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_moter.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -571,8 +571,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -582,8 +582,8 @@ I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
 I (..\code\imu660ra.h)(0x66805AF4)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\math.h)(0x63884908)
-F (..\code\my_moter.h)(0x6663D84A)()
-F (..\code\my_image.c)(0x668A82D9)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_image.o -MD)
+F (..\code\my_moter.h)(0x668BA0A3)()
+F (..\code\my_image.c)(0x66911BFC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/my_image.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -688,8 +688,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -805,8 +805,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -922,8 +922,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1039,8 +1039,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1154,8 +1154,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1269,8 +1269,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1279,7 +1279,7 @@ I (..\code\my_buzzer.h)(0x6680353F)
 I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
 F (..\code\my_uart.h)(0x6652FEFC)()
-F (..\code\car_control.c)(0x668A8246)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/car_control.o -MD)
+F (..\code\car_control.c)(0x669638A4)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/car_control.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -1384,8 +1384,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1501,8 +1501,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1616,8 +1616,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -1626,7 +1626,7 @@ I (..\code\my_buzzer.h)(0x6680353F)
 I (..\code\filter.h)(0x667EC79F)
 I (..\code\IR.h)(0x66897286)
 F (..\code\my_buzzer.h)(0x6680353F)()
-F (..\code\IR.c)(0x668971FE)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/ir.o -MD)
+F (..\code\IR.c)(0x668E61EF)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m7 -mfpu=fpv5-d16 -mfloat-abi=hard -c-fno-rtti -fsigned-char -fshort-enums -fshort-wchar-D__MICROLIB -gdwarf-4 -O1 -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ../user/inc -I ../code -I ../../libraries/sdk/startup/mdk -I ../../libraries/sdk/deceive -I ../../libraries/sdk/drives -I ../../libraries/sdk/xip -I ../../libraries/sdk/utilities -I ../../libraries/sdk/utilities/debug_console -I ../../libraries/sdk/utilities/str -I ../../libraries/sdk/cmsis_drivers -I ../../libraries/sdk/CMSIS/Include -I ../../libraries/sdk/CMSIS/Driver/Include -I ../../libraries/sdk/components/lists -I ../../libraries/sdk/components/osa -I ../../libraries/sdk/components/serial_manager -I ../../libraries/sdk/components/uart -I ../../libraries/sdk/board -I ../../libraries/components/fatfs/source -I ../../libraries/components/fatfs/source/fsl_sd_disk -I ../../libraries/components/sdmmc -I ../../libraries/components/sdmmc/common -I ../../libraries/components/sdmmc/host/usdhc -I ../../libraries/components/sdmmc/osa -I ../../libraries/components/sdmmc/sd -I ../../libraries/components/usb/device -I ../../libraries/components/usb/include -I ../../libraries/components/usb/phy -I ../../libraries/components/usb/usb_cdc_adapter -I ../../libraries/zf_common -I ../../libraries/zf_driver -I ../../libraries/zf_device -I ../../libraries/rt-thread/bsp/imxrt/imxrt1064-nxp-evk -I ../../libraries/rt-thread/include -I ../../libraries/rt-thread/include/libc -I ../../libraries/rt-thread/components/finsh -I ../../libraries/rt-thread/libcpu/arm/cortex-m7 -fno-common  -fdata-sections  -ffreestanding  -fno-builtin  -mthumb -Wno-invalid-source-encoding -D__UVISION_VERSION="538" -DCPU_MIMXRT1064DVL6A -DCPU_MIMXRT1064DVL6A -DSKIP_SYSCLK_INIT -DXIP_EXTERNAL_FLASH="1" -DXIP_BOOT_HEADER_DCD_ENABLE="1" -DXIP_BOOT_HEADER_ENABLE="1" -DPRINTF_FLOAT_ENABLE="1" -DSCANF_FLOAT_ENABLE="1" -DPRINTF_ADVANCED_ENABLE="1" -DSCANF_ADVANCED_ENABLE="1" -DFSL_DRIVER_TRANSFER_DOUBLE_WEAK_IRQ="0" -DUSB_STACK_BM -DDEBUG -DMCUXPRESSO_SDK -DSD_ENABLED-o ./objects/ir.o -MD)
 I (..\..\libraries\zf_common\zf_common_headfile.h)(0x668972C6)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdio.h)(0x63884908)
 I (D:\keil_5-38-a\ARM\ARMCLANG\include\stdint.h)(0x63884908)
@@ -1731,8 +1731,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -3344,8 +3344,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)
@@ -3521,8 +3521,8 @@ I (..\..\libraries\sdk\drives\fsl_usdhc.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h)(0x64D44208)
 I (..\..\libraries\components\sdmmc\sdmmc_config.h)(0x64D44208)
 I (..\..\libraries\sdk\board\clock_config.h)(0x64D44208)
-I (..\code\my_moter.h)(0x6663D84A)
-I (..\code\my_encoder.h)(0x662FDB19)
+I (..\code\my_moter.h)(0x668BA0A3)
+I (..\code\my_encoder.h)(0x668BAA66)
 I (..\code\my_image.h)(0x66891AF0)
 I (..\code\vofa.h)(0x667D62D2)
 I (..\code\my_uart.h)(0x6652FEFC)

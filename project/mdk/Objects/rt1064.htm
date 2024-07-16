@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sun Jul  7 19:58:20 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Tue Jul 16 17:09:03 2024
 <BR><P>
-<H3>Maximum Stack Usage =        864 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        856 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-main &rArr; start_finish_line_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+main &rArr; cross_move_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 <P>
 <H3>
 Functions with no stack information
@@ -1029,11 +1029,11 @@ Global Symbols
 <LI><a href="#[142]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LPSPI_MasterGetDefaultConfig
 <LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM_GetDefaultConfig
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wireless_uart_callback
-<LI><a href="#[13e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LPI2C_SlaveTransferHandleIRQ
 <LI><a href="#[15f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPDIF_TransferRxHandleIRQ
 <LI><a href="#[15e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPDIF_TransferTxHandleIRQ
 <LI><a href="#[15c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SAI_TransferRxHandleIRQ
 <LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SAI_TransferTxHandleIRQ
+<LI><a href="#[13e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LPI2C_SlaveTransferHandleIRQ
 </UL>
 
 <P><STRONG><a name="[130]"></a>strlen</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, strlen.o(.text))
@@ -1200,7 +1200,7 @@ Global Symbols
 
 <P><STRONG><a name="[204]"></a>__decompress1</STRONG> (Thumb, 86 bytes, Stack size unknown bytes, __dczerorl2.o(.text), UNUSED)
 
-<P><STRONG><a name="[105]"></a>ART_control</STRONG> (Thumb, 1356 bytes, Stack size 72 bytes, car_control.o(.text.ART_control))
+<P><STRONG><a name="[105]"></a>ART_control</STRONG> (Thumb, 1368 bytes, Stack size 72 bytes, car_control.o(.text.ART_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 792<LI>Call Chain = ART_control &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -2408,8 +2408,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_In
 </UL>
 
-<P><STRONG><a name="[164]"></a>barrier_control</STRONG> (Thumb, 432 bytes, Stack size 16 bytes, car_control.o(.text.barrier_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 776<LI>Call Chain = barrier_control &rArr; curvity_calculate &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[164]"></a>barrier_control</STRONG> (Thumb, 456 bytes, Stack size 24 bytes, car_control.o(.text.barrier_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 784<LI>Call Chain = barrier_control &rArr; curvity_calculate &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[165]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;curvity_calculate
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move
@@ -2438,6 +2438,7 @@ Global Symbols
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
 <LI><a href="#[120]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_down
 <LI><a href="#[1a7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;roundabout_move_control
+<LI><a href="#[16e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cross_move_control
 <LI><a href="#[1a6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;start_finish_line_control
 </UL>
 
@@ -2469,7 +2470,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[151]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler_2
 </UL>
 
-<P><STRONG><a name="[16e]"></a>cross_move_control</STRONG> (Thumb, 2920 bytes, Stack size 64 bytes, car_control.o(.text.cross_move_control))
+<P><STRONG><a name="[16e]"></a>cross_move_control</STRONG> (Thumb, 2966 bytes, Stack size 64 bytes, car_control.o(.text.cross_move_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 840<LI>Call Chain = cross_move_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -2478,6 +2479,7 @@ Global Symbols
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move
 <LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 <LI><a href="#[10e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_In
+<LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer_set_delay
 <LI><a href="#[10b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;memset
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abs
@@ -2937,7 +2939,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[ab]"></a>main</STRONG> (Thumb, 366 bytes, Stack size 16 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 864<LI>Call Chain = main &rArr; start_finish_line_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<BR><BR>[Stack]<UL><LI>Max Depth = 856<LI>Call Chain = main &rArr; cross_move_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips114_show_gray_image
 <LI><a href="#[19b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips114_show_uint
@@ -2969,7 +2971,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
 </UL>
-<P><STRONG><a name="[1a9]"></a>motor_control</STRONG> (Thumb, 2072 bytes, Stack size 40 bytes, my_moter.o(.text.motor_control))
+<P><STRONG><a name="[1a9]"></a>motor_control</STRONG> (Thumb, 2088 bytes, Stack size 40 bytes, my_moter.o(.text.motor_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 520<LI>Call Chain = motor_control &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;position_correct
@@ -3177,7 +3179,7 @@ Global Symbols
 <LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wireless_uart_callback
 </UL>
 
-<P><STRONG><a name="[1aa]"></a>position_correct</STRONG> (Thumb, 372 bytes, Stack size 16 bytes, my_moter.o(.text.position_correct))
+<P><STRONG><a name="[1aa]"></a>position_correct</STRONG> (Thumb, 394 bytes, Stack size 16 bytes, my_moter.o(.text.position_correct))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = position_correct
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1a9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_control
@@ -3252,7 +3254,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[151]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pit_handler_2
 </UL>
 
-<P><STRONG><a name="[1a7]"></a>roundabout_move_control</STRONG> (Thumb, 2678 bytes, Stack size 56 bytes, car_control.o(.text.roundabout_move_control))
+<P><STRONG><a name="[1a7]"></a>roundabout_move_control</STRONG> (Thumb, 2746 bytes, Stack size 56 bytes, car_control.o(.text.roundabout_move_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 832<LI>Call Chain = roundabout_move_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -3390,8 +3392,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[18e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;imu660ra_init
 </UL>
 
-<P><STRONG><a name="[1a6]"></a>start_finish_line_control</STRONG> (Thumb, 1176 bytes, Stack size 72 bytes, car_control.o(.text.start_finish_line_control))
-<BR><BR>[Stack]<UL><LI>Max Depth = 848<LI>Call Chain = start_finish_line_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
+<P><STRONG><a name="[1a6]"></a>start_finish_line_control</STRONG> (Thumb, 1032 bytes, Stack size 56 bytes, car_control.o(.text.start_finish_line_control))
+<BR><BR>[Stack]<UL><LI>Max Depth = 832<LI>Call Chain = start_finish_line_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
 <LI><a href="#[1c7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;find_start_finish_line

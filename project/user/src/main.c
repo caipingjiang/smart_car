@@ -120,6 +120,7 @@ int main(void)
 		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
 		//Slope_Mode = 2;
 		//target_slope  = -30;
+
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
@@ -127,6 +128,9 @@ int main(void)
 		
 		ramp_control();
 		barrier_control();
+		
+		
+		
 		//arm_down();
 		//arm_exchange(0,1);
 		//arm_hang();
