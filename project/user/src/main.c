@@ -131,9 +131,10 @@ int main(void)
 		
 		
 		
-		//arm_down();
-		//arm_exchange(0,1);
-		//arm_hang();
+		// arm_down();
+		// arm_exchange(0,1);
+		// arm     _up();
+		// arm_hang();
 		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);
 		
