@@ -364,7 +364,7 @@ uint32 curvity_calculate(uint8* slide_line, uint8* longest)
 		{
 			var += pow(slide_line[i] - x, 2);
 		}
-		ips114_show_int(20, 20, var, 10);
+		//ips114_show_int(20, 20, var, 10);
 		return var;
 	}
 	b = (int16)(y1 - ((float)1/m*x1));
@@ -378,7 +378,7 @@ uint32 curvity_calculate(uint8* slide_line, uint8* longest)
 		var += pow(slide_line[i] - x, 2);
 	}
 	// ips114_draw_line(x1,y1,x2,y2,RGB565_WHITE);
-	ips114_show_int(20, 20, var, 10);
+	//ips114_show_int(20, 20, var, 10);
 	return var;
 }
 
@@ -405,6 +405,25 @@ void sideline_correct(uint8* side_point, int16* sideline_angle, int16* sideline_
 
 	// ips114_show_int(188, 0, *sideline_angle, 4);
 	// ips114_show_int(188, 20, *sideline_distance, 4);
+
+	// uint16 odd_y_sum = 0;		//奇数列的上边界点的y坐标值之和
+	// uint16 even_y_sum = 0;   	//偶数列的上边界点的y坐标值之和
+	// int16 result = 0;
+	// for(uint8 i = 0; i < 60; i+=4)	//偶数列
+	// {
+	// 	even_y_sum += side_point[i];
+	// }
+	// for(uint8 i = 2; i < 60; i+=4)	//奇数列
+	// {
+	// 	odd_y_sum += side_point[i];
+	// }
+
+	// result = (int16)(odd_y_sum - even_y_sum);
+	
+	// // ips114_show_int(130,50,odd_y_sum,7);
+	// // ips114_show_int(130,70,even_y_sum,7);
+	// ips114_show_int(130,90,result,7);
+
 }
 
 

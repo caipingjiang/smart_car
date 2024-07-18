@@ -126,13 +126,17 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 
 bool arm_down()
 {
-#if SERVO_SPEED == 0
+    bool state;
+
+#if SERVO_SPEED == 1
 	
     Servo_SetAngle(2, 29);
     system_delay_ms(200);
+    Servo_SetAngle(1, 100);
+    system_delay_ms(350); 
     Servo_SetAngle(1, 80);
 	magnet_set(1); 
-    system_delay_ms(550);   
+    system_delay_ms(150);   
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
 	Servo_SetAngle(1, 95);
@@ -142,14 +146,22 @@ bool arm_down()
 	Servo_SetAngle(2, 40);
     system_delay_ms(50);
     Servo_SetAngle(2, 240);
-    system_delay_ms(400);
+    system_delay_ms(300);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(100);
+    }
+    else
+    {
+        state = false;
+    }
     Servo_SetAngle(1, 130);
-    system_delay_ms(400);
+    system_delay_ms(300);
     magnet_set(0);
 	
-#elif SERVO_SPEED == 1
-
-    bool state;
+#elif SERVO_SPEED == 0
+   
 	Servo_SetAngle_Slow(2, 29);
     Servo_SetAngle_Slow(1, 80);
 	magnet_set(1); 
@@ -168,40 +180,56 @@ bool arm_down()
     }
     Servo_SetAngle_Slow(1, 150);
     magnet_set(0);
-	
-    return state;
 
 #endif
+
+    return state;
 }
 
 //返回值:是否拾取上来，false-没有拾取上来，true-成功拾取上来
 bool arm_up()
 {
-#if SERVO_SPEED == 0
-	
+    bool state;     //记录本次拾取是否成功
+
+#if SERVO_SPEED == 1
+
+	Servo_SetAngle(2, 236);
+    Servo_SetAngle(1, 135);
+    system_delay_ms(300);
+    
 	Servo_SetAngle(1, 155);
-    Servo_SetAngle(2, 236);
-	system_delay_ms(400);
+    
+	system_delay_ms(200);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
-	system_delay_ms(600);
+	system_delay_ms(300);
 	Servo_SetAngle(1, 130);
 	system_delay_ms(100);
 	Servo_SetAngle(2, 60);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(50);
+    }
+    else
+    {
+        state = false;
+    }
 	system_delay_ms(400);
 	Servo_SetAngle(1, 115);
     system_delay_ms(150);
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
     Servo_SetAngle(2, 28);
-    system_delay_ms(500);
+    system_delay_ms(200);
     magnet_set(0);
 	
-#elif SERVO_SPEED == 1
-     bool state;     //记录本次拾取是否成功
+#elif SERVO_SPEED == 0
+     
 	//Servo_SetAngle_Slow(2, 236);
     Servo_SetAngle(2, 236);
     system_delay_ms(300);
+    Servo_SetAngle_Slow(1, 150);
 	Servo_SetAngle_Slow(1, 170);
     magnet_set(1);
     system_delay_ms(100);
@@ -228,10 +256,10 @@ bool arm_up()
 //    Servo_SetAngle_Slow(1, 90);
     magnet_set(0);
 //    
-    return state;
 	
 #endif
 
+    return state;
 }
 
 
@@ -239,20 +267,28 @@ bool arm_up()
 
 void arm_hang()
 {
-#if SERVO_SPEED == 0
+#if SERVO_SPEED == 1
 
     magnet_set(0);
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
     system_delay_ms(100);
-#elif SERVO_SPEED == 1
+#elif SERVO_SPEED == 0
 
     magnet_set(0);
     Servo_SetAngle_Slow(2, 100);
     Servo_SetAngle_Slow(1, 100);
 
 #endif
+}
+
+//无任何延时的hang,用在art_control捡完卡片时
+void arm_hang_fast()
+{
+    magnet_set(0);
+    Servo_SetAngle(1, 100);
+    Servo_SetAngle(2, 100);
 }
 
 bool arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
@@ -335,8 +371,8 @@ static char store_list[4][10] = { {0} };
 
 char temp_class_arr[4][2] = { {0} };      
 static uint8 temp_cnt = 0;                      //环岛十字记录拾取卡片的次数
-static uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-有1张第五类；  2-有两张第五类； 3-有1张第五类，且第6张是第1类
-static char five_class = 0;                     //第五类的类别
+uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-有1张第五类；  2-有两张第五类； 3-有1张第五类，且第6张是第1类
+char five_class = 0;                     //第五类的类别
 static uint8 five_unload_finish_Flag = 0;       //第五类卸货完成标志位
 
 uint8 false_cnt_max1 = 10;      //环岛十字拾取、交换卡片错误最大次数限制
@@ -371,8 +407,9 @@ void Box_Record(uint8 box_num, char card_class, uint8 operate)
 // 使用示例  
 // 备注信息  赛道两边可选择是否记录，环岛十字默认都会记录
 //-----------------------------------------------------------------------------------------------
-void Box_In(char card_class, uint8 cross_roundabout_Flag)
+bool Box_In(char card_class, uint8 cross_roundabout_Flag)
 {
+    bool state = false;
     if (!cross_roundabout_Flag) //赛道两边
     {
         if ('A' <= card_class && card_class <= 'E')        //大类-1
@@ -387,8 +424,9 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
         #endif
             {
                 Box_Record(0, '1', 1);
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
@@ -402,8 +440,9 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
         #endif
             {
                 Box_Record(1, '2', 1); 
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
@@ -417,9 +456,11 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
         #endif
             {
                 Box_Record(2, '3', 1);
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
+        return state;
     }
     else      //环岛十字
     {

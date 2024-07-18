@@ -87,19 +87,20 @@ void cross_move_control()
 				move(90 + cross_dir*90, 30);
 				system_delay_ms(500);
 				move(90,20);
-				system_delay_ms(600);
+				system_delay_ms(400);
+				
 				Image_Mode = 3;
-				system_delay_ms(50);
-				move(90,20);
+				system_delay_ms(20);
 				Control_Mode = 0;
-				system_delay_ms(500);
+				move(90,20);
+				system_delay_ms(100);
 			}
 			
 			
 			Image_Mode = 0;
 			system_delay_ms(50);
 			v_x = 0;
-			v_y = tracking_speed;
+			v_y = 30;
 			w = 0;
 			Control_Mode = 0;
 			cross_flag = 0;
@@ -319,6 +320,18 @@ void cross_move_control()
 					if(cross_card_release_cnt>=5)	
 					{
 						cross_card_releaseFinish = true;
+
+						for(uint8 i = 0; i<4; i++)	//即使识别错误，也可确保最后把所有卡片放完
+						{
+							if(temp_class_arr[i][1] != 0)
+							{
+								Box_Out(temp_class_arr[i][0],1);
+							}
+						}
+						if(five_Flag != 0)
+						{
+							Box_Out(five_class, 1);
+						}
 					}
 					buzzer_set_delay(20);
 					move(-90,15);
@@ -524,7 +537,7 @@ void roundabout_move_control()
 		uart_write_byte(UART_4, '1');
 		Control_Mode = 4;
 		move(90,15);
-		system_delay_ms(400);
+		system_delay_ms(500);	//400
 		move(0,0);
         turn_flag = 1;
         
@@ -537,12 +550,13 @@ void roundabout_move_control()
 		uart_write_byte(UART_4, '1'); 
 		turn_flag = 0;	//清零上次的标志位
 		Control_Mode = 1;
-		v_x = -roundabout_dir*10;
+		v_x = -roundabout_dir*15;
 		v_y = 0;
 		Image_Mode = 1;	//此时进入边界矫正，故需要切换图像处理模式
 
 		if(abs(uart1_data_arr[0] - finial_point_2[0])<20)	//如果识别到了有卡片就一直拾取，直到拾取完
 		{	
+			
 			Image_Mode = 4;
 			v_x = 0;
 			// system_delay_ms(2000); //先矫正一下车身
@@ -586,6 +600,7 @@ void roundabout_move_control()
 						move(0,0);
 						time = 0;
 						temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
+						//buzzer_set_delay(20);
 						break;
 					}
 				}
@@ -674,7 +689,7 @@ void roundabout_move_control()
 		w = 0;
 		Control_Mode = 4;
 		Image_Mode = 4;	//挂起总钻风
-		system_delay_ms(500);  //等待停下
+		//system_delay_ms(500);  //等待停下
 
         angle_turn = roundabout_dir*90;
         Control_Mode = 3;
@@ -687,7 +702,7 @@ void roundabout_move_control()
 		}
         Image_Mode = 1;			//不能去掉，否则无法对roundabout_flag置标志位
         turn_flag = 1;
-		system_delay_ms(200);
+		system_delay_ms(50);
 
 		//以下，原本在roundabout_flag == 4里
 		Control_Mode = 4;	
@@ -717,15 +732,58 @@ void roundabout_move_control()
 			move(0,0);
 			v_x = 0;
 			temp_distance = 0;	//临时距离
+			time = 0;
 			do
 			{
-				temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
-				Control_Mode = 2;
-				Correct_Mode = 1;
-				w = 0;
-				system_delay_ms(200);//等待矫正完成
+				if(uart1_data_arr[0]==0)
+				{
+					
+					time++;
+					Control_Mode = 4;
+					move(90,10);
+					system_delay_ms(100);
+					move(0,0);
+					if(time>10)
+					{
+						Control_Mode = 4;
+						while(!uart1_data_arr[0])
+						{
+							time++;
+							if(time>15)
+							{
+								time = 0;
+								goto Flag2;
+								//break;
+							}
+							move(90,10);
+							system_delay_ms(300);
+
+							move(-90,10);
+							system_delay_ms(300);
+						}
+						move(0,0);
+						time = 0;
+						temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
+						break;
+					}
+				}
+				else
+				{
+					time++;
+					temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
+					Control_Mode = 2;
+					Correct_Mode = 1;
+					w = 0;
+					system_delay_ms(100);//等待矫正完成	
+				}
+
+				// temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
+				// Control_Mode = 2;
+				// Correct_Mode = 1;
+				// w = 0;
+				// system_delay_ms(200);//等待矫正完成
 			}
-			while(temp_distance>30);//距离大于30就一直矫正
+			while(temp_distance>20);//距离大于30就一直矫正
 
 			Control_Mode = 4;
 			move(0,0);	
@@ -736,7 +794,7 @@ void roundabout_move_control()
 			if(uart4_data_arr[1]==1)        //识别到卡片
 			{
 				uart_write_byte(UART_4, '1');     
-				system_delay_ms(500);
+				//system_delay_ms(500);
 
 				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 				{
@@ -744,18 +802,30 @@ void roundabout_move_control()
 				}
 				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 				{
+					Flag2:
 					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 					Box_Out((char)uart4_data_arr[0],1);
-
-					
+					//---------确保识别错误的卡片也会被放出来------------
+					for(uint8 i = 0; i<4; i++)	//即使识别错误，也可确保最后把所有卡片放完
+					{
+						if(temp_class_arr[i][1] != 0)
+						{
+							Box_Out(temp_class_arr[i][0],1);
+						}
+					}
+					if(five_Flag != 0)
+					{
+						Box_Out(five_class, 1);
+					}
+					//-----------------------
 					Control_Mode = 4;  
 					move(-90,10);
 					system_delay_ms(500);       
 					Control_Mode = 1;
-					v_x = roundabout_dir*30;
+					v_x = roundabout_dir*40;	//30
 					v_y = 0;
 					Image_Mode = 2;		//不能为1
-					system_delay_ms(1800);    
+					system_delay_ms(1200);  //1800  
 
 					
 					Control_Mode = 3;
@@ -765,11 +835,11 @@ void roundabout_move_control()
 					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>8)	//小于3度就认为转向完成
 					{
 						Control_Mode = 3;
-						system_delay_ms(200);    //等待转向完成
+						system_delay_ms(50);    //等待转向完成
 					}
 					
 					Image_Mode = 0;
-					system_delay_ms(200);	//等待把roundabout_flag 置为0
+					system_delay_ms(20);	//等待把roundabout_flag 置为0
 					Control_Mode = 0;
 					v_x = 0;
 					v_y = tracking_speed;
@@ -1219,7 +1289,7 @@ void ART_control()
 					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度才认为转向完成
 					{
 						Control_Mode = 3;
-						system_delay_ms(100);    //等待转向完成
+						system_delay_ms(50);    //等待转向完成
 					}
 					
 					
@@ -1258,6 +1328,7 @@ void ART_control()
 						time += 1;
 					}
 					
+
 					uint8 temp_cnt = 0;		//记录本次卡片拾取次数，如果本次卡片大于5次还没有拾取上来，就不拣卡片了
 					while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 					{
@@ -1279,13 +1350,13 @@ void ART_control()
 							temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_1[0], 2)+pow(uart1_data_arr[1] - finial_point_1[1], 2));
 							Control_Mode = 2;
 							Correct_Mode = 0;
-							ips114_show_int(188,20,uart1_data_arr[0],3);
-							ips114_show_int(188,40,uart1_data_arr[1],3);
+							// ips114_show_int(188,20,uart1_data_arr[0],3);
+							// ips114_show_int(188,40,uart1_data_arr[1],3);
 							w = 0;
 							system_delay_ms(50);//等待矫正完成
 							uart_write_byte(UART_4, '0');     
 						}
-						while(temp_distance>10);//距离大于30就一直矫正
+						while(temp_distance>30);//距离大于30就一直矫正
 						
 
 						//能到这说明距离已经小于30了
@@ -1298,7 +1369,7 @@ void ART_control()
 
 							if(uart4_data_arr[1]==1)
 							{
-								Box_In((char)uart4_data_arr[0],0);
+								bool isOK = Box_In((char)uart4_data_arr[0],0);
 								temp_cnt++;
 								
 								ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
@@ -1311,7 +1382,7 @@ void ART_control()
 								// 	Box_In((char)uart4_data_arr[0],0);
 								// }
 								
-								if(temp_cnt>=5)//如果本次卡片大于5次还没有拾取上来，就不拣卡片了
+								if(temp_cnt>=5 || isOK)//如果本次卡片大于5次还没有拾取上来或者已经拾取上来了一张，就不拣卡片了
 								{
 									temp_cnt = 0;
 									break;
@@ -1327,15 +1398,17 @@ void ART_control()
 					{
 						Control_Mode = 4;
 						move(-90, 20);
-						system_delay_ms(300);
+						system_delay_ms(200);
 						move(0,0);
 						Image_Mode = 2;
 						system_delay_ms(50);
 						Control_Mode = 1;
-						system_delay_ms(2600);
+						target_y = 480;
+						system_delay_ms(400);	//600
 						Control_Mode = 4;
-						move(90, 15);
-						system_delay_ms(300);
+						target_y = 430;
+						// move(90, 15);
+						// system_delay_ms(300);
 						move(0,0);
 
 					}
@@ -1475,8 +1548,8 @@ void barrier_control()
 			}
 			
 		}
-		ips114_show_int(50,30,boder_L[80] - boder_L[90], 3);
-		ips114_show_int(50,50,boder_R[80] - boder_R[90], 3);
+//		ips114_show_int(50,30,boder_L[80] - boder_L[90], 3);
+//		ips114_show_int(50,50,boder_R[80] - boder_R[90], 3);
 	} 
 	
 }
