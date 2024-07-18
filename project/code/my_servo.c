@@ -205,29 +205,30 @@ bool arm_up()
     system_delay_ms(300);
 	Servo_SetAngle_Slow(1, 170);
     magnet_set(1);
-    system_delay_ms(300);
-	Servo_SetAngle_Slow(1, 135);
+    system_delay_ms(100);
+	Servo_SetAngle_Slow(1, 125);
 	//Servo_SetAngle_Slow(2, 70);
-    Servo_SetAngle(2, 70);
-    system_delay_ms(400);
+    Servo_SetAngle(2, 60);
+    system_delay_ms(300);
     if(IR_get_state() == 0)
     {
         state = true;
-        buzzer_set_delay(100);
+        buzzer_set_delay(50);
     }
     else
     {
         state = false;
     }
-    
+    Servo_SetAngle(2, 50);
+	system_delay_ms(100);
     Servo_SetAngle_Slow(1, 100);
-    // Servo_SetAngle_Slow(2, 50);
-	// Servo_SetAngle_Slow(2, 28);
-    Servo_SetAngle(2, 28);
-    system_delay_ms(300);
-    Servo_SetAngle_Slow(1, 90);
+//    // Servo_SetAngle_Slow(2, 50);
+//	// Servo_SetAngle_Slow(2, 28);
+//    Servo_SetAngle(2, 50);
+    system_delay_ms(100);
+//    Servo_SetAngle_Slow(1, 90);
     magnet_set(0);
-    
+//    
     return state;
 	
 #endif
