@@ -216,7 +216,7 @@ void cross_move_control()
 	else if(cross_flag == 3)
 	{
 		uart_write_byte(UART_4, '1');	
-		system_delay_ms(10);
+		system_delay_ms(2);
 		//system_delay_ms(500);
 		turn_flag = 0;	//清零上一状态的转向标志
 		Control_Mode = 1;
@@ -225,19 +225,16 @@ void cross_move_control()
 		Image_Mode = 1;	//此时进入边界矫正，故需要切换图像处理模式
 
 		
-		if(abs(uart1_data_arr[0] - finial_point_2[0])<20+5)	//如果识别到了有卡片就一直拾取，直到拾取完
+		if(abs(uart1_data_arr[0] - finial_point_2[0])<(20+5-5))	//如果识别到了有卡片就一直拾取，直到拾取完
 		{	
 			//buzzer_set_delay(50);
 			v_x = 0;
-			// system_delay_ms(2000); //先矫正一下车身
-			// while(abs(uart1_data_arr[0] - finial_point_2[0])>35)//等待x方向矫正完成
-			// {
-			// 	Control_Mode = 5;
-			// 	system_delay_ms(100);
-			// }
-			// arm_up();
-			// system_delay_ms(1000);
-			move(0,0);
+			
+			buzzer_set_delay(10);
+			// move(0,0);
+			// Control_Mode = 4;
+			// move(90,15);
+			// system_delay_ms(200);
 			temp_distance = 0;	//临时距离
 			time = 0;
 			do
@@ -248,14 +245,14 @@ void cross_move_control()
 					Control_Mode = 4;
 					move(90,10);
 					system_delay_ms(100);
-					move(0,0);
-					if(time>10)
+					move(0,20);
+					if(time>20)//10
 					{
 						Control_Mode = 4;
 						while(!uart1_data_arr[0])
 						{
 							time++;
-							if(time>15)
+							if(time>25)//45
 							{
 								time = 0;
 								goto Flag0;
@@ -282,69 +279,91 @@ void cross_move_control()
 					w = 0;
 					system_delay_ms(100);//等待矫正完成	
 				}
-				temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
-				Control_Mode = 2;
-				Correct_Mode = 1;
-				w = 0;
-				system_delay_ms(50);//等待矫正完成
+				// temp_distance = sqrt(pow(uart1_data_arr[0] - finial_point_2[0], 2)+pow(uart1_data_arr[1] - finial_point_2[1], 2));
+				// Control_Mode = 2;
+				// Correct_Mode = 1;
+				// w = 0;
+				// system_delay_ms(50);//等待矫正完成
 			}
 			while(temp_distance>30);//距离大于30就一直矫正
 
 
 			//能到这说明距离已经小于30了
 			Control_Mode = 4;
-			move(0,0);		
-			if(uart4_data_arr[1]==1)        //识别到卡片
+			move(0,0);
+			time = 0;	
+
+			system_delay_ms(1000);	//过滤掉开头几帧？？？
+			while(1)
 			{
-				time = 0;
-				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+				if(uart4_data_arr[1]==1)        //识别到卡片
 				{
-					time++;
-					if(time>30)
+					time = 0;
+					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
 					{
-						time = 0;
-						goto Flag0;
-						break;
-					}
-					system_delay_ms(100);
-				}
-				//system_delay_ms(1000);
-				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
-				{
-					Flag0:
-					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-					Box_Out((char)uart4_data_arr[0],1);
-					cross_card_release_cnt++;	//记录到放置区停下来的次数
-
-					Control_Mode = 4;  
-					if(cross_card_release_cnt>=5)	
-					{
-						cross_card_releaseFinish = true;
-
-						for(uint8 i = 0; i<4; i++)	//即使识别错误，也可确保最后把所有卡片放完
+						time++;
+						if(time>30)
 						{
-							if(temp_class_arr[i][1] != 0)
+							time = 0;
+							goto Flag0;
+						}
+						system_delay_ms(100);
+					}
+					//system_delay_ms(1000);
+					if('A'<=uart4_data_arr[0] && uart4_data_arr[0] <= 'O')
+					{
+						Flag0:
+						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+						Box_Out((char)uart4_data_arr[0],1);
+						cross_card_release_cnt++;	//记录到放置区停下来的次数
+
+						Control_Mode = 4;  
+						if(cross_card_release_cnt>=5)	
+						{
+							cross_card_releaseFinish = true;
+
+							for(uint8 i = 0; i<4; i++)	//即使识别错误，也可确保最后把所有卡片放完
 							{
-								Box_Out(temp_class_arr[i][0],1);
+								if(temp_class_arr[i][1] != 0)
+								{
+									Box_Out(temp_class_arr[i][0],1);
+								}
+							}
+							if(five_Flag != 0)
+							{
+								Box_Out(five_class, 1);
 							}
 						}
-						if(five_Flag != 0)
-						{
-							Box_Out(five_class, 1);
-						}
+						buzzer_set_delay(20);
+						move(-90,15);
+						system_delay_ms(500);      
+
+						Image_Mode = 1;
+						system_delay_ms(20);	//不能去掉，让矫正图像能刷新 sideline_distance，否则sideline_distance==0时会导致v_x = 0,(见my_motor.c里面的roundabout_move函数)
+						Control_Mode = 1;
+						v_x = cross_dir*(15);
+						v_y = 0;
+			
+						buzzer_set(1);
+						system_delay_ms(700);  
+						buzzer_set(0);  
+
+						break;
 					}
-					buzzer_set_delay(20);
-					move(-90,15);
-					system_delay_ms(500);       
-					Control_Mode = 1;
-					v_x = cross_dir*15;
-					v_y = 0;
-					Image_Mode = 1;
-					system_delay_ms(700);    
-					
+				}	
+				else
+				{
+					time++;
+					system_delay_ms(100);
+					if(time>20)
+					{
+						goto Flag0;
+						time = 0;
+					}
 				}
 				
-			}		
+			}	
+				
 
 		}
 	
@@ -354,11 +373,9 @@ void cross_move_control()
 		Gyro_Angle.Ydata = 0;	//清除零漂
 		turn_flag = 0;	//清零上次的标志位
 		angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 
-    	v_x = 0;
-		v_y = 0;
-		w = 0;
 		Control_Mode = 4;
-		system_delay_ms(500);
+    	move(0,0);
+		system_delay_ms(200);
 
 		Control_Mode = 3;
 		v_x = 0;
@@ -537,7 +554,7 @@ void roundabout_move_control()
 		uart_write_byte(UART_4, '1');
 		Control_Mode = 4;
 		move(90,15);
-		system_delay_ms(500);	//400
+		system_delay_ms(700);	//400
 		move(0,0);
         turn_flag = 1;
         
@@ -545,6 +562,7 @@ void roundabout_move_control()
 	
 	else if(roundabout_flag == 2)
 	{
+		static int16 near_distance = 20;
 		Gyro_Angle.Ydata = 0;	//清除零漂
 		time = 0;
 		uart_write_byte(UART_4, '1'); 
@@ -554,7 +572,16 @@ void roundabout_move_control()
 		v_y = 0;
 		Image_Mode = 1;	//此时进入边界矫正，故需要切换图像处理模式
 
-		if(abs(uart1_data_arr[0] - finial_point_2[0])<20)	//如果识别到了有卡片就一直拾取，直到拾取完
+		if(roundabout_card_release_cnt==0)
+		{
+			near_distance = 30;
+		}
+		else
+		{
+			near_distance = 20;
+		}
+		
+		if(abs(uart1_data_arr[0] - finial_point_2[0])<near_distance)	//如果识别到了有卡片就一直拾取，直到拾取完
 		{	
 			
 			Image_Mode = 4;
@@ -579,13 +606,13 @@ void roundabout_move_control()
 					move(90,10);
 					system_delay_ms(100);
 					move(0,0);
-					if(time>10)
+					if(time>15)
 					{
 						Control_Mode = 4;
 						while(!uart1_data_arr[0])
 						{
 							time++;
-							if(time>15)
+							if(time>20)
 							{
 								time = 0;
 								goto Flag1;
@@ -623,60 +650,66 @@ void roundabout_move_control()
 			move(0,0);		
 			
 			time = 0;
-			// while(uart4_data_arr[1] != 1)
-			// {
-			// 	time ++;
-			// 	if(time>50)
-			// 	{
-			// 		//统计最多的那一个》》》》》》》》》》》》》》》》》》》》》
-			// 		buzzer_set_delay(2000);
-			// 	}
-			// 	system_delay_ms(100);
-			// }
-			if(uart4_data_arr[1]==1)        //识别到卡片
+
+			system_delay_ms(1000);
+			while(1)
 			{
-				time = 0;
-				while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+				if(uart4_data_arr[1]==1)        //识别到卡片
+				{
+					time = 0;
+					while(!('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O'))
+					{
+						time++;
+						if(time>30)	//如果3s过后还是没有正确数据（此时大概率没有找到矩形，uart4_data_arr[0]为0），就不再等待了
+						{
+							time = 0;
+							goto Flag1;
+						}
+						system_delay_ms(100);
+					}
+					//system_delay_ms(1000);
+					if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
+					{
+						system_delay_ms(500);	//过滤掉开头几帧？？？
+						Flag1:
+						roundabout_card_release_cnt++;	//注意：是到了一个放置区就加1
+						ips114_show_int(80,80,roundabout_card_release_cnt,2);
+						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
+						Box_Out((char)uart4_data_arr[0],1);
+						buzzer_set_delay(50);
+						
+						Control_Mode = 4;
+						
+						if(roundabout_card_release_cnt>=4)//(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)) && roundabout_card_release_cnt>=4)	
+						{
+							roundabout_card_releaseFinish = true;
+						}
+						Control_Mode = 4;  
+						move(-90,10);
+						system_delay_ms(500);       
+						Control_Mode = 1;
+						v_x = -roundabout_dir*(10+5);
+						v_y = 0;
+						Image_Mode = 1;
+						system_delay_ms(700);    
+						break;
+					}
+					
+				}
+				else
 				{
 					time++;
-					if(time>30)	//如果3s过后还是没有正确数据（此时大概率没有找到矩形，uart4_data_arr[0]为0），就不再等待了
+					system_delay_ms(100);
+					if(time>20)
 					{
-						time = 0;
 						goto Flag1;
+						time = 0;
 					}
-			 		system_delay_ms(100);
-				}
-				//system_delay_ms(1000);
-				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
-				{
-					Flag1:
-					roundabout_card_release_cnt ++;	//注意：是到了一个放置区就加1
-					ips114_show_int(80,80,roundabout_card_release_cnt,2);
-					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-					Box_Out((char)uart4_data_arr[0],1);
-					buzzer_set_delay(50);
-					
-					Control_Mode = 4;
-					
-					if(roundabout_card_release_cnt>=4)//(longest < 5 && (roundabout_dir>0?(index < MT9V03X_W/2): (index > MT9V03X_W/2)) && roundabout_card_release_cnt>=4)	
-					{
-						roundabout_card_releaseFinish = true;
-					}
-					Control_Mode = 4;  
-					move(-90,10);
-					system_delay_ms(500);       
-					Control_Mode = 1;
-					v_x = -roundabout_dir*10;
-					v_y = 0;
-					Image_Mode = 1;
-					system_delay_ms(700);    
 
 				}
-				
-			}		
+			}
 
 		}
-
 		
 	}
     else if(roundabout_flag == 3)
@@ -684,12 +717,10 @@ void roundabout_move_control()
 		roundabout_card_releaseFinish = false;	//清零上一状态
 
 		angle_now = Gyro_Angle.Zdata;
-    	v_x = 0;
-		v_y = 0;
-		w = 0;
 		Control_Mode = 4;
+		move(0,0);
 		Image_Mode = 4;	//挂起总钻风
-		//system_delay_ms(500);  //等待停下
+		system_delay_ms(200);  //等待停下
 
         angle_turn = roundabout_dir*90;
         Control_Mode = 3;
@@ -707,7 +738,7 @@ void roundabout_move_control()
 		//以下，原本在roundabout_flag == 4里
 		Control_Mode = 4;	
         move(90, 20);
-        system_delay_ms(500);
+        system_delay_ms(400);
 		Image_Mode = 2;
 		Control_Mode = 1;
 		v_x = -(roundabout_dir*15);
@@ -802,6 +833,7 @@ void roundabout_move_control()
 				}
 				if('A'<=uart4_data_arr[0] && uart4_data_arr[0]<= 'O')
 				{
+					system_delay_ms(500);	//过滤掉开头几帧？？？
 					Flag2:
 					ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 					Box_Out((char)uart4_data_arr[0],1);
@@ -855,6 +887,11 @@ void roundabout_move_control()
 			
 			
 		}
+		else
+		{
+			
+		}
+		
 
 	}
 }
@@ -866,7 +903,7 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-#define MOVE_MODE	1			//到达三大类的移动方式：0为3张卡片都在内测，1为3张卡片都在外侧，2为内外侧都有
+#define MOVE_MODE	1			//到达三大类的移动方式：0为3张卡片都在右测，1为3张卡片都在左侧，2为内外侧都有
 static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 static uint8 finish_line_flag = 0;	//是否识别到斑马线标志位
@@ -1252,7 +1289,7 @@ void start_finish_line_control()
 //-----------------------------------------------------------------------------------------------
 int16 ref_point_L[2] = {50, 200};		//计算距离的左参考点
 int16 ref_point_R[2] = {270, 200};		//计算距离的右参考点
-
+int16 pos_cor_distance = 30;			//position矫正的距离范围	
 void ART_control()
 {
 	static uint8 art_turn_flag = 0;
@@ -1273,7 +1310,7 @@ void ART_control()
 									
 					int8 temp_slope = Slope;
 
-					Image_Mode = 4;	//挂起总钻风，防止误判
+					Image_Mode = 2;	//挂起总钻风，防止误判
 					//停车
 					Control_Mode = 4;
 					move(0,0);
@@ -1302,8 +1339,7 @@ void ART_control()
 						if(time>30)	//如果1.5秒过后还没看到卡片就原路回转
 						{
 							time = 0;
-							angle_now = Gyro_Angle.Zdata;
-							angle_turn = -angle_turn;
+							angle_turn = 0;
 							move(0,0);
 							while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度就认为转向完成
 							{
@@ -1330,6 +1366,7 @@ void ART_control()
 					
 
 					uint8 temp_cnt = 0;		//记录本次卡片拾取次数，如果本次卡片大于5次还没有拾取上来，就不拣卡片了
+					bool is_number = false;		//是否把字母误识别为卡片
 					while(uart1_data_arr[0])	//如果识别到了有卡片就一直拾取，直到拾取完
 					{
 						int16 temp_distance = 0;//临时距离
@@ -1356,7 +1393,7 @@ void ART_control()
 							system_delay_ms(50);//等待矫正完成
 							uart_write_byte(UART_4, '0');     
 						}
-						while(temp_distance>30);//距离大于30就一直矫正
+						while(temp_distance>pos_cor_distance);//距离大于30就一直矫正
 						
 
 						//能到这说明距离已经小于30了
@@ -1373,18 +1410,25 @@ void ART_control()
 								temp_cnt++;
 								
 								ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
-								// if(temp_cnt>1)	//同一张卡片由于掉落而反复拣时只记录一次
-								// {
-								// 	Box_In((char)uart4_data_arr[0],0);
-								// }
-								// else
-								// {
-								// 	Box_In((char)uart4_data_arr[0],0);
-								// }
 								
-								if(temp_cnt>=5 || isOK)//如果本次卡片大于5次还没有拾取上来或者已经拾取上来了一张，就不拣卡片了
+								if(isOK)
 								{
 									temp_cnt = 0;
+									pos_cor_distance = 30; //复位常规矫正距离
+									break;
+								}
+								if(temp_cnt>=1)	//如果第一次未拣成功，后面的的矫正精度就给高一点
+								{
+									pos_cor_distance = 10;
+								}
+								if(temp_cnt>=3)//如果本次卡片大于5次还没有拾取上来或者已经拾取上来了一张，就不拣卡片了
+								{
+									temp_cnt = 0;
+									if(!isOK)
+									{
+										is_number = true;
+										pos_cor_distance = 30;
+									}
 									break;
 								}
 								
@@ -1394,7 +1438,7 @@ void ART_control()
 
 					}
 
-					if(abs(temp_slope) > 15)	//如果卡片所处的弯道很急，那么在转弯前先校正车身与赛道边界垂直
+					if(abs(temp_slope) > 15 || is_number)	//如果卡片所处的弯道很急，那么在转弯前先校正车身与赛道边界垂直
 					{
 						Control_Mode = 4;
 						move(-90, 20);
@@ -1405,6 +1449,8 @@ void ART_control()
 						Control_Mode = 1;
 						target_y = 480;
 						system_delay_ms(400);	//600
+
+						
 						Control_Mode = 4;
 						target_y = 430;
 						// move(90, 15);
@@ -1412,21 +1458,52 @@ void ART_control()
 						move(0,0);
 
 					}
-					//回转
-					angle_now = Gyro_Angle.Zdata;
-					angle_turn = - angle_turn;
-					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度就认为转向完成
+
+					
+					if(!is_number)
 					{
-						Control_Mode = 3;
-						system_delay_ms(100);    //等待转向完成
+						angle_turn = 0;
+						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度就认为转向完成
+						{
+							Control_Mode = 3;
+							system_delay_ms(100);    //等待转向完成
+						}
+					}
+					else
+					{
+						angle_now = Gyro_Angle.Zdata;
+						if(angle_turn>0)angle_turn = -90+3;		//如果卡片在左边，就加上负角度补偿，以便能看到环岛
+						else if(angle_turn<0)angle_turn = 90-3;	//如果卡片在右边，就加上正角度补偿，以便能看到环岛
+						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>2)
+						{
+							Control_Mode = 3;
+							v_x = 0; v_y = 0;
+							system_delay_ms(100);    //等待转向完成
+						}
 					}
 					
+
 					//复位循迹
-					Control_Mode = 0;
-					v_x = 0;
-					v_y = tracking_speed;
-					w = 0;
 					Image_Mode = 0;
+					Control_Mode = 4;
+					move(0,0);
+					system_delay_ms(500);
+
+					
+					if(is_number)
+					{
+						is_number = false;
+						Control_Mode = 7;
+						v_x = 0;
+						v_y = 20;
+					}
+					else
+					{
+						Control_Mode = 0;
+						v_y = 30;
+					}
+					w = 0;
+					
 					Gyro_Angle.Ydata = 0;	//清除零漂
 					break;
 				}

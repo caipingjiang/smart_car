@@ -22,6 +22,9 @@ uint8 start_finial_line_car_find();
 void Image_change(uint8 image[][MT9V03X_W], uint16 width, uint16 height);
 uint8 otsu(uint8* image, uint16 width, uint16 height);
 
+void show_boder_line();
+uint8 find_white_point(uint8 image_array[][188]);
+
 extern uint8 cross_flag, roundabout_flag;
 extern int8  cross_dir, roundabout_dir;
 extern uint8 boder_correct[60];
@@ -38,6 +41,8 @@ extern uint8 boder_L[MT9V03X_H - 5];
 extern uint8 boder_R[MT9V03X_H - 5];
 extern uint8 boder_M[MT9V03X_H - 5];
 extern uint8 boder_U[MT9V03X_W];
+
+extern int16 sideline_angle, sideline_distance;
 
 //#define RESULT_ROW 100//结果图行列
 //#define RESULT_COL 114

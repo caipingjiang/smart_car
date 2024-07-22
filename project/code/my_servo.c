@@ -273,7 +273,7 @@ void arm_hang()
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
-    system_delay_ms(100);
+    system_delay_ms(200);
 #elif SERVO_SPEED == 0
 
     magnet_set(0);
@@ -332,7 +332,7 @@ bool arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
     Servo_SetAngle_Slow(2, 29);
     Servo_SetAngle_Slow(1, 80);
 	magnet_set(1); 
-    system_delay_ms(100);
+    system_delay_ms(250);
 	Servo_SetAngle_Slow(1, 95);
 	Servo_SetAngle_Slow(2, 35);
     Servo_SetAngle_Slow(2, 70);

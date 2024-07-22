@@ -41,5 +41,6 @@ extern uint8 turn_flag;
 extern int16 finial_point_1[2];
 extern int16 finial_point_2[2];
 extern int16 target_y;
+extern int16 speed_offset;
 
 #endif 

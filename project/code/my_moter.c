@@ -14,7 +14,7 @@ float target_angle = 0; //设定的角度值
 float target_slope  = 0;  //目标斜率
 int16 tracking_speed = 40;//60;  //循迹速度
 int16 last_speed_y = 40;    //上次的v_y
-
+int16 speed_offset = 10;    //速度偏移量
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
 uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
 uint8 turn_flag = 0;    //转向完成标志位（用于环岛十字的转向）
@@ -154,8 +154,8 @@ void move(int16 angle, int8 speed)
 // 使用示例  roundabout_move(&sideline_angle, &sideline_distance);
 // 备注信息  注意参数为存放数据变量的地址，在调用时传入在my_iamge.c中的全局变量int16 sideline_angle,sideline_distance的地址即可
 //-----------------------------------------------------------------------------------------------
-float Kp_correct1=1, Kd_correct1=10; //0.5 0.2 //1 10
-float Kp_correct2=0.07, Kd_correct2=0.4;
+float Kp_correct1=1.0, Kd_correct1=10; //0.5 0.2 //1 10
+float Kp_correct2=0.12, Kd_correct2=0.4;    //Kp = 0.07 kd = 0.4
 static int16 out1, out2;
 int16 target_y = 430;   //边线距离矫正的目标值
 void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
@@ -164,28 +164,6 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
     //使用两个并级PID，第一个：车身倾斜角度修正， 第二个：车身与正前方赛道边界距离修正
     static int16 err1=0, err_last1=0, err2 = 0, err_last2=0;
     
-    // if(cnt != 0)
-    // {
-    //     //车身倾角矫正pid
-    //     err1 = *sideline_angle;
-    //     out1 =Kp_correct1*err1 + Kd_correct1*(err1-err_last1);
-    //     err_last1 = err1;
-    //     if(out1>200)
-    //     {
-    //         buzzer_set_delay(1);
-    //     }
-    //     out1 = func_limit(out1, 200); //限幅
-        
-    // }
-    // else
-    // {
-    //     //赛道边线距离矫正pid
-    //     err2 = (430-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）//450 400   430
-    //     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
-    //     err_last2 = err2;
-    //     out2 = func_limit(out2, 400); //限幅
-    // }
-
     //车身倾角矫正pid
     err1 = *sideline_angle;
     out1 =Kp_correct1*err1 + Kd_correct1*(err1-err_last1);
@@ -197,6 +175,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
     err_last2 = err2;
     out2 = func_limit(out2, 400); //限幅
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -314,6 +293,25 @@ void position_correct(uint8 correct_mode)
 }
 
 //-----------------------------------------------------------------------------------------------
+// 函数简介  将车身矫正至赛道中央，v_y = 0
+// 参数说明  middle_line ：中线
+// 返回参数  void
+// 使用示例  
+// 备注信息  
+//-----------------------------------------------------------------------------------------------
+
+void middle_correct(uint8* middle_line)
+{
+    int16 sum = 0;
+    for(uint8 i = 0; i < 20; i++)
+    {
+        sum += (middle_line[MT9V03X_H-6-i] - middle);
+    }
+    v_x = sum/15;
+    w = sum/10;
+}
+
+//-----------------------------------------------------------------------------------------------
 // 函数简介  电机控制函数，放在编码器采集中断中被调用
 // 参数说明  
 // 返回参数  void
@@ -368,13 +366,16 @@ void motor_control()
         case 7: //固定速度循迹
             Turn(target_slope,Slope);
             break;
+        case 8:
+            middle_correct(boder_M);
+            break;
     }
     
     if(Control_Mode == 0)
     {
         
         tracking_speed = 1700/(40+abs(Slope));//v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
-        v_y = 0.7*tracking_speed + 0.3*last_speed_y + 10;//0.3*v_y + 0.7*last_speed_y;
+        v_y = 0.7*tracking_speed + 0.3*last_speed_y + speed_offset;//0.3*v_y + 0.7*last_speed_y;
         
         //last_speed_y = v_y;
         // tracking_speed = v_y;
