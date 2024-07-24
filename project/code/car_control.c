@@ -666,7 +666,7 @@ void roundabout_move_control()
 					move(-90,10);
 					system_delay_ms(500);       
 					Control_Mode = 1;
-					v_x = -roundabout_dir*10;
+					v_x = -roundabout_dir*(10+5);
 					v_y = 0;
 					Image_Mode = 1;
 					system_delay_ms(700);    
@@ -1413,8 +1413,9 @@ void ART_control()
 
 					}
 					//回转
-					angle_now = Gyro_Angle.Zdata;
-					angle_turn = - angle_turn;
+					//angle_now = Gyro_Angle.Zdata;
+					//angle_turn = - angle_turn;
+					angle_turn = 0;
 					while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度就认为转向完成
 					{
 						Control_Mode = 3;

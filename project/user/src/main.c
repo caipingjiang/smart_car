@@ -127,10 +127,7 @@ int main(void)
 		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);
 
-		//system_delay_ms(2000);
 		
-		arm_up();
-		system_delay_ms(1000);
 		
     }
 }

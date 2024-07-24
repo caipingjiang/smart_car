@@ -42,7 +42,7 @@ void my_image_init()
 		}
 		system_delay_ms(500);
 	}
-	mt9v03x_set_exposure_time(320);//120
+	mt9v03x_set_exposure_time(120);//120
 	system_delay_ms(100);
 	//设置自动曝光时间以应对差异较大的光线环境？？？
 }
