@@ -13,6 +13,7 @@ float angle_turn = 0;   //需要转的角度
 float target_angle = 0; //设定的角度值
 float target_slope  = 0;  //目标斜率
 int16 tracking_speed = 40;//60;  //循迹速度
+int16 last_speed_y = 40;    //上次的v_y
 
 uint8 Control_Mode = 0;     //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式， 5赛道两边的边界矫正，6角度闭环模式
 uint8 Correct_Mode = 0;     //卡片矫正模式，0-拾取卡片矫正，1-放卡片矫正
@@ -46,7 +47,7 @@ void my_motor_init()
 void motor_set_duty(uint8 motor_num, int16 duty)
 {
 	//ips114_show_int(40,40,duty,5);
-	duty = func_limit(duty, 5000);
+	duty = func_limit(duty, 8000);
     if(duty >= 0)   //正转
     {
         if(motor_num == 1) { gpio_set_level(MOTOR1_DIR, GPIO_HIGH); pwm_set_duty(MOTOR1_PWM, (uint32_t)duty);}
@@ -76,8 +77,8 @@ int16 Incremental_PI (uint8 motor_num, int16 Encoder, int16 Target)
     motor_bias_last[motor_num-1] = bias;
     
     //积分限幅
-    if(Pwm[motor_num-1]> 5000)Pwm[motor_num-1]= 5000;
-    if(Pwm[motor_num-1]<-5000)Pwm[motor_num-1]=-5000;
+    if(Pwm[motor_num-1]> 8000)Pwm[motor_num-1]= 8000;
+    if(Pwm[motor_num-1]<-8000)Pwm[motor_num-1]=-8000;
 	
     return (int16)Pwm[motor_num-1];
 }
@@ -156,11 +157,35 @@ void move(int16 angle, int8 speed)
 float Kp_correct1=1, Kd_correct1=10; //0.5 0.2 //1 10
 float Kp_correct2=0.07, Kd_correct2=0.4;
 static int16 out1, out2;
+int16 target_y = 430;   //边线距离矫正的目标值
 void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
 {
+
     //使用两个并级PID，第一个：车身倾斜角度修正， 第二个：车身与正前方赛道边界距离修正
     static int16 err1=0, err_last1=0, err2 = 0, err_last2=0;
     
+    // if(cnt != 0)
+    // {
+    //     //车身倾角矫正pid
+    //     err1 = *sideline_angle;
+    //     out1 =Kp_correct1*err1 + Kd_correct1*(err1-err_last1);
+    //     err_last1 = err1;
+    //     if(out1>200)
+    //     {
+    //         buzzer_set_delay(1);
+    //     }
+    //     out1 = func_limit(out1, 200); //限幅
+        
+    // }
+    // else
+    // {
+    //     //赛道边线距离矫正pid
+    //     err2 = (430-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）//450 400   430
+    //     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
+    //     err_last2 = err2;
+    //     out2 = func_limit(out2, 400); //限幅
+    // }
+
     //车身倾角矫正pid
     err1 = *sideline_angle;
     out1 =Kp_correct1*err1 + Kd_correct1*(err1-err_last1);
@@ -168,7 +193,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
     out1 = func_limit(out1, 200); //限幅
 
     //赛道边线距离矫正pid
-    err2 = (430-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）//450 400
+    err2 = (target_y-*sideline_distance); //目标距离为500个像素点（使用了多个点之和）//450 400   430
     out2 =Kp_correct2*err2 + Kd_correct2*(err2-err_last2);
     err_last2 = err2;
     out2 = func_limit(out2, 400); //限幅
@@ -182,7 +207,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
 // 备注信息  计算出的输出值可直接传给w, 也可以传入内环角速度环，后一种目前效果不是很好，可能是因为内外环中期一样的原因；目前直接用的外环
 // 备注信息  串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
 //-----------------------------------------------------------------------------------------------
-float Kp_A=1.25,Kd_A=8,Ki_A=0; // 20/95/0
+float Kp_A=2,Kd_A=8,Ki_A=0; // 20/95/0  Kp_A = 1.25,Kd_A = 8
 float Angle_PID(float Target_Angle, float Angle)
 {	
 	//Angle = slidingFilter(Angle);
@@ -193,7 +218,7 @@ float Angle_PID(float Target_Angle, float Angle)
 	integral += err;
 	integral = func_limit(integral,100); //积分限幅
 	//return (out>=0) ? (8*sqrt(out)) : (-8*sqrt(func_abs(out)));
-	out = func_limit(out,70);
+	out = func_limit(out,100);   //70
     return 2*out;
 
 }
@@ -225,7 +250,7 @@ float w_PID(float Target_w, float w)
 // 使用示例  
 // 备注信息  {120, 125}放置区位置; {160, 170}捡卡片位置	
 //-----------------------------------------------------------------------------------------------
-int16 finial_point_1[2]  = {160, 170};
+int16 finial_point_1[2]  = {160, 170+10};
 int16 finial_point_2[2] = {140, 135+10}; //120,125
 float Kp_cor = 0.25;
 float Kd_cor = 0; 
@@ -237,11 +262,13 @@ void position_correct(uint8 correct_mode)
         {
             v_x = (uart1_data_arr[0] - finial_point_1[0])*0.25;
             v_y = -(uart1_data_arr[1] - finial_point_1[1])*0.25;
+            w = 0;
         }
         else
         {
             v_x = 0;
             v_y = 0;
+            w = 0;
         }
         
     }
@@ -251,11 +278,13 @@ void position_correct(uint8 correct_mode)
         {
             v_x = (uart1_data_arr[0] - finial_point_2[0])*0.25;
             v_y = -(uart1_data_arr[1] - finial_point_2[1])*0.25;
+            w = 0;
         }
         else
         {
             v_x = 0;
             v_y = 0;
+            w = 0;
         }
     }
     else if(correct_mode == 2)  //带pid的矫正(弃用)
@@ -277,6 +306,7 @@ void position_correct(uint8 correct_mode)
         {
             v_x = 0;
             v_y = 0;
+            w = 0;
         }
         
     }
@@ -293,7 +323,7 @@ void position_correct(uint8 correct_mode)
 void motor_control()
 {
 	static uint8 cnt = 0;
-    static int16 last_speed_y = 40;
+
     switch(Control_Mode)
     {
         case 0:                         //正常循迹模式
@@ -320,12 +350,23 @@ void motor_control()
             break;
         case 5:   //赛道两边识别到卡片，但转弯后未找到卡片，开启边界矫正直到找到卡片
             roundabout_move(&sideline_angle, &sideline_distance);
-            v_x = (uart1_data_arr[0] - finial_point_2[0])*0.25;
+            if(uart1_data_arr[0])
+            {
+                v_x = (uart1_data_arr[0] - finial_point_2[0])*0.25;
+            }
+            else
+            {
+                v_x = 0;
+            }
+            
             v_y = out2;
             w = out1;
             break;
         case 6://   角度闭环模式，此模式角度会保持角度为目标角度
             w = Angle_PID(target_angle, Gyro_Angle.Zdata);
+            break;
+        case 7: //固定速度循迹
+            Turn(target_slope,Slope);
             break;
     }
     
@@ -333,24 +374,13 @@ void motor_control()
     {
         
         tracking_speed = 1700/(40+abs(Slope));//v_y = 2700/(50+abs(Slope));//2000/(34+abs(Slope));//2310/(45+abs(Slope));//
-        v_y = 0.7*tracking_speed + 0.3*last_speed_y + 5;//0.3*v_y + 0.7*last_speed_y;
+        v_y = 0.7*tracking_speed + 0.3*last_speed_y + 10;//0.3*v_y + 0.7*last_speed_y;
         
-        // if(abs(Slope)<10)
-        // {
-        //     v_y = func_limit_ab(v_y,50, 70);
-        // }
-        // else if(abs(Slope)>10 && abs(Slope)<20)
-        // {
-        //     v_y = func_limit_ab(v_y,40, 50);
-        // }
-        // else if(abs(Slope)>25 && abs(Slope)<35)
-        // {
-        //     v_y = func_limit_ab(v_y,30, 35);
-        // }
         //last_speed_y = v_y;
         // tracking_speed = v_y;
         // v_y = tracking_speed;
     }
+
     car_omni(v_x, v_y, w);
     motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
     motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));

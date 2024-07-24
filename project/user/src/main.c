@@ -86,28 +86,12 @@ int main(void)
 		ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
+			//mt9v03x_finish_flag = 0;
 			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+
+			// mt9v03x_finish_flag = 0;
+			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 		
-		// uint16 temp_width = 0;
-		// uint16 temp_width1 = 0, temp_width2 = 0;
-		// for(uint8 i = 120*2/3;i <120;i++)
-		// {
-		// 	temp_width += (boder_R[i] - boder_L[i]);
-		// 	temp_width1 += boder_R[i];
-		// 	temp_width2 += boder_R[i-40];
-		// }
-		// ips114_show_float(0,80,(float)track_wide/temp_width,2,3);
-		// ips114_show_int(0,100,temp_width1-temp_width2,4);
-
-		//r = (float)temp_sum[0] / (sqrt((float)temp_sum[1] * sqrt(temp_sum[2])));
-		//if(r>0.7);
-//		ips114_show_float(60,0,r,5,3);ips114_show_float(140,0,r*r,5,3);
-//		ips114_show_int(0,20,(const int32)temp_sum[0],10);
-//		ips114_show_int(0,40,(const int32)temp_sum[1],10);
-//		ips114_show_int(0,60,(const int32)temp_sum[2],10);
-//		//ips114_show_int(0,80,(const int32)mean_x,10);
-//		ips114_show_float(0,80,(float)temp_sum[0],8,2);
-
 		}
 
 		//ips114_show_int(50,110,Slope, 2);
@@ -120,15 +104,25 @@ int main(void)
 		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
 		//Slope_Mode = 2;
 		//target_slope  = -30;
-//		start_finish_line_control();
-//		cross_move_control();
-//		roundabout_move_control();
-//		ART_control();
-//		
-//		ramp_control();
-//		barrier_control();
+
+		start_finish_line_control();
+		cross_move_control();
+		roundabout_move_control();
+		ART_control();
+		
+		ramp_control();
+		barrier_control();
+
+		// Control_Mode = 5;
+		// Image_Mode = 2;
+		
+
+		
+		
 		//arm_down();
-		//arm_exchange(0,1);
+		// arm_exchange(0,1);
+		//arm_hang();
+		//arm_up();
 		//arm_hang();
 		//curvity_calculate(boder_L,&longest);
 //		system_delay_ms(5);

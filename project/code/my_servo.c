@@ -31,6 +31,7 @@
 
 #define BOX_OFFSET	85
 #define SERVO_SPEED	1		//舵机打角速度，0为正常模式，1为slow模式
+#define is_IR   true        //是否开启IR来检测卡片拾取是否到位
 
 //用于在Servo_SetAngle_Slow里记录角度	
 static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
@@ -127,13 +128,17 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
 
 bool arm_down()
 {
-#if SERVO_SPEED == 0
+    bool state;
+
+#if SERVO_SPEED == 1
 	
     Servo_SetAngle(2, 29);
     system_delay_ms(200);
+    Servo_SetAngle(1, 100);
+    system_delay_ms(350); 
     Servo_SetAngle(1, 80);
 	magnet_set(1); 
-    system_delay_ms(550);   
+    system_delay_ms(150);   
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
 	Servo_SetAngle(1, 95);
@@ -143,18 +148,26 @@ bool arm_down()
 	Servo_SetAngle(2, 40);
     system_delay_ms(50);
     Servo_SetAngle(2, 240);
-    system_delay_ms(400);
+    system_delay_ms(300);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(100);
+    }
+    else
+    {
+        state = false;
+    }
     Servo_SetAngle(1, 130);
-    system_delay_ms(400);
+    system_delay_ms(300);
     magnet_set(0);
 	
-#elif SERVO_SPEED == 1
-
-    bool state;
+#elif SERVO_SPEED == 0
+   
 	Servo_SetAngle_Slow(2, 29);
     Servo_SetAngle_Slow(1, 80);
 	magnet_set(1); 
-    system_delay_ms(300);
+    system_delay_ms(100);
 	Servo_SetAngle_Slow(1, 95);
 	Servo_SetAngle_Slow(2, 35);
     Servo_SetAngle_Slow(2, 240);
@@ -169,40 +182,56 @@ bool arm_down()
     }
     Servo_SetAngle_Slow(1, 150);
     magnet_set(0);
-	
-    return state;
 
 #endif
+
+    return state;
 }
 
 //返回值:是否拾取上来，false-没有拾取上来，true-成功拾取上来
 bool arm_up()
 {
-#if SERVO_SPEED == 0
-	
+    bool state;     //记录本次拾取是否成功
+
+#if SERVO_SPEED == 1
+
+	Servo_SetAngle(2, 236);
+    Servo_SetAngle(1, 135);
+    system_delay_ms(300);
+    
 	Servo_SetAngle(1, 155);
-    Servo_SetAngle(2, 236);
-	system_delay_ms(400);
+    
+	system_delay_ms(200);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
-	system_delay_ms(600);
+	system_delay_ms(300);
 	Servo_SetAngle(1, 130);
 	system_delay_ms(100);
 	Servo_SetAngle(2, 60);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(50);
+    }
+    else
+    {
+        state = false;
+    }
 	system_delay_ms(400);
 	Servo_SetAngle(1, 115);
     system_delay_ms(150);
 	Servo_SetAngle(1, 90);
 	system_delay_ms(50);
     Servo_SetAngle(2, 28);
-    system_delay_ms(500);
+    system_delay_ms(200);
     magnet_set(0);
 	
-#elif SERVO_SPEED == 1
-    bool state;     //记录本次拾取是否成功
+#elif SERVO_SPEED == 0
+     
 	//Servo_SetAngle_Slow(2, 236);
     Servo_SetAngle(2, 236);
     system_delay_ms(300);
+    Servo_SetAngle_Slow(1, 150);
 	Servo_SetAngle_Slow(1, 170);
     magnet_set(1);
     system_delay_ms(100);
@@ -229,10 +258,10 @@ bool arm_up()
 //    Servo_SetAngle_Slow(1, 90);
     magnet_set(0);
 //    
-    return state;
 	
 #endif
 
+    return state;
 }
 
 
@@ -240,20 +269,28 @@ bool arm_up()
 
 void arm_hang()
 {
-#if SERVO_SPEED == 0
+#if SERVO_SPEED == 1
 
     magnet_set(0);
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
     system_delay_ms(100);
-#elif SERVO_SPEED == 1
+#elif SERVO_SPEED == 0
 
     magnet_set(0);
     Servo_SetAngle_Slow(2, 100);
     Servo_SetAngle_Slow(1, 100);
 
 #endif
+}
+
+//无任何延时的hang,用在art_control捡完卡片时
+void arm_hang_fast()
+{
+    magnet_set(0);
+    Servo_SetAngle(1, 100);
+    Servo_SetAngle(2, 100);
 }
 
 bool arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
@@ -297,7 +334,7 @@ bool arm_exchange(uint8 a,uint8 b)//取仓a一张卡片放仓b
     Servo_SetAngle_Slow(2, 29);
     Servo_SetAngle_Slow(1, 80);
 	magnet_set(1); 
-    system_delay_ms(200);
+    system_delay_ms(100);
 	Servo_SetAngle_Slow(1, 95);
 	Servo_SetAngle_Slow(2, 35);
     Servo_SetAngle_Slow(2, 70);
@@ -336,8 +373,8 @@ static char store_list[4][10] = { {0} };
 
 char temp_class_arr[4][2] = { {0} };      
 static uint8 temp_cnt = 0;                      //环岛十字记录拾取卡片的次数
-static uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-有1张第五类；  2-有两张第五类； 3-有1张第五类，且第6张是第1类
-static char five_class = 0;                     //第五类的类别
+uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-有1张第五类；  2-有两张第五类； 3-有1张第五类，且第6张是第1类
+char five_class = 0;                     //第五类的类别
 static uint8 five_unload_finish_Flag = 0;       //第五类卸货完成标志位
 
 uint8 false_cnt_max1 = 10;      //环岛十字拾取、交换卡片错误最大次数限制
@@ -372,8 +409,9 @@ void Box_Record(uint8 box_num, char card_class, uint8 operate)
 // 使用示例  
 // 备注信息  赛道两边可选择是否记录，环岛十字默认都会记录
 //-----------------------------------------------------------------------------------------------
-void Box_In(char card_class, uint8 cross_roundabout_Flag)
+bool Box_In(char card_class, uint8 cross_roundabout_Flag)
 {
+    bool state = false;
     if (!cross_roundabout_Flag) //赛道两边
     {
         if ('A' <= card_class && card_class <= 'E')        //大类-1
@@ -381,34 +419,50 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
             // Servo_SetAngle(3, 0);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 0);
+        #if is_IR
             if(arm_up())
+        #else
+            arm_up();
+        #endif
             {
                 Box_Record(0, '1', 1);
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
             // Servo_SetAngle(3, 90);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 90);
+        #if is_IR
             if(arm_up())
+        #else
+            arm_up();
+        #endif
             {
                 Box_Record(1, '2', 1); 
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
             // Servo_SetAngle(3, 180);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 180);
+        #if is_IR
             if(arm_up())
+        #else
+            arm_up();
+        #endif
             {
                 Box_Record(2, '3', 1);
+                state = true;
             }
-            arm_hang();
+            arm_hang_fast();
         }
+        return state;
     }
     else      //环岛十字
     {
@@ -423,7 +477,11 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
                 // Servo_SetAngle(3, i*90);
                 // system_delay_ms(500);
                 Servo_SetAngle_Slow(3, i*90);
+            #if is_IR
                 if(arm_up())
+            #else
+                arm_up();
+            #endif
                 {
                     temp_class_arr[i][0] = card_class;
                     temp_class_arr[i][1]++;
@@ -440,7 +498,11 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
 					// Servo_SetAngle(3, i*90);
 					// system_delay_ms(500);
                     Servo_SetAngle_Slow(3, i*90);
-					if(arm_up())
+				#if is_IR
+                    if(arm_up())
+                #else
+                    arm_up();
+                #endif
                     {
                         five_Flag += 2;
                         temp_class_arr[i][1]++;
@@ -453,7 +515,11 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
                 // Servo_SetAngle(3, i*90);
                 // system_delay_ms(500);
                 Servo_SetAngle_Slow(3, i*90);
+            #if is_IR
                 if(arm_up())
+            #else
+                arm_up();
+            #endif
                 {
                     temp_class_arr[i][1]++;
                 }
@@ -468,7 +534,11 @@ void Box_In(char card_class, uint8 cross_roundabout_Flag)
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(500);
                 Servo_SetAngle_Slow(3, 0);
+            #if is_IR
                 if(arm_up())
+            #else
+                arm_up();
+            #endif
                 {
                     five_class = card_class;
                     ++five_Flag;
@@ -492,34 +562,48 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
         {
             if(five_Flag==1)
             {
+            #if is_IR    
                 false_cnt = 0;
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else 
+                arm_exchange(0,1);
+            #endif
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(1000);
                 Servo_SetAngle_Slow(3, 0);
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
+                #if is_IR 
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
                     }
                     false_cnt = 0;
+                #else 
+                    arm_down();
+                #endif
                     arm_hang();
                 }
                 false_cnt = 0;
+            #if is_IR 
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else 
+                arm_exchange(1,0);
+            #endif
+
                 
             }
             else if(five_Flag==2)
             {
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
@@ -530,19 +614,28 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 {
                     false_cnt++;
                 }
+            #else
+                arm_exchange(0,1);
+                arm_exchange(0,1);
+            #endif
                 false_cnt = 0;
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(1000);
                 Servo_SetAngle_Slow(3, 0);
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
+                #if is_IR 
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
                     }
+                #else 
+                    arm_down();
+                #endif
                     arm_hang();
                 }
 
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
@@ -554,6 +647,10 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else 
+                arm_exchange(1,0);
+                arm_exchange(1,0);
+            #endif
                 
             }
             else if(five_Flag==3)
@@ -562,35 +659,49 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 // system_delay_ms(1000);
                 Servo_SetAngle_Slow(3, 0);
                 false_cnt = 0;
+            #if is_IR 
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
+            #else 
+                arm_down();
+            #endif
                 arm_hang();
                 false_cnt = 0;
+            #if is_IR    
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
-                
+            #else 
+                arm_exchange(0,1);
+            #endif    
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(800);
                 Servo_SetAngle_Slow(3, 0);
                 false_cnt = 0;
+            #if is_IR
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
+            #else
+                arm_down();
+            #endif 
                 arm_hang();
 
                 false_cnt = 0;
+            #if is_IR
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
-
+            #else 
+                arm_exchange(1,0);
+            #endif 
                 five_Flag=1;
 
             }
@@ -601,12 +712,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 Servo_SetAngle_Slow(3, 0);
                 for(uint8 i=0;i<temp_class_arr[0][1];i++)
                 {
+                #if is_IR
                     false_cnt = 0;
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
                     }
                     false_cnt = 0;
+                #else 
+                    arm_down();
+                #endif 
                     arm_hang();
                 }
             }
@@ -620,12 +735,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             Servo_SetAngle_Slow(3, 90);
             for(uint8 i=0;i<temp_class_arr[1][1];i++)
             {
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else 
+                arm_down();
+            #endif 
                 arm_hang();
             }
             temp_class_arr[1][0] = 0;
@@ -638,12 +757,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             Servo_SetAngle_Slow(3, 180);
             for(uint8 i=0;i<temp_class_arr[2][1];i++)
             {
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             temp_class_arr[2][0] = 0;
@@ -656,12 +779,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             Servo_SetAngle_Slow(3, 270);
             for(uint8 i=0;i<temp_class_arr[3][1];i++)
             {
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             temp_class_arr[3][0] = 0;
@@ -671,30 +798,41 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
         {
             if(five_Flag==3)
             {
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_exchange(0,1);
+            #endif
                 // Servo_SetAngle(3, 0);
                 // system_delay_ms(1000);
                 Servo_SetAngle_Slow(3, 0);
                 
                 false_cnt = 0;
+            #if is_IR
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
                 false_cnt = 0;
+            #if is_IR
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
-
+            #else
+                arm_exchange(1,0);
+            #endif
                five_Flag=0;
             }
             // Servo_SetAngle(3, 0);
@@ -703,10 +841,14 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
             for(uint8 i=0;i<five_Flag;i++)
             {
                 false_cnt = 0;
+            #if is_IR
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             //清零
@@ -730,6 +872,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 //Box_Record(0, '1', 0);
                 //arm_unload();
                 store_list[0][i] = 0;
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
@@ -737,6 +880,9 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             store_list[0][9] = 0;
@@ -751,12 +897,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 //Box_Record(1, '2', 0);
                 //arm_unload();
                 store_list[1][i] = 0;
+            #if is_IR    
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             store_list[1][9] = 0;
@@ -771,12 +921,16 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 //Box_Record(2, '3', 0);
                 //arm_unload();
                 store_list[2][i] = 0;
+            #if is_IR
                 false_cnt = 0;
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
                 }
                 false_cnt = 0;
+            #else
+                arm_down();
+            #endif
                 arm_hang();
             }
             store_list[2][9] = 0;

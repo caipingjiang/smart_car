@@ -1,10 +1,10 @@
 #include "zf_common_headfile.h"
 
-#define IR_Pin  D17 //红外模块引脚
+#define IR_Pin  C27//D17 //红外模块引脚
 
 void IR_init()
 {
-    gpio_init(IR_Pin, GPI, GPIO_HIGH, GPI_PULL_DOWN);
+    gpio_init(IR_Pin, GPI, GPIO_HIGH, GPI_PULL_UP);
 }
 
 bool IR_get_state()
