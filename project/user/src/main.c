@@ -83,7 +83,6 @@ int main(void)
 	ips114_draw_line(188,100,187+40,100,RGB565_GREEN);
 	while(1)
     {	
-		ips114_show_uint(90,90,track_wide,4);
 		if(mt9v03x_finish_flag)
         {
 			//mt9v03x_finish_flag = 0;
@@ -93,7 +92,15 @@ int main(void)
 			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 		
 		}
-
+		//ips114_show_uint(90,90,track_wide,4);
+		// show_boder_line();
+		//ips114_show_int(188, 70, find_white_point(mt9v03x_image), 3);
+		// ips114_show_int(30,10,roundabout_flag, 2);
+		// ips114_show_int(30,30,lose_point_num_L, 3);
+		// ips114_show_int(30,50,lose_point_num_R, 3);
+		// ips114_show_int(30,70,curvity_calculate(boder_L, &longest), 6);
+		// ips114_show_int(30,90,curvity_calculate(boder_R, &longest), 4);
+		
 		//ips114_show_int(50,110,Slope, 2);
 		// ips114_show_int(50,40,uart1_data_arr[0], 4);
 		// ips114_show_int(90,40,uart1_data_arr[1], 4);
@@ -105,6 +112,11 @@ int main(void)
 		//Slope_Mode = 2;
 		//target_slope  = -30;
 
+//		arm_exchange(0,1);
+//		//system_delay_ms(500);
+//		arm_exchange(1,2);
+//		arm_exchange(2,1);
+//		arm_exchange(1,0);
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
@@ -113,9 +125,16 @@ int main(void)
 		ramp_control();
 		barrier_control();
 
+		// Control_Mode = 8;
+		// v_y = 0;w = 0;
+
 		// Control_Mode = 5;
 		// Image_Mode = 2;
-		
+
+		// Control_Mode = 1;
+		// Image_Mode = 2;
+		// v_x  = 30;
+
 
 		
 		

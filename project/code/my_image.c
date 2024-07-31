@@ -42,7 +42,18 @@ void my_image_init()
 		}
 		system_delay_ms(500);
 	}
-	mt9v03x_set_exposure_time(120);//120
+	while(1)
+	{
+		if(mt9v03x_set_exposure_time(320))//120
+		{
+			ips114_show_string(0,0,"set exposure time error");
+		}
+		else
+		{
+			break;
+		}
+		system_delay_ms(500);
+	}
 	system_delay_ms(100);
 	//设置自动曝光时间以应对差异较大的光线环境？？？
 }
@@ -82,7 +93,7 @@ uint8 find_white_point(uint8 image_array[][188])
 // 备注信息  本函数在下面的find_middle()函数中被调用
 //-----------------------------------------------------------------------------------------------
 uint8 y_threshold = 22;//12 纵向扫线对比度阈值
-#define y_MIN	(MT9V03X_H*2/5)		//边界矫正限制采样点的最小值，正常边界矫正时，其y坐标相对固定在一定范围内，不可能太小
+#define y_MIN	(MT9V03X_H*2/8)		//边界矫正限制采样点的最小值，正常边界矫正时，其y坐标相对固定在一定范围内，不可能太小
 void find_longest(uint8* longest, uint8* index)
 {
 	// //----------------找左右边界起点-----------------
@@ -249,6 +260,16 @@ void find_middle()
 }
 
 
+//单独的边界显示，可放在主循环里调用，方便调试，一般情况不建议显示
+void show_boder_line()
+{
+	for(uint8 i = longest; i < MT9V03X_H - 5; i++)
+	{
+		ips114_draw_point(boder_L[i], i, RGB565_YELLOW);
+		ips114_draw_point(boder_R[i], i, RGB565_GREEN);
+	}
+}
+
 //-----------------------------------------------------------------------------------------------
 // 函数简介  计算斜率
 // 参数说明  
@@ -339,9 +360,9 @@ uint32 curvity_calculate(uint8* slide_line, uint8* longest)
 	for (uint8 i = 0; i < 5; i++)
 	{
 		x1 += slide_line[*longest + 5 + i];
-		x2 += slide_line[MT9V03X_H - 20 - i];
+		x2 += slide_line[MT9V03X_H - 10 - i];
 		y1 += ((*longest) + 5 + i);
-		y2 += (MT9V03X_H - 20 - i);
+		y2 += (MT9V03X_H - 10 - i);
 	}
 	x1 /= 5;
 	x2 /= 5;
@@ -360,7 +381,7 @@ uint32 curvity_calculate(uint8* slide_line, uint8* longest)
 		{
 			x = 0;
 		}
-		for (uint8 i = *longest + 10; i < MT9V03X_H - 20; i++)
+		for (uint8 i = *longest + 5; i < MT9V03X_H - 10; i++)
 		{
 			var += pow(slide_line[i] - x, 2);
 		}
@@ -372,12 +393,12 @@ uint32 curvity_calculate(uint8* slide_line, uint8* longest)
 	// ips114_show_float(100, 80, m, 2, 2);
 	// ips114_show_float(100, 100, b, 2, 2);
 
-	for (uint8 i = *longest+10; i < MT9V03X_H - 20; i++)
+	for (uint8 i = *longest+10; i < MT9V03X_H - 10; i++)
 	{
 		x = m * (i - b);
 		var += pow(slide_line[i] - x, 2);
 	}
-	// ips114_draw_line(x1,y1,x2,y2,RGB565_WHITE);
+	//ips114_draw_line(x1,y1,x2,y2,RGB565_WHITE);
 	//ips114_show_int(20, 20, var, 10);
 	return var;
 }
@@ -509,14 +530,14 @@ void roundabout_cross()
 	}
 }
 
-#define track_wide_limit		(MT9V03X_W * MT9V03X_H * 4 / 15)	//十字路段的赛道宽度判断限制
-#define track_wide_limit_2		(MT9V03X_W * MT9V03X_H * 4 / 16)	//环岛路段的赛道宽度判断限制
+#define track_wide_limit		(MT9V03X_W * MT9V03X_H * 4 / 15)	//十字路段的赛道宽度判断限制 6016
+#define track_wide_limit_2		(MT9V03X_W * MT9V03X_H * 4 / 16)	//环岛路段的赛道宽度判断限制 5640
 #define start_height 			(MT9V03X_H / 3)						//计算赛道宽度的开始行
 #define end_height 				(MT9V03X_H * 2 / 3)					//计算赛道宽度的结束行
 #define cross_longest_limit 	10		//十字路段最长白列判断限制
 #define cross_slope_limit		12		//十字路段最大斜率判断限制
-#define lose_point_num_limit_1	70		//丢线点数限制1
-#define lose_point_num_limit_2	5		//丢线点数限制2
+#define lose_point_num_limit_1	70-5		//丢线点数限制1
+#define lose_point_num_limit_2	5+5		//丢线点数限制2
 
 //-----------------------------------------------------------------------------------------------
 // 函数简介  十字路段状态机
@@ -538,7 +559,9 @@ void cross()//十字
 		if (track_wide > track_wide_limit && longest < cross_longest_limit)//限制一个最长白列的最短长度限制，长度大于此值认为是急弯过滤掉
 		{
 			//通过左右丢线点数再一次过滤，避免环岛误判
-			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1)
+			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1
+				&&  curvity_calculate(boder_R, &longest) > var_limit1
+				&&  curvity_calculate(boder_L, &longest) > var_limit1)
 			{
 				cross_flag = 1;		//检测到十字路段的宽度变化，且左右都丢线
 			}

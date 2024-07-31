@@ -11,4 +11,5 @@ void ART_control();
 void ramp_control();
 void barrier_control();
 
+extern int16 pos_cor_distance;
 #endif
