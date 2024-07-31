@@ -144,9 +144,10 @@ int main(void)
 		//arm_up();
 		//arm_hang();
 		//curvity_calculate(boder_L,&longest);
-//		system_delay_ms(5);
-
-		
+//		system_delay_ms(500);
+//		arm_exchange(1,0);
+//	system_delay_ms(500);
+//		
 		
     }
 }
