@@ -1,4 +1,4 @@
-./objects/image.o: ..\code\image.c \
+./objects/meau.o: ..\code\meau.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdio.h \
   D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\stdint.h \
@@ -105,5 +105,5 @@
   ..\..\libraries\sdk\board\clock_config.h ..\code\my_moter.h \
   ..\code\my_encoder.h ..\code\my_image.h ..\code\vofa.h \
   ..\code\my_uart.h ..\code\my_servo.h ..\code\my_buzzer.h \
-  ..\code\filter.h ..\code\IR.h ..\code\imu660ra.h ..\code\image.h \
+  ..\code\filter.h ..\code\IR.h ..\code\imu660ra.h ..\code\menu.h \
   D:\keil_5-38-a\ARM\ARMCLANG\Bin\..\include\math.h

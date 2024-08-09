@@ -14,6 +14,7 @@
 ".\objects\filter.o"
 ".\objects\my_buzzer.o"
 ".\objects\ir.o"
+".\objects\meau.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"

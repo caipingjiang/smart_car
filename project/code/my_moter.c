@@ -8,6 +8,7 @@
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
 
+bool SPEED_ENABLE = false;  //速度使能,默认关闭，故刚启动时需要手动按键才会使能运动
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
 float target_angle = 0; //设定的角度值
@@ -383,9 +384,13 @@ void motor_control()
     }
 
     car_omni(v_x, v_y, w);
-    motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
-    motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));
-    motor_set_duty(3, Incremental_PI(3,encoder_data[2],v_w[2]));
-    motor_set_duty(4, Incremental_PI(4,encoder_data[3],v_w[3]));
+    if(SPEED_ENABLE)
+    {
+        motor_set_duty(1, Incremental_PI(1,encoder_data[0],v_w[0]));
+        motor_set_duty(2, Incremental_PI(2,encoder_data[1],v_w[1]));
+        motor_set_duty(3, Incremental_PI(3,encoder_data[2],v_w[2]));
+        motor_set_duty(4, Incremental_PI(4,encoder_data[3],v_w[3]));
+    }
+    
 }
 

@@ -1,6 +1,6 @@
 #include "zf_common_headfile.h"
 
-#define IR_Pin  C27//D17 //红外模块引脚
+#define IR_Pin  B9//C27//D17 //红外模块引脚
 
 void IR_init()
 {

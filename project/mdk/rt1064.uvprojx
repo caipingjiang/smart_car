@@ -544,6 +544,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\IR.h</FilePath>
             </File>
+            <File>
+              <FileName>meau.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\meau.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\menu.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

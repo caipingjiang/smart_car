@@ -9,24 +9,27 @@
 #include "imu660ra.h"
 #include "car_control.h"
 #include "my_buzzer.h"
+#include "menu.h"
+
 uint8 data_buffer[32];//测试用
 int16 Target_Speed=1; //测试用
 
 void pit_handler_3()
 {
-	FW_Data[0].type = 'd';
-	FW_Data[1].type = 'd';
-	FW_Data[2].type = 'd';
-	// FW_Data[2].type = 'f';
-	// FW_Data[3].type = 'd';
-	// FW_Data[4].type = 'd';
-	FW_Data[0].int_data = track_wide;
-	FW_Data[1].int_data = lose_point_num_L;
-	FW_Data[2].int_data = lose_point_num_R;
-	// FW_Data[2].float_data =  imu660ra_gyro_z;
-	// FW_Data[3].int_data =  track_wide;
-	// FW_Data[4].int_data =  Slope;
-	FireWater_Send();
+	// FW_Data[0].type = 'd';
+	// FW_Data[1].type = 'd';
+	// FW_Data[2].type = 'd';
+	// // FW_Data[2].type = 'f';
+	// // FW_Data[3].type = 'd';
+	// // FW_Data[4].type = 'd';
+	// FW_Data[0].int_data = track_wide;
+	// FW_Data[1].int_data = lose_point_num_L;
+	// FW_Data[2].int_data = lose_point_num_R;
+	// // FW_Data[2].float_data =  imu660ra_gyro_z;
+	// // FW_Data[3].int_data =  track_wide;
+	// // FW_Data[4].int_data =  Slope;
+	// FireWater_Send();
+
 }
 
 int main(void)
@@ -43,13 +46,14 @@ int main(void)
 	//ips200_init(IPS200_TYPE_PARALLEL8);
 	ips114_set_dir(IPS114_CROSSWISE);
 	ips114_init();
-
+	key_index_enum key_index_array[KEY_NUMBER] = {KEY_1,KEY_2,KEY_3,KEY_4};
+    key_init(5);
     // 此处编写用户代码 例如外设初始化代码等
 	my_imu660ra_init();
 	imu660_zeroBias();
 	my_servo_init();
 	
-//	my_key_init();
+	//my_key_init();
 	buzzer_init();
     //wireless_uart_init();
 	
@@ -72,7 +76,7 @@ int main(void)
 	pit_ms_init(PIT_CH0, 3);	//编码器
 	pit_ms_init(PIT_CH1, 5);	//陀螺仪
 	pit_ms_init(PIT_CH2, 5);	//总钻风
-	//pit_ms_init(PIT_CH3, 20);	//无线串口发送
+	//pit_ms_init(PIT_CH3, 10);	//无线串口发送
 
     // 此处编写用户代码 例如外设初始化代码等
 												
@@ -85,8 +89,8 @@ int main(void)
     {	
 		if(mt9v03x_finish_flag)
         {
-			//mt9v03x_finish_flag = 0;
-			ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+			mt9v03x_finish_flag = 0;
+			//ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
 
 			// mt9v03x_finish_flag = 0;
 			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
@@ -125,19 +129,17 @@ int main(void)
 		ramp_control();
 		barrier_control();
 
-		// Control_Mode = 8;
-		// v_y = 0;w = 0;
-
-		// Control_Mode = 5;
-		// Image_Mode = 2;
-
-		// Control_Mode = 1;
-		// Image_Mode = 2;
-		// v_x  = 30;
-
-
+		system_delay_ms(5);
+		key_scanner();
 		
-		
+		UI();
+		 
+		// else if(KEY_LONG_PRESS == key_get_state(KEY_2))
+		// {
+		// 	ips114_show_string(0,40,"key2");
+		// }
+
+		//ips114_show_string(0,120,"test6");
 		//arm_down();
 		// arm_exchange(0,1);
 		//arm_hang();

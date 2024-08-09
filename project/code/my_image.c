@@ -3,6 +3,7 @@
 #include "car_control.h"
 #include <math.h>
 
+uint16 mt9v03X_light = 250;	//总装风的曝光时间
 uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 uint8 Slope_Mode = 0;				//计算斜率的模式
 int16 Slope;						//图像斜率
@@ -44,7 +45,7 @@ void my_image_init()
 	}
 	while(1)
 	{
-		if(mt9v03x_set_exposure_time(100))//120
+		if(mt9v03x_set_exposure_time(mt9v03X_light))//120 100
 		{
 			ips114_show_string(0,0,"set exposure time error");
 		}

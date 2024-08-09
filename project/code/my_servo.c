@@ -7,7 +7,7 @@
 
 
 #define SERVO_MOTOR_FREQ            (150)                   // 定义主板上舵机频率  请务必注意范围 50-300
-#define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
+#define SERVO_MOTOR_MaxRange1       (360)   //180               //180度舵机
 #define SERVO_MOTOR_MaxRange2       (360)                   //360度舵机  (储物舱的舵机)
 #define SERVO_MOTOR_MaxRange3       (360)                   //360度舵机(可控制角度)  (机械臂上面的舵机)
 
@@ -30,6 +30,8 @@
 #define Box_Servo_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange2))
 
 #define BOX_OFFSET	85
+#define ARM1_OFFSET	-165
+#define ARM2_OFFSET	0
 #define SERVO_SPEED	1		//舵机打角速度，0为正常模式，1为slow模式
 #define is_IR   true        //是否开启IR来检测卡片拾取是否到位
 
@@ -38,7 +40,7 @@ static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的
 
 void my_servo_init(void)
 {  
-    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(100));
+    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(360-100+ARM1_OFFSET)); //100
     pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(40));
     system_delay_ms(200);
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
@@ -48,7 +50,7 @@ void my_servo_init(void)
 
     //pwm_init(PWM2_MODULE3_CHA_B9, 1000, 9000);
     gpio_init(B9, GPO, 1, GPO_PUSH_PULL);
-	current_angle[0] = 100;
+	current_angle[0] = 360-100+ARM1_OFFSET;
 	current_angle[1] = 40;
 	current_angle[2] = 0+BOX_OFFSET;
 	
@@ -66,7 +68,8 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     switch (servo_num)
     {
         case 1:
-            pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(angle));
+            pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(360-angle+ARM1_OFFSET));
+			current_angle[0] = 360-angle+ARM1_OFFSET;
             // system_delay_ms(50);
             // pwm_set_duty(SERVO_MOTOR_PWM1,0);
             break;
@@ -98,6 +101,10 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
     if(servo_num == 3)
     {
         angle += BOX_OFFSET;
+    }
+	if(servo_num == 1)
+    {
+        angle = 360-angle+ARM1_OFFSET;
     }
     while(current_angle[servo_num-1]!=angle)
     {

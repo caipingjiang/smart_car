@@ -25,6 +25,7 @@ uint8 otsu(uint8* image, uint16 width, uint16 height);
 void show_boder_line();
 uint8 find_white_point(uint8 image_array[][188]);
 
+extern uint16 mt9v03X_light;
 extern uint8 cross_flag, roundabout_flag;
 extern int8  cross_dir, roundabout_dir;
 extern uint8 boder_correct[60];
