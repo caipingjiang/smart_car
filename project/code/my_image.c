@@ -44,7 +44,7 @@ void my_image_init()
 	}
 	while(1)
 	{
-		if(mt9v03x_set_exposure_time(320))//120
+		if(mt9v03x_set_exposure_time(100))//120
 		{
 			ips114_show_string(0,0,"set exposure time error");
 		}

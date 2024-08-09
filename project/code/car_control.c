@@ -903,7 +903,7 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-#define MOVE_MODE	1			//到达三大类的移动方式：0为3张卡片都在右测，1为3张卡片都在左侧，2为内外侧都有
+#define MOVE_MODE	0			//到达三大类的移动方式：0为3张卡片都在右测，1为3张卡片都在左侧，2为内外侧都有
 static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 static uint8 finish_line_flag = 0;	//是否识别到斑马线标志位
@@ -1466,7 +1466,7 @@ void ART_control()
 						while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)	//小于3度就认为转向完成
 						{
 							Control_Mode = 3;
-							system_delay_ms(100);    //等待转向完成
+							system_delay_ms(100-50);    //等待转向完成
 						}
 					}
 					else
