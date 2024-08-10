@@ -3,7 +3,7 @@
 #include "car_control.h"
 #include <math.h>
 
-uint16 mt9v03X_light = 250;	//总装风的曝光时间
+uint16 mt9v03X_light = 200;//250;	//总装风的曝光时间
 uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 uint8 Slope_Mode = 0;				//计算斜率的模式
 int16 Slope;						//图像斜率

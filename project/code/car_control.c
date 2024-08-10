@@ -935,7 +935,7 @@ void start_finish_line_control()
 			
 			Control_Mode = 4;
 			move(-90,0); 	//先停车
-			system_delay_ms(500);
+			system_delay_ms(100);
 
 			v_x = 0;
 			v_y = 0;
@@ -951,7 +951,7 @@ void start_finish_line_control()
 			system_delay_ms(300);
 			move(0,15);
 			
-			
+			char temp_class[2] = {0};	//记录前两次类别是什么
 			while(1)	//没加总钻风
 			{
 				uart_write_byte(UART_4, '1');
@@ -970,13 +970,19 @@ void start_finish_line_control()
 					Control_Mode = 4;
 					move(0,0);
 
-					
+					if(unload_card_cnt==2)//如果已经放完前两类，那么第三类就不用识别了，可以直接放
+					{
+						char third_class = '6' - temp_class[0] - temp_class[1];
+						Box_Out(third_class, 0);
+						goto UNLOAD;
+					}
 					while(uart4_data_arr[1]!=1)
 					{
 						system_delay_ms(100);
 					}
 					if(uart4_data_arr[1]==1)        //识别到卡片
 					{
+						
 						ips114_show_string(30,60,"b");
 						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 						  
@@ -988,39 +994,70 @@ void start_finish_line_control()
 						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 						if('1' <= uart4_data_arr[0] && uart4_data_arr[0] <= '3')
 						{
+							if(unload_card_cnt<2)
+							{
+								temp_class[unload_card_cnt] = (char)uart4_data_arr[0];
+							}
 							buzzer_set_delay(30);
 							ips114_show_string(30,60,"c");
 							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 							Box_Out((char)uart4_data_arr[0], 0);
+							
+							UNLOAD:
 							unload_card_cnt++;
+							if(unload_card_cnt==2)
+							{
+								for(char i = '1'; i<='3';i++)
+								{
+									if(i!=temp_class[0] && i!=temp_class[1])
+									{
+										Servo_SetAngle(3, (i-'0'-1)*90);
+									}
+								}
+							}
+							
 						}
-						move(0,15);
-						Control_Mode = 6;
-						system_delay_ms(500);	//确保上一次的位置不会被再次判断
+						if(unload_card_cnt<3)
+						{
+							move(0,15);
+							Control_Mode = 6;
+							system_delay_ms(500);	//确保上一次的位置不会被再次判断
+						}
+						
 
 						if(unload_card_cnt>=3)
 						{
-							Control_Mode = 4;
-							Image_Mode = 4;
-							move(-90,15);
-							system_delay_ms(500);
-							move(0,0);
-							Control_Mode = 3;
-							angle_now = Gyro_Angle.Zdata;
-							angle_turn = -angle_turn;
-							while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
-							{
-								Control_Mode = 3;
-								system_delay_ms(200);    //等待转向完成
-							}
-							system_delay_ms(200);
-							move(0,0);
-							Control_Mode = 7;
-							Image_Mode = 3;
-							v_y = 50;
+							// Control_Mode = 4;
+							// Image_Mode = 4;
+							// move(-90,15);
+							// system_delay_ms(500);
+							// move(0,0);
+							// Control_Mode = 3;
+							// angle_now = Gyro_Angle.Zdata;
+							// angle_turn = -angle_turn;
+							// while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
+							// {
+							// 	Control_Mode = 3;
+							// 	system_delay_ms(200);    //等待转向完成
+							// }
+							// system_delay_ms(200);
+							// move(0,0);
+							// Control_Mode = 7;
+							// Image_Mode = 3;
+							// v_y = 50;
+							// system_delay_ms(1800);
+							// v_y = 0;
+							// system_delay_ms(20000);
+
+							Image_Mode = 4;		
+							target_angle = angle_now + angle_turn;
+							Control_Mode = 6;
+							move(180,55);
 							system_delay_ms(1500);
-							v_y = 0;
-							system_delay_ms(20000);
+							Control_Mode = 4;
+							move(0,0);
+							Servo_SetAngle(3,0);
+							system_delay_ms(2500);
 							
 							
 						}
@@ -1094,16 +1131,20 @@ void start_finish_line_control()
 							Box_Out((char)uart4_data_arr[0], 0);
 							unload_card_cnt++;
 						}
-						move(180,15);
-						Control_Mode = 6;
-						system_delay_ms(500);	//确保上一次的位置不会被再次判断
+						if(unload_card_cnt<3)
+						{
+							move(180,15);
+							Control_Mode = 6;
+							system_delay_ms(500);	//确保上一次的位置不会被再次判断
+						}
+						
 
 						if(unload_card_cnt>=3)
 						{
 							Control_Mode = 4;
 							Image_Mode = 4;
 							move(-90,15);
-							system_delay_ms(500);
+							system_delay_ms(400);
 							move(0,0);
 							Control_Mode = 3;
 							angle_now = Gyro_Angle.Zdata;
@@ -1485,9 +1526,6 @@ void ART_control()
 
 					//复位循迹
 					Image_Mode = 0;
-					Control_Mode = 4;
-					move(0,0);
-					system_delay_ms(500);
 
 					
 					if(is_number)

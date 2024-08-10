@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\rt1064.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\rt1064.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Thu Aug  8 16:28:26 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sat Aug 10 19:09:27 2024
 <BR><P>
 <H3>Maximum Stack Usage =        856 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -1251,7 +1251,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[172]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clock_init
 </UL>
 
-<P><STRONG><a name="[10c]"></a>Box_In</STRONG> (Thumb, 1412 bytes, Stack size 56 bytes, my_servo.o(.text.Box_In))
+<P><STRONG><a name="[10c]"></a>Box_In</STRONG> (Thumb, 1436 bytes, Stack size 56 bytes, my_servo.o(.text.Box_In))
 <BR><BR>[Stack]<UL><LI>Max Depth = 552<LI>Call Chain = Box_In &rArr; arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[119]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_up
@@ -1263,7 +1263,7 @@ Global Symbols
 <LI><a href="#[177]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cross_move_control
 </UL>
 
-<P><STRONG><a name="[11b]"></a>Box_Out</STRONG> (Thumb, 3164 bytes, Stack size 64 bytes, my_servo.o(.text.Box_Out))
+<P><STRONG><a name="[11b]"></a>Box_Out</STRONG> (Thumb, 3172 bytes, Stack size 64 bytes, my_servo.o(.text.Box_Out))
 <BR><BR>[Stack]<UL><LI>Max Depth = 784<LI>Call Chain = Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips114_show_int
@@ -2239,6 +2239,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
 </UL>
 <BR>[Called By]<UL><LI><a href="#[161]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UI_DatapageKey
+<LI><a href="#[1b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;start_finish_line_control
 </UL>
 
 <P><STRONG><a name="[120]"></a>Servo_SetAngle_Slow</STRONG> (Thumb, 276 bytes, Stack size 48 bytes, my_servo.o(.text.Servo_SetAngle_Slow))
@@ -2426,7 +2427,7 @@ Global Symbols
 <LI><a href="#[1ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_iomuxc
 </UL>
 
-<P><STRONG><a name="[11d]"></a>arm_down</STRONG> (Thumb, 260 bytes, Stack size 16 bytes, my_servo.o(.text.arm_down))
+<P><STRONG><a name="[11d]"></a>arm_down</STRONG> (Thumb, 288 bytes, Stack size 16 bytes, my_servo.o(.text.arm_down))
 <BR><BR>[Stack]<UL><LI>Max Depth = 496<LI>Call Chain = arm_down &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer_set_delay
@@ -2437,7 +2438,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 </UL>
 
-<P><STRONG><a name="[11c]"></a>arm_exchange</STRONG> (Thumb, 1276 bytes, Stack size 48 bytes, my_servo.o(.text.arm_exchange))
+<P><STRONG><a name="[11c]"></a>arm_exchange</STRONG> (Thumb, 1292 bytes, Stack size 48 bytes, my_servo.o(.text.arm_exchange))
 <BR><BR>[Stack]<UL><LI>Max Depth = 528<LI>Call Chain = arm_exchange &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer_set_delay
@@ -2458,7 +2459,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 </UL>
 
-<P><STRONG><a name="[119]"></a>arm_up</STRONG> (Thumb, 252 bytes, Stack size 16 bytes, my_servo.o(.text.arm_up))
+<P><STRONG><a name="[119]"></a>arm_up</STRONG> (Thumb, 278 bytes, Stack size 16 bytes, my_servo.o(.text.arm_up))
 <BR><BR>[Stack]<UL><LI>Max Depth = 496<LI>Call Chain = arm_up &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer_set_delay
@@ -3038,7 +3039,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[ab]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[169]"></a>magnet_set</STRONG> (Thumb, 20 bytes, Stack size 0 bytes, my_servo.o(.text.magnet_set))
+<P><STRONG><a name="[169]"></a>magnet_set</STRONG> (Thumb, 50 bytes, Stack size 0 bytes, my_servo.o(.text.magnet_set))
 <BR><BR>[Stack]<UL><LI>Max Depth = 480<LI>Call Chain = magnet_set &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[11a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwm_set_duty
@@ -3291,7 +3292,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_control
 </UL>
 
-<P><STRONG><a name="[1c5]"></a>pwm_init</STRONG> (Thumb, 524 bytes, Stack size 72 bytes, zf_driver_pwm.o(.text.pwm_init))
+<P><STRONG><a name="[1c5]"></a>pwm_init</STRONG> (Thumb, 518 bytes, Stack size 72 bytes, zf_driver_pwm.o(.text.pwm_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 608<LI>Call Chain = pwm_init &rArr; PWM_SetupPwm &rArr; __aeabi_assert &rArr; DbgConsole_Printf &rArr; DbgConsole_Vprintf &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[181]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debug_assert_handler
@@ -3499,7 +3500,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[198]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;imu660ra_init
 </UL>
 
-<P><STRONG><a name="[1b0]"></a>start_finish_line_control</STRONG> (Thumb, 1076 bytes, Stack size 64 bytes, car_control.o(.text.start_finish_line_control))
+<P><STRONG><a name="[1b0]"></a>start_finish_line_control</STRONG> (Thumb, 1056 bytes, Stack size 64 bytes, car_control.o(.text.start_finish_line_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 848<LI>Call Chain = start_finish_line_control &rArr; Box_Out &rArr; ips114_show_int &rArr; ips114_show_string &rArr; ips114_show_char &rArr; ips114_set_region &rArr; spi_write_16bit &rArr; debug_assert_handler &rArr; pwm_set_duty &rArr;  debug_assert_handler (Cycle)
 </UL>
 <BR>[Calls]<UL><LI><a href="#[105]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uart_write_byte
@@ -3508,6 +3509,7 @@ Global Symbols
 <LI><a href="#[108]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;move
 <LI><a href="#[11b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Box_Out
 <LI><a href="#[11e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buzzer_set_delay
+<LI><a href="#[15d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Servo_SetAngle
 <LI><a href="#[10a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;system_delay_ms
 <LI><a href="#[109]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;abs
 <LI><a href="#[107]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt

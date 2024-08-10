@@ -444,11 +444,6 @@ void DisplayStartPara(void)
 
 
 
-
-
-
-
-
  char strings[20][30] ={
     //一级菜单显示字符
     "back",

@@ -55,11 +55,18 @@ void my_servo_init(void)
 	current_angle[2] = 0+BOX_OFFSET;
 	
 }
-//电磁铁， 0关闭， 1开启
+
+//电磁铁， state:0关闭， 1开启
+uint8 magnet_scale = 2; //吸力强度：1吸力一般，2吸力较强
 void magnet_set(uint8 state)
 {
 	if(state == 0){ pwm_set_duty(magnet_PWM, 0); }
-	else if(state == 1){pwm_set_duty(magnet_PWM, 7142); }//7142
+	else if(state == 1)
+    {
+        if(magnet_scale == 1)pwm_set_duty(magnet_PWM, 7142);//7142
+        else if(magnet_scale == 2)pwm_set_duty(magnet_PWM, 10000);
+        
+    }
 }
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
@@ -382,7 +389,7 @@ uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-
 char five_class = 0;                     //第五类的类别
 static uint8 five_unload_finish_Flag = 0;       //第五类卸货完成标志位
 
-uint8 false_cnt_max1 = 10;      //环岛十字拾取、交换卡片错误最大次数限制
+uint8 false_cnt_max1 = 5;      //环岛十字拾取、交换卡片错误最大次数限制
 uint8 false_cnt_max2 = 5;       //赛道两边拾取卡片错误最大次数限制
 
 //卡片记录
@@ -419,6 +426,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
     bool state = false;
     if (!cross_roundabout_Flag) //赛道两边
     {
+        magnet_scale = 2;
         if ('A' <= card_class && card_class <= 'E')        //大类-1
         {
             // Servo_SetAngle(3, 0);
@@ -471,6 +479,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
     }
     else      //环岛十字
     {
+        magnet_scale = 1;
         temp_cnt++;
         
         for (uint8 i = 0; i < 4; i++)
@@ -560,6 +569,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
 //  卡片取出逻辑
 void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 {
+    magnet_scale = 1;
     uint8 false_cnt = 0;    //记录放下、交换过程中的失败次数
     if (cross_roundabout_Flag)       //环岛和圆环
     {

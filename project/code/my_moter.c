@@ -287,7 +287,7 @@ void position_correct(uint8 correct_mode)
             v_x = 0;
             v_y = 0;
             w = 0;
-        }
+        } 
         
     }
     
