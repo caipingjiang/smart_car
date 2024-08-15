@@ -36,12 +36,12 @@
 #define is_IR   true        //是否开启IR来检测卡片拾取是否到位
 
 //用于在Servo_SetAngle_Slow里记录角度	
-static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
+static uint32 current_angle[3] = {100, 80, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
 
 void my_servo_init(void)
 {  
     pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(360-100+ARM1_OFFSET)); //100
-    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(40));
+    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(80));
     system_delay_ms(200);
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
 	
@@ -51,7 +51,7 @@ void my_servo_init(void)
     //pwm_init(PWM2_MODULE3_CHA_B9, 1000, 9000);
     gpio_init(B9, GPO, 1, GPO_PUSH_PULL);
 	current_angle[0] = 360-100+ARM1_OFFSET;
-	current_angle[1] = 40;
+	current_angle[1] = 80;
 	current_angle[2] = 0+BOX_OFFSET;
 	
 }
@@ -208,18 +208,19 @@ bool arm_up()
 #if SERVO_SPEED == 1
 
 	Servo_SetAngle(2, 236);
-    Servo_SetAngle(1, 135);
-    system_delay_ms(300);
+    system_delay_ms(200);
+    //Servo_SetAngle(1, 135);
+    //system_delay_ms(300-100);
     
 	Servo_SetAngle(1, 155);
-    
-	system_delay_ms(200);
+    system_delay_ms(300);
+
+	system_delay_ms(200-100);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
-	system_delay_ms(300);
+	system_delay_ms(300-100);
 	Servo_SetAngle(1, 130);
 	system_delay_ms(100);
-	Servo_SetAngle(2, 60);
     if(IR_get_state() == 0)
     {
         state = true;
@@ -229,6 +230,7 @@ bool arm_up()
     {
         state = false;
     }
+    Servo_SetAngle(2, 60);
 	system_delay_ms(400);
 	Servo_SetAngle(1, 115);
     system_delay_ms(150);
@@ -277,18 +279,59 @@ bool arm_up()
 }
 
 
+bool arm_up_part1()
+{
+    bool state;     //记录本次拾取是否成功
 
+	Servo_SetAngle(2, 236);
+    system_delay_ms(200);
+    //Servo_SetAngle(1, 135);
+    //system_delay_ms(300-100);
+    
+	Servo_SetAngle(1, 155);
+    system_delay_ms(300);
 
+	system_delay_ms(200-100);
+    magnet_set(1);
+	Servo_SetAngle(1, 163);
+	system_delay_ms(300-100);
+	Servo_SetAngle(1, 130);
+	system_delay_ms(100);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(50);
+    }
+    else
+    {
+        state = false;
+    }
+    return state;
+
+}
+
+void arm_up_part2()
+{
+    Servo_SetAngle(2, 60);
+	system_delay_ms(400);
+	Servo_SetAngle(1, 115);
+    system_delay_ms(150);
+	Servo_SetAngle(1, 90);
+	system_delay_ms(50);
+    Servo_SetAngle(2, 28);
+    system_delay_ms(200);
+    magnet_set(0);
+}
 void arm_hang()
 {
-#if SERVO_SPEED == 1
+#if SERVO_SPEED == 0
 
     magnet_set(0);
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
     system_delay_ms(200);
-#elif SERVO_SPEED == 0
+#elif SERVO_SPEED == 1
 
     magnet_set(0);
     Servo_SetAngle_Slow(2, 100);
@@ -433,7 +476,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 0);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -441,7 +484,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(0, '1', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
@@ -449,7 +492,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 90);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -457,7 +500,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(1, '2', 1); 
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
@@ -465,7 +508,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 180);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -473,7 +516,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(2, '3', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         return state;
     }

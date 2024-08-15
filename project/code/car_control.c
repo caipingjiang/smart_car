@@ -903,7 +903,7 @@ void roundabout_move_control()
 // 使用示例  
 // 备注信息  
 //-----------------------------------------------------------------------------------------------
-#define MOVE_MODE	0			//到达三大类的移动方式：0为3张卡片都在右测，1为3张卡片都在左侧，2为内外侧都有
+#define MOVE_MODE	1			//到达三大类的移动方式：0为3张卡片都在右测，1为3张卡片都在左侧，2为内外侧都有
 static uint8 find_times  = 0;	//起始线识别次数
 static uint8 unload_card_cnt = 0;//三大类卡片放置完成计数
 static uint8 finish_line_flag = 0;	//是否识别到斑马线标志位
@@ -929,7 +929,9 @@ void start_finish_line_control()
 			finish_line_flag = 1;
 			buzzer_set_delay(5);
 			uart_write_byte(UART_4, '1'); 
+
 		#if		MOVE_MODE == 0
+
 			angle_turn = -90;
 			angle_now = Gyro_Angle.Zdata; //将进入环岛前的角度传入 
 			
@@ -972,7 +974,7 @@ void start_finish_line_control()
 
 					if(unload_card_cnt==2)//如果已经放完前两类，那么第三类就不用识别了，可以直接放
 					{
-						char third_class = '6' - temp_class[0] - temp_class[1];
+						char third_class = '1'+'2'+'3' - temp_class[0] - temp_class[1];
 						Box_Out(third_class, 0);
 						goto UNLOAD;
 					}
@@ -1052,12 +1054,12 @@ void start_finish_line_control()
 							Image_Mode = 4;		
 							target_angle = angle_now + angle_turn;
 							Control_Mode = 6;
-							move(180,55);
+							move(180,60);
 							system_delay_ms(1500);
 							Control_Mode = 4;
 							move(0,0);
 							Servo_SetAngle(3,0);
-							system_delay_ms(2500);
+							system_delay_ms(25000);
 							
 							
 						}
@@ -1073,7 +1075,7 @@ void start_finish_line_control()
 			
 			Control_Mode = 4;
 			move(-90,0); 	//先停车
-			system_delay_ms(500);
+			system_delay_ms(100);
 			v_x = 0;
 			v_y = 0;
 			Image_Mode = 2;		//开启边界矫正
@@ -1088,7 +1090,7 @@ void start_finish_line_control()
 			system_delay_ms(300);
 			move(180,15);
 			
-			
+			char temp_class[2] = {0};	//记录前两次类别是什么
 			while(1)	//没加总钻风
 			{
 				uart_write_byte(UART_4, '1');
@@ -1107,7 +1109,12 @@ void start_finish_line_control()
 					Control_Mode = 4;
 					move(0,0);
 
-					
+					if(unload_card_cnt==2)//如果已经放完前两类，那么第三类就不用识别了，可以直接放
+					{
+						char third_class = '1'+'2'+'3' - temp_class[0] - temp_class[1];
+						Box_Out(third_class, 0);
+						goto UNLOAD;
+					}
 					while(uart4_data_arr[1]!=1)
 					{
 						system_delay_ms(100);
@@ -1125,11 +1132,27 @@ void start_finish_line_control()
 						ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 						if('1' <= uart4_data_arr[0] && uart4_data_arr[0] <= '3')
 						{
+							if(unload_card_cnt<2)
+							{
+								temp_class[unload_card_cnt] = (char)uart4_data_arr[0];
+							}
 							buzzer_set_delay(30);
 							ips114_show_string(30,60,"c");
 							ips114_show_string(0,60,(const char*)&uart4_data_arr[0]);
 							Box_Out((char)uart4_data_arr[0], 0);
+							
+							UNLOAD:
 							unload_card_cnt++;
+							if(unload_card_cnt==2)
+							{
+								for(char i = '1'; i<='3';i++)
+								{
+									if(i!=temp_class[0] && i!=temp_class[1])
+									{
+										Servo_SetAngle(3, (i-'0'-1)*90);
+									}
+								}
+							}
 						}
 						if(unload_card_cnt<3)
 						{
@@ -1141,28 +1164,37 @@ void start_finish_line_control()
 
 						if(unload_card_cnt>=3)
 						{
-							Control_Mode = 4;
-							Image_Mode = 4;
-							move(-90,15);
-							system_delay_ms(400);
-							move(0,0);
-							Control_Mode = 3;
-							angle_now = Gyro_Angle.Zdata;
-							angle_turn = -angle_turn;
-							while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
-							{
-								Control_Mode = 3;
-								system_delay_ms(200);    //等待转向完成
-							}
-							system_delay_ms(200); 
-							move(0,0);
-							Control_Mode = 7;
-							Image_Mode = 3;
-							v_y = 50;
-							system_delay_ms(1500);
-							v_y = 0;
-							system_delay_ms(20000);
+							// Control_Mode = 4;
+							// Image_Mode = 4;
+							// move(-90,15);
+							// system_delay_ms(400);
+							// move(0,0);
+							// Control_Mode = 3;
+							// angle_now = Gyro_Angle.Zdata;
+							// angle_turn = -angle_turn;
+							// while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>3)	//小于3度才认为转向完成
+							// {
+							// 	Control_Mode = 3;
+							// 	system_delay_ms(200);    //等待转向完成
+							// }
+							// system_delay_ms(200); 
+							// move(0,0);
+							// Control_Mode = 7;
+							// Image_Mode = 3;
+							// v_y = 50;
+							// system_delay_ms(1500);
+							// v_y = 0;
+							// system_delay_ms(20000);
 							
+							Image_Mode = 4;		
+							target_angle = angle_now + angle_turn;
+							Control_Mode = 6;
+							move(0,60);
+							system_delay_ms(1500);
+							Control_Mode = 4;
+							move(0,0);
+							Servo_SetAngle(3,0);
+							system_delay_ms(25000);
 						}
 						
 					}
@@ -1348,7 +1380,12 @@ void ART_control()
 				int16 short_diatance = (temp_distance_L<temp_distance_R?temp_distance_L:temp_distance_R);
 				if(short_diatance < 80)//if(uart1_data_arr[2]<150+20)
 				{
-									
+
+					// buzzer_set_delay(10);
+					// break;
+
+
+
 					int8 temp_slope = Slope;
 
 					Image_Mode = 2;	//挂起总钻风，防止误判
@@ -1456,7 +1493,18 @@ void ART_control()
 								{
 									temp_cnt = 0;
 									pos_cor_distance = 30; //复位常规矫正距离
-									break;
+
+									Control_Mode = 3;
+									angle_turn = 0;
+									pit_enable(PIT_CH3);
+									arm_up_part2();
+									arm_hang_fast();
+									goto RECOVER_TRACK;
+									//break;
+								}
+								else
+								{
+									arm_hang();
 								}
 								if(temp_cnt>=1)	//如果第一次未拣成功，后面的的矫正精度就给高一点
 								{
@@ -1470,6 +1518,26 @@ void ART_control()
 										is_number = true;
 										pos_cor_distance = 30;
 									}
+
+									Image_Mode = 2;		//在转向前先矫正车身
+									system_delay_ms(50);
+									Control_Mode = 1;
+									target_y = 480;
+									system_delay_ms(500);	//600									
+									Control_Mode = 4;
+									move(0,0);
+									target_y = 430;
+
+									Control_Mode = 3;
+									angle_turn = 0;
+									arm_hang_fast();
+									while(abs(Gyro_Angle.Zdata - angle_now - angle_turn)>5)
+									{
+										system_delay_ms(10);
+									}
+
+									
+									goto RECOVER_TRACK;
 									break;
 								}
 								
@@ -1493,6 +1561,7 @@ void ART_control()
 
 						
 						Control_Mode = 4;
+						move(0,0);
 						target_y = 430;
 						// move(90, 15);
 						// system_delay_ms(300);
@@ -1525,11 +1594,13 @@ void ART_control()
 					
 
 					//复位循迹
+					RECOVER_TRACK:
 					Image_Mode = 0;
 
 					
 					if(is_number)
 					{
+						system_delay_ms(20);
 						is_number = false;
 						Control_Mode = 7;
 						v_x = 0;

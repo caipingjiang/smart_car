@@ -30,6 +30,16 @@ void pit_handler_3()
 	// // FW_Data[4].int_data =  Slope;
 	// FireWater_Send();
 
+	if(abs(Gyro_Angle.Zdata - angle_now - angle_turn)<5)	//小于3度就认为转向完成
+	{
+		Image_Mode = 0;
+		Control_Mode = 0;
+		pit_disable(PIT_CH3);
+	}
+	else
+	{
+		Control_Mode = 3;
+	}
 }
 
 int main(void)
@@ -76,8 +86,8 @@ int main(void)
 	pit_ms_init(PIT_CH0, 3);	//编码器
 	pit_ms_init(PIT_CH1, 5);	//陀螺仪
 	pit_ms_init(PIT_CH2, 5);	//总钻风
-	//pit_ms_init(PIT_CH3, 10);	//无线串口发送
-
+	pit_ms_init(PIT_CH3, 10);	//无线串口发送
+	pit_disable(PIT_CH3);
     // 此处编写用户代码 例如外设初始化代码等
 												
 	ips114_draw_line(middle -  30, 20, middle + 30, 20, RGB565_GREEN);
@@ -117,7 +127,7 @@ int main(void)
 		//target_slope  = -30;
 
 //		arm_exchange(0,1);
-//		//system_delay_ms(500);
+//		/ystem_delay_ms(500);
 //		arm_exchange(1,2);
 //		arm_exchange(2,1);
 //		arm_exchange(1,0);
@@ -127,7 +137,7 @@ int main(void)
 		ART_control();
 		
 		ramp_control();
-		barrier_control();
+		barrier_control();	
 
 		system_delay_ms(5);
 		key_scanner();

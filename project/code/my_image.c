@@ -290,7 +290,7 @@ int16 slope(uint8 slope_mode)
 		
 		if(longest < 15 && (cross_flag*roundabout_flag) == 0)
 		{
-			for (uint8 i = longest+30; i <= MT9V03X_H - 10; i++)
+			for (uint8 i = longest+30; i <= MT9V03X_H - 10; i++)//uint8 i = longest+30; i <= MT9V03X_H - 10; i++
 			{
 				sum1 += (int16)(boder_M[i] - middle);//原来是减去boder_M[MT9V03X_H - 10],有问题:在直道若平行偏离赛道一侧不会矫正回去 遂改为减去图像中间位置middle
 				sum2 += (int16)(MT9V03X_H - 10 - i);
@@ -710,7 +710,7 @@ void roundabout()
 // 使用示例  
 // 备注信息  定义的阈值参数可调，还未达到最理想的状态
 //-----------------------------------------------------------------------------------------------
-#define GrayThreshold	85	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
+#define GrayThreshold	85-20	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
 uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态
