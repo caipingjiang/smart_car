@@ -3,7 +3,7 @@
 #include "car_control.h"
 #include <math.h>
 
-uint16 mt9v03X_light = 200;//250;	//总装风的曝光时间
+uint16 mt9v03X_light = 200-130;//250;	//总装风的曝光时间
 uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 uint8 Slope_Mode = 0;				//计算斜率的模式
 int16 Slope;						//图像斜率
@@ -710,7 +710,7 @@ void roundabout()
 // 使用示例  
 // 备注信息  定义的阈值参数可调，还未达到最理想的状态
 //-----------------------------------------------------------------------------------------------
-#define GrayThreshold	85-20	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
+#define GrayThreshold	85-10	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
 uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态

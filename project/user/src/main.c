@@ -162,8 +162,8 @@ int main(void)
 		cross_move_control();
 		roundabout_move_control();
 		ART_control();
-		ramp_control();
-		barrier_control();	
+		// ramp_control();
+		// barrier_control();	
 
 		system_delay_ms(5);
 		key_scanner();
