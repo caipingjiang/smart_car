@@ -1,5 +1,5 @@
 #include "zf_common_headfile.h"
-#include "my_moter.h"
+#include "my_motor.h"
 #include "imu660ra.h"
 #include "my_image.h"
 #include <math.h>
@@ -8,6 +8,8 @@
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
 
+uint32 set_time_ms = 0; //设定的计时器时间
+bool CHECK_TIMER_ENABLE = false;    //检查计时器计数值是否使能neg
 bool SPEED_ENABLE = false;  //速度使能,默认关闭，故刚启动时需要手动按键才会使能运动
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
@@ -117,7 +119,7 @@ void Turn_Left()
 // 使用示例  
 // 备注信息  通过总钻风计算的斜率传入此函数来计算转向值，从而循迹
 //-----------------------------------------------------------------------------------------------
-float Kp_T=2.0, Kd_T=15; //2.6， 1.5
+float Kp_T=2.5, Kd_T=15; //2.6， 1.5
 void Turn(float Target_slope, float actual_slope)
 {
 	static float err, err_last;
@@ -187,7 +189,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
 // 备注信息  计算出的输出值可直接传给w, 也可以传入内环角速度环，后一种目前效果不是很好，可能是因为内外环中期一样的原因；目前直接用的外环
 // 备注信息  串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
 //-----------------------------------------------------------------------------------------------
-float Kp_A=2,Kd_A=8,Ki_A=0; // 20/95/0  Kp_A = 1.25,Kd_A = 8
+float Kp_A=2-0.2,Kd_A=8,Ki_A=0; // 20/95/0  Kp_A = 1.25,Kd_A = 8
 float Angle_PID(float Target_Angle, float Angle)
 {	
 	//Angle = slidingFilter(Angle);

@@ -15,11 +15,12 @@ uint8 pagenumdown(void);
 
 void DisplayMain(void);
 void DisplayMt9v03Para(void);
+void DisplayOpenArtPara(void);
 void DisplaySpeedPara(void);
 void DisplayServoPara(void);
 void DisplayIMUPara(void);
 void DisplayElementPara(void);
 void DisplayStartPara(void);
-
+void DisplayImage(void);
 
 #endif

@@ -102,7 +102,7 @@
   ..\..\libraries\sdk\drives\fsl_usdhc.h \
   ..\..\libraries\components\sdmmc\common\fsl_sdmmc_spec.h \
   ..\..\libraries\components\sdmmc\sdmmc_config.h \
-  ..\..\libraries\sdk\board\clock_config.h ..\code\my_moter.h \
+  ..\..\libraries\sdk\board\clock_config.h ..\code\my_motor.h \
   ..\code\my_encoder.h ..\code\my_image.h ..\code\vofa.h \
   ..\code\my_uart.h ..\code\my_servo.h ..\code\my_buzzer.h \
   ..\code\filter.h ..\code\IR.h ..\code\imu660ra.h ..\user\inc\isr.h

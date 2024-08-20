@@ -1,11 +1,9 @@
 #include "zf_common_headfile.h"
 #include "menu.h"
 #include <math.h>
-#include "my_moter.h"
-//这里为了方便我直接设置固定角度，如果板子上有IMU的话，可以直接用IMU的输出结果
-float pitch_angle = 10;
-float yaw_angle = 10;
-float roll_angle = 10;
+#include "my_motor.h"
+
+uint8 openart_bright_scale = 20;
 //下面的是测试参数，在实际工程中，有其他函数判断得到
 uint16 arm_angle1 = 100, arm_angle2 = 40, box_angle = 0+85;//85为偏移量
 bool magnet_state = false;
@@ -15,6 +13,11 @@ uint16 BarrierFlag = 0;
 uint16 RingFlag = 0;
 uint8 datapage = 0;//0：显示ID对应的函数，1：修改arrow对应的参数
 float mul = 1;
+
+//用来显示各级菜单
+uint8 pagenum = 0;//显示page的数目
+int8 arrow = 0;//定义光标所在的行，初始化在第一行
+
 
 void UI()
 {
@@ -28,12 +31,13 @@ void UI()
 		UI_Datapage();  //数据页
         UI_DatapageKey();   //数据按键处理
 	}
-	DisplayCursor();//光标显示
+	if(pagenum!=8)
+	{
+		DisplayCursor();//光标显示
+	}
 }
 
-//用来显示各级菜单
-uint8 pagenum = 0;//显示page的数目
-int8 arrow = 0;//定义光标所在的行，初始化在第一行
+
 void UI_Content(void)
 {
 	//ips114_clear();//在显示新一级菜单时，需要清屏
@@ -68,6 +72,12 @@ void UI_Content(void)
 		{
 			DisplayStartPara();
 		}break;
+		case 7://OpenArt brightness
+		    DisplayOpenArtPara();
+			break;
+		case 8:
+		    DisplayImage();
+			break;
 		default:
 		{
 			DisplayMain();	
@@ -92,9 +102,12 @@ uint8 pagenumup(void)
 			return 0;
 		case 5://在一级菜单
 			return 0;
-		case 6://在二级菜单
+		case 6://在一级菜单
 			return 0;
-		
+		case 7:
+			return 0;
+		case 8:	
+			return 0;
 		default:
 			return 0;
 	}
@@ -120,6 +133,8 @@ uint8 pagenumdown(void)
 				case 3: return 4;//对应IMUPara
 				case 4: return 5;//对应ElemnetPara
 				case 5: return 6;//对应StartPara
+				case 6: return 7;//对应openartPara
+				case 7: return 8;//对应Image
 			}
 		}break;
 		case 1://在Mt9v03Para界面
@@ -127,9 +142,9 @@ uint8 pagenumdown(void)
 			return 1;//返回当前界面
 			//在该界面下没有下一级，就直接break;
 		}break;
-		case 2: return 2;break;//在SpeedPara界面
-		case 3: return 3;break;//ServoPara界面
-		case 4: return 4;break;//IMUPara界面
+		case 2: return 2;		//在SpeedPara界面
+		case 3: return 3;		//ServoPara界面
+		case 4: return 4;		//IMUPara界面
 		case 5://ElemnetPara界面
 		{
 			switch(arrow)
@@ -175,7 +190,7 @@ void UI_ContentKey()
 	if(KEY_LONG_PRESS == key_get_state(KEY_1))//更改参数
 	{
 		buzzer_set_delay(100);
-		system_delay_ms(800);
+		system_delay_ms(500);
 		ips114_clear();
 		   
 		datapage = 1;    
@@ -196,11 +211,10 @@ void UI_ContentKey()
 
 
 
-
 //显示具体的参数
 void UI_Datapage()
 {
-	uint8 x = 20,y = 40;
+	uint8 x = 20,y = 190;
 	//ips114_clear();
 	switch(pagenum)
 	{
@@ -219,7 +233,7 @@ void UI_Datapage()
 			
 				default:break;
 			}
-			ips114_show_float(40,7*16,mul,4,3);//显示倍率
+			ips114_show_float(y,7*16,mul,4,3);//显示倍率
 		}break;
 		
 		case 2://对应SpeedPara
@@ -233,7 +247,7 @@ void UI_Datapage()
 				}break;
 				default:break;
 			}
-			ips114_show_float(40,7*16,mul,4,3);//显示倍率
+			ips114_show_float(y,7*16,mul,4,3);//显示倍率
 		}break;
 		case 3://对应ServoPara
 		{
@@ -261,7 +275,7 @@ void UI_Datapage()
 				}break;
 				default:break;
 			}
-			ips114_show_float(40,7*16,mul,4,3);//显示倍率
+			ips114_show_float(y,7*16,mul,4,3);//显示倍率
 		}break;			
 		case 4:break;//对应IMUPara,不支持修改
 		case 5:break;//对应ElementPara,不支持修改
@@ -273,11 +287,17 @@ void UI_Datapage()
 			}
 			else
 			{
-				ips114_show_string(x,0,"Long press  Key3 to start!"); 
+				ips114_show_string(x,0,"Long press Key3 to start!"); 
 			}
+			break;
 		}
-					
-		
+		case 7:
+		    DisplayOpenArtPara();
+			break;
+		case 8:
+		{
+			DisplayImage();
+		}
 		default:break;
 	}
 }
@@ -322,6 +342,12 @@ void UI_DatapageKey()
 					default:break;
 				}
 			}break;
+			case 7:
+			{
+				uart_write_byte(UART_4, 'a');
+				openart_bright_scale ++;
+				break;
+			}
 			// .....后面的就自己根据情况添加
 			default:break;
 		}
@@ -363,6 +389,15 @@ void UI_DatapageKey()
 					default:break;
 				}
 			}break;
+			case 7:
+			{
+				if(openart_bright_scale>0)
+				{
+					uart_write_byte(UART_4, 'b');
+					openart_bright_scale --;
+				}
+				break;
+			}
 			// .....后面的就自己根据情况添加
 			default:break;
 		}
@@ -378,7 +413,7 @@ void UI_DatapageKey()
 	if(KEY_LONG_PRESS == key_get_state(KEY_1))
 	{
 		buzzer_set_delay(100);
-		system_delay_ms(800);
+		system_delay_ms(500);
 		datapage = 0;
 	}
 	if(KEY_LONG_PRESS == key_get_state(KEY_3))
@@ -401,43 +436,56 @@ void DisplayMain(void)
 	ips114_show_string(7,3*16,"4.IMUPara");  	 
 	ips114_show_string(7,4*16,"5.ElementPara");//元素参数         	
 	ips114_show_string(7,5*16,"6.Start");//启动 
-	ips114_show_string(7,6*16,"7.Stop");//停止
+	ips114_show_string(7,6*16,"7.OpenArtPara");//停止
+	ips114_show_string(7,7*16,"8.Show_Image");//图像显示
 }
 void DisplayMt9v03Para(void)
 {
-	ips114_show_string(7,0*16,"exposure time");       	ips114_show_int(140,0,mt9v03X_light,4);
-	ips114_show_string(7,1*16,"white value");			ips114_show_int(140,1*16,find_white_point(mt9v03x_image),3);
+	ips114_show_string(7,0*16,"exposure time");       	ips114_show_int(190,0,mt9v03X_light,4);
+	ips114_show_string(7,1*16,"white value");			ips114_show_int(190,1*16,find_white_point(mt9v03x_image),3);
+}
+void DisplayOpenArtPara(void)
+{
+	ips114_show_string(7,0*16,"OpenArt brightness");    ips114_show_int(190,0,openart_bright_scale,4);
 }
 void DisplaySpeedPara(void)
 {
-	ips114_show_string(7,0*16,"speed offset ");      	ips114_show_int(140,0*16,speed_offset,3);
+	ips114_show_string(7,0*16,"speed offset ");      	ips114_show_int(190,0*16,speed_offset,3);
 }
 void DisplayServoPara(void)
 {
-	ips114_show_string(7,0*16,"servo1_angle");       	ips114_show_int(140,0,arm_angle1,4);
-	ips114_show_string(7,1*16,"servo2_angle");      	ips114_show_int(140,1*16,arm_angle2,4);
-    ips114_show_string(7,2*16,"box_angle");      		ips114_show_int(140,2*16,box_angle,4);
-	ips114_show_string(7,3*16,"magnet_state");      	ips114_show_int(140,3*16,magnet_state,4);
+	ips114_show_string(7,0*16,"servo1_angle");       	ips114_show_int(190,0,arm_angle1,4);
+	ips114_show_string(7,1*16,"servo2_angle");      	ips114_show_int(190,1*16,arm_angle2,4);
+    ips114_show_string(7,2*16,"box_angle");      		ips114_show_int(190,2*16,box_angle,4);
+	ips114_show_string(7,3*16,"magnet_state");      	ips114_show_int(190,3*16,magnet_state,4);
 }
 void DisplayIMUPara(void)
 {
-	ips114_show_string(7,0*16,"pitch_angle");       	ips114_show_float(140,0,Gyro_Angle.Ydata,4,2);
-	ips114_show_string(7,1*16,"yaw_angle");      		ips114_show_float(140,1*16,Gyro_Angle.Zdata,4,2);
-    ips114_show_string(7,2*16,"roll_angle");      		ips114_show_float(140,2*16,Gyro_Angle.Xdata,4,2);
+	ips114_show_string(7,0*16,"pitch_angle");       	ips114_show_float(190,0,Gyro_Angle.Ydata,4,2);
+	ips114_show_string(7,1*16,"yaw_angle");      		ips114_show_float(190,1*16,Gyro_Angle.Zdata,4,2);
+    ips114_show_string(7,2*16,"roll_angle");      		ips114_show_float(190,2*16,Gyro_Angle.Xdata,4,2);
 }
 void DisplayElementPara(void)
 {
-	ips114_show_string(7,0*16,"cross");					ips114_show_int(140,0*16,cross_flag,1);
-	ips114_show_string(7,1*16,"roundabout");			ips114_show_int(140,1*16,roundabout_flag,1);
-	ips114_show_string(7,2*16,"barrier");				ips114_show_int(140,2*16,BarrierFlag,1);
+	ips114_show_string(7,0*16,"cross");					ips114_show_int(190,0*16,cross_flag,1);
+	ips114_show_string(7,1*16,"roundabout");			ips114_show_int(190,1*16,roundabout_flag,1);
+	ips114_show_string(7,2*16,"barrier");				ips114_show_int(190,2*16,BarrierFlag,1);
 }
 
 void DisplayStartPara(void)
 {
-	ips114_show_string(7,0*16,"is_start_enable");		ips114_show_int(140,0*16,SPEED_ENABLE,1);
+	ips114_show_string(7,0*16,"is_start_enable");		ips114_show_int(190,0*16,SPEED_ENABLE,1);
 }
 
-
+void DisplayImage(void)
+{
+	if(mt9v03x_finish_flag)
+	{
+		mt9v03x_finish_flag = 0;
+		ips114_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, 188, 120, 0);
+		show_boder_line();
+	}
+}
 
 
 

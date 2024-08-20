@@ -1,5 +1,5 @@
 #include "zf_common_headfile.h"
-#include "my_moter.h"
+#include "my_motor.h"
 #include "my_servo.h"
 #include "my_encoder.h"
 #include "my_image.h"
@@ -40,6 +40,19 @@ void pit_handler_3()
 	{
 		Control_Mode = 3;
 	}
+	// if(CHECK_TIMER_ENABLE)
+	// {
+	// 	uint32 time = timer_get(GPT_TIM_1);
+	// 	if(time>=set_time_ms)
+	// 	{
+	// 		Image_Mode = 0;
+	// 		Control_Mode = 0;
+	// 		timer_stop(GPT_TIM_1);
+	// 		timer_clear(GPT_TIM_1);
+	// 		pit_disable(PIT_CH3);
+	// 		CHECK_TIMER_ENABLE = false;
+	// 	}
+	// }
 }
 
 int main(void)
@@ -77,6 +90,8 @@ int main(void)
 	//timer_init(GPT_TIM_1,TIMER_US);
 	IR_init();
 
+	timer_init(GPT_TIM_1, TIMER_MS);
+
  	interrupt_set_priority(LPUART8_IRQn,4);
 	interrupt_set_priority(PIT_IRQn, 0);
 	interrupt_set_priority(LPUART1_IRQn,1);
@@ -106,9 +121,9 @@ int main(void)
 			// sideline_correct(boder_correct, &sideline_angle, &sideline_distance);
 		
 		}
-		//ips114_show_uint(90,90,track_wide,4);
+		// ips114_show_uint(90,90,track_wide,4);
 		// show_boder_line();
-		//ips114_show_int(188, 70, find_white_point(mt9v03x_image), 3);
+		// //ips114_show_int(188, 70, find_white_point(mt9v03x_image), 3);
 		// ips114_show_int(30,10,roundabout_flag, 2);
 		// ips114_show_int(30,30,lose_point_num_L, 3);
 		// ips114_show_int(30,50,lose_point_num_R, 3);
@@ -120,28 +135,38 @@ int main(void)
 		// ips114_show_int(90,40,uart1_data_arr[1], 4);
 		// system_delay_ms(10);
 		
-		// ips114_show_float(0,0,Gyro_Angle.Ydata,3,2);
-		// ips114_show_float(0,20,Acc_Angle.Ydata,3,2);
-		// ips114_show_float(0,40,Fusion_Angle.Ydata,3,2);
+
 		//Slope_Mode = 2;
 		//target_slope  = -30;
 
-//		arm_exchange(0,1);
-//		/ystem_delay_ms(500);
-//		arm_exchange(1,2);
-//		arm_exchange(2,1);
+		// arm_up_part1();
+		// arm_down();
+		// arm_exchange(0,1);
+		// arm_hang();
+		// arm_exchange(1,2);
+		// arm_hang();
+		// //system_delay_ms(200);
+		// arm_exchange(2,3);
+		// arm_hang();
+
+		//system_delay_ms(500);
+		// arm_exchange(1,2);
+		// arm_exchange(2,1);
 //		arm_exchange(1,0);
+
+		// arm_up();
+		// //system_delay_ms(500);
+		// arm_hang();
+
 		start_finish_line_control();
 		cross_move_control();
 		roundabout_move_control();
 		ART_control();
-		
 		ramp_control();
 		barrier_control();	
 
 		system_delay_ms(5);
 		key_scanner();
-		
 		UI();
 		 
 		// else if(KEY_LONG_PRESS == key_get_state(KEY_2))

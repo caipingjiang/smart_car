@@ -561,8 +561,8 @@ void cross()//十字
 		{
 			//通过左右丢线点数再一次过滤，避免环岛误判
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1
-				&&  curvity_calculate(boder_R, &longest) > var_limit1
-				&&  curvity_calculate(boder_L, &longest) > var_limit1)
+				/*&&  curvity_calculate(boder_R, &longest) > var_limit1
+				&&  curvity_calculate(boder_L, &longest) > var_limit1*/)
 			{
 				cross_flag = 1;		//检测到十字路段的宽度变化，且左右都丢线
 			}

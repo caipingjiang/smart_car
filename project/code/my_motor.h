@@ -29,6 +29,8 @@ void move(int16 angle, int8 speed);
 float w_PID(float Target_w, float w);
 void position_correct(uint8 correct_mode);
 
+extern uint32 set_time_ms;
+extern bool CHECK_TIMER_ENABLE;
 extern bool SPEED_ENABLE;
 extern uint8 Control_Mode;   //0-正常循迹， 1-边界矫正,2卡片矫正模式,3陀螺仪转向，4等待模式
 extern uint8 Correct_Mode;  //卡片矫正模式

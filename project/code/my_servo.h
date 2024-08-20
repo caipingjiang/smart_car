@@ -11,6 +11,7 @@ void arm_hang_fast();
 void magnet_set(uint8 state);
 bool Box_In(char card_class, uint8 cross_roundabout_Flag);
 void Box_Out(char label_num, uint8 cross_roundabout_Flag);
+bool check_temp_IsNull(void);
 bool arm_exchange(uint8 a,uint8 b);
 
 bool arm_up_part1();
