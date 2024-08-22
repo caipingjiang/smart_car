@@ -140,7 +140,7 @@ int main(void)
 		//target_slope  = -30;
 
 		// arm_up_part1();
-		// arm_down();
+		//arm_down();
 		// arm_exchange(0,1);
 		// arm_hang();
 		// arm_exchange(1,2);

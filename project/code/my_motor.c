@@ -189,7 +189,7 @@ void roundabout_move(int16* sideline_angle,  int16* sideline_distance)
 // 备注信息  计算出的输出值可直接传给w, 也可以传入内环角速度环，后一种目前效果不是很好，可能是因为内外环中期一样的原因；目前直接用的外环
 // 备注信息  串级PID外环一般一个P就行(加i会降低响应速度,加d会放大噪音)
 //-----------------------------------------------------------------------------------------------
-float Kp_A=2-0.2,Kd_A=8,Ki_A=0; // 20/95/0  Kp_A = 1.25,Kd_A = 8
+float Kp_A=2,Kd_A=8,Ki_A=0; // 20/95/0  Kp_A = 1.25,Kd_A = 8
 float Angle_PID(float Target_Angle, float Angle)
 {	
 	//Angle = slidingFilter(Angle);
