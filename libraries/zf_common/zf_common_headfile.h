@@ -126,7 +126,7 @@
 //RT-Thread headfile
 //#include "rtthread.h"
 
-#include "my_moter.h"
+#include "my_motor.h"
 #include "my_encoder.h"
 #include "my_image.h"
 #include "vofa.h"

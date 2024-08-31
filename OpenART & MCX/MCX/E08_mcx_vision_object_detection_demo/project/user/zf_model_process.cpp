@@ -238,12 +238,14 @@ void zf_model_odresult_out(const odresult_t* odres, int retcnt)
 		int16_t temp_w = (odres->x2 - odres->x1);
 		int16_t temp_h = (odres->y2 - odres->y1);
 		//过滤掉一些误识别的情况（有时赛道会误识别）
-		if(temp_y>SCC8660_H-5 || temp_w*temp_h<800 || temp_w/temp_h>4)
+				
+        distance = sqrt( pow(temp_x - target_point[0], 2) + pow(temp_y - target_point[1], 2) );
+		if(temp_y>SCC8660_H-15 || temp_w*temp_h<800 || temp_w>3*temp_h || distance>set_distance || temp_w*temp_h>15000)
 		{
 			mistake_dection_cnt++;
 			continue;
 		}
-        distance = sqrt( pow(temp_x - target_point[0], 2) + pow(temp_y - target_point[1], 2) );
+        
         if(distance<shortest)       //更新最近距离的卡片
         {
             shortest = distance;
@@ -259,7 +261,7 @@ void zf_model_odresult_out(const odresult_t* odres, int retcnt)
 		zf_user_printf("@%d,%d,%d,%d#", center_x, center_y, distance, correct_flag);
 		return;
 	}
-    if(center_x != 0 && center_y != 0 && mistake_dection_cnt==0)  //不为零，说明上面的if判断执行过
+    if(center_x != 0 && center_y != 0 && mistake_dection_cnt<retcnt)  //不为零，说明上面的if判断执行过
     {  
 		
 		ips200_show_int(center_x, center_y, center_x);

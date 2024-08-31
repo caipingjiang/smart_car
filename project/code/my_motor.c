@@ -1,5 +1,5 @@
 #include "zf_common_headfile.h"
-#include "my_moter.h"
+#include "my_motor.h"
 #include "imu660ra.h"
 #include "my_image.h"
 #include <math.h>
@@ -8,6 +8,8 @@
 #define r_x                 0.089//8.9 //左右两轮轴间距的一半(cm)
 #define r_y                  0.1//10  //前后两轮轴间距的一半(cm)
 
+uint32 set_time_ms = 0; //设定的计时器时间
+bool CHECK_TIMER_ENABLE = false;    //检查计时器计数值是否使能neg
 bool SPEED_ENABLE = false;  //速度使能,默认关闭，故刚启动时需要手动按键才会使能运动
 float angle_now = 0;    //进入环岛十字时的角度
 float angle_turn = 0;   //需要转的角度
@@ -117,7 +119,7 @@ void Turn_Left()
 // 使用示例  
 // 备注信息  通过总钻风计算的斜率传入此函数来计算转向值，从而循迹
 //-----------------------------------------------------------------------------------------------
-float Kp_T=2.0, Kd_T=15; //2.6， 1.5
+float Kp_T=2.5, Kd_T=15; //2.6， 1.5
 void Turn(float Target_slope, float actual_slope)
 {
 	static float err, err_last;

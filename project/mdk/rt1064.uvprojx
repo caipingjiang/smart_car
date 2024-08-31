@@ -435,16 +435,6 @@
               <FilePath>..\code\my_encoder.c</FilePath>
             </File>
             <File>
-              <FileName>my_moter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\my_moter.c</FilePath>
-            </File>
-            <File>
-              <FileName>my_moter.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\code\my_moter.h</FilePath>
-            </File>
-            <File>
               <FileName>my_image.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\code\my_image.c</FilePath>
@@ -545,14 +535,24 @@
               <FilePath>..\code\IR.h</FilePath>
             </File>
             <File>
-              <FileName>meau.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\meau.c</FilePath>
-            </File>
-            <File>
               <FileName>menu.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\menu.h</FilePath>
+            </File>
+            <File>
+              <FileName>my_motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\my_motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>my_motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\my_motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\menu.c</FilePath>
             </File>
           </Files>
         </Group>

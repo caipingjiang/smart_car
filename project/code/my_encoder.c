@@ -1,5 +1,5 @@
 #include "zf_common_headfile.h"
-#include "my_moter.h"
+#include "my_motor.h"
 #define ENCODER_1                   (QTIMER1_ENCODER1)
 #define ENCODER_1_A                 (QTIMER1_ENCODER1_CH1_C0)
 #define ENCODER_1_B                 (QTIMER1_ENCODER1_CH2_C1)

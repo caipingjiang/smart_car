@@ -3,7 +3,7 @@
 #include "car_control.h"
 #include <math.h>
 
-uint16 mt9v03X_light = 200;//250;	//总装风的曝光时间
+uint16 mt9v03X_light = 200-130;//250;	//总装风的曝光时间
 uint8 Image_Mode = 0;				//图像处理模式， 详见最下面的pit_handler_2()
 uint8 Slope_Mode = 0;				//计算斜率的模式
 int16 Slope;						//图像斜率
@@ -561,8 +561,8 @@ void cross()//十字
 		{
 			//通过左右丢线点数再一次过滤，避免环岛误判
 			if(lose_point_num_L > lose_point_num_limit_1 && lose_point_num_R > lose_point_num_limit_1
-				&&  curvity_calculate(boder_R, &longest) > var_limit1
-				&&  curvity_calculate(boder_L, &longest) > var_limit1)
+				/*&&  curvity_calculate(boder_R, &longest) > var_limit1
+				&&  curvity_calculate(boder_L, &longest) > var_limit1*/)
 			{
 				cross_flag = 1;		//检测到十字路段的宽度变化，且左右都丢线
 			}
@@ -710,7 +710,7 @@ void roundabout()
 // 使用示例  
 // 备注信息  定义的阈值参数可调，还未达到最理想的状态
 //-----------------------------------------------------------------------------------------------
-#define GrayThreshold	85-20	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
+#define GrayThreshold	85-10	//灰度阈值界限， 小于此值认为是黑点，大于此值认为是白点
 uint8 find_start_finish_line()
 {
 	uint8 judge_state = 0;		//判断状态
