@@ -7,7 +7,7 @@
 //#define LED_PWM             		  (PWM2_MODULE3_CHA_B9)  
 
 #define SERVO_MOTOR_FREQ            (150)                   // 定义主板上舵机频率  请务必注意范围 50-300
-#define SERVO_MOTOR_MaxRange1       (180)                   //180度舵机
+#define SERVO_MOTOR_MaxRange1       (360)   //180               //180度舵机
 #define SERVO_MOTOR_MaxRange2       (360)                   //360度舵机  (储物舱的舵机)
 #define SERVO_MOTOR_MaxRange3       (360)                   //360度舵机(可控制角度)  (机械臂上面的舵机)
 
@@ -30,16 +30,18 @@
 #define Box_Servo_Angle(x)         ((float)PWM_DUTY_MAX/(1000.0/(float)SERVO_MOTOR_FREQ)*(0.5+(float)(x)*2/SERVO_MOTOR_MaxRange2))
 
 #define BOX_OFFSET	85
+#define ARM1_OFFSET	-165
+#define ARM2_OFFSET	0
 #define SERVO_SPEED	1		//舵机打角速度，0为正常模式，1为slow模式
 #define is_IR   true        //是否开启IR来检测卡片拾取是否到位
 
 //用于在Servo_SetAngle_Slow里记录角度	
-static uint32 current_angle[3] = {100, 40, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
+static uint32 current_angle[3] = {100, 80, 0};    //初始化为主板上电后各个舵机的角度，对应pwm初始设置的参数
 
 void my_servo_init(void)
 {  
-    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(100));
-    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(40));
+    pwm_init(SERVO_MOTOR_PWM1, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(360-100+ARM1_OFFSET)); //100
+    pwm_init(SERVO_MOTOR_PWM2, SERVO_MOTOR_FREQ, (uint32)Arm_Servo1_Angle(80));
     system_delay_ms(200);
     pwm_init(SERVO_MOTOR_PWM3, SERVO_MOTOR_FREQ, (uint32)Box_Servo_Angle(0+BOX_OFFSET));
 	
@@ -50,16 +52,23 @@ void my_servo_init(void)
 
     //pwm_init(PWM2_MODULE3_CHA_B9, 1000, 9000);
     gpio_init(B9, GPO, 1, GPO_PUSH_PULL);
-	current_angle[0] = 100;
-	current_angle[1] = 40;
+	current_angle[0] = 360-100+ARM1_OFFSET;
+	current_angle[1] = 80;
 	current_angle[2] = 0+BOX_OFFSET;
 	
 }
-//电磁铁， 0关闭， 1开启
+
+//电磁铁， state:0关闭， 1开启
+uint8 magnet_scale = 2; //吸力强度：1吸力一般，2吸力较强
 void magnet_set(uint8 state)
 {
 	if(state == 0){ pwm_set_duty(magnet_PWM, 0); }
-	else if(state == 1){pwm_set_duty(magnet_PWM, 7142); }//7142
+	else if(state == 1)
+    {
+        if(magnet_scale == 1)pwm_set_duty(magnet_PWM, 7142);//7142
+        else if(magnet_scale == 2)pwm_set_duty(magnet_PWM, 10000);
+        
+    }
 }
 
 void Servo_SetAngle( uint8 servo_num, uint32 angle )
@@ -68,7 +77,8 @@ void Servo_SetAngle( uint8 servo_num, uint32 angle )
     switch (servo_num)
     {
         case 1:
-            pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(angle));
+            pwm_set_duty(SERVO_MOTOR_PWM1,(uint32)Arm_Servo1_Angle(360-angle+ARM1_OFFSET));
+			current_angle[0] = 360-angle+ARM1_OFFSET;
             // system_delay_ms(50);
             // pwm_set_duty(SERVO_MOTOR_PWM1,0);
             break;
@@ -100,6 +110,10 @@ void Servo_SetAngle_Slow(uint8 servo_num, uint32 angle)
     if(servo_num == 3)
     {
         angle += BOX_OFFSET;
+    }
+	if(servo_num == 1)
+    {
+        angle = 360-angle+ARM1_OFFSET;
     }
     while(current_angle[servo_num-1]!=angle)
     {
@@ -196,18 +210,19 @@ bool arm_up()
 #if SERVO_SPEED == 1
 
 	Servo_SetAngle(2, 236);
-    Servo_SetAngle(1, 135);
-    system_delay_ms(300);
+    system_delay_ms(200);
+    //Servo_SetAngle(1, 135);
+    //system_delay_ms(300-100);
     
 	Servo_SetAngle(1, 155);
-    
-	system_delay_ms(200);
+    system_delay_ms(300);
+
+	system_delay_ms(200-100);
     magnet_set(1);
 	Servo_SetAngle(1, 163);
-	system_delay_ms(300);
+	system_delay_ms(300-100);
 	Servo_SetAngle(1, 130);
 	system_delay_ms(100);
-	Servo_SetAngle(2, 60);
     if(IR_get_state() == 0)
     {
         state = true;
@@ -217,6 +232,7 @@ bool arm_up()
     {
         state = false;
     }
+    Servo_SetAngle(2, 60);
 	system_delay_ms(400);
 	Servo_SetAngle(1, 115);
     system_delay_ms(150);
@@ -265,18 +281,59 @@ bool arm_up()
 }
 
 
+bool arm_up_part1()
+{
+    bool state;     //记录本次拾取是否成功
 
+	Servo_SetAngle(2, 236);
+    system_delay_ms(200);
+    //Servo_SetAngle(1, 135);
+    //system_delay_ms(300-100);
+    
+	Servo_SetAngle(1, 155);
+    system_delay_ms(300);
 
+	system_delay_ms(200-100);
+    magnet_set(1);
+	Servo_SetAngle(1, 163);
+	system_delay_ms(300-100);
+	Servo_SetAngle(1, 130);
+	system_delay_ms(100);
+    if(IR_get_state() == 0)
+    {
+        state = true;
+        buzzer_set_delay(50);
+    }
+    else
+    {
+        state = false;
+    }
+    return state;
+
+}
+
+void arm_up_part2()
+{
+    Servo_SetAngle(2, 60);
+	system_delay_ms(400);
+	Servo_SetAngle(1, 115);
+    system_delay_ms(150);
+	Servo_SetAngle(1, 90);
+	system_delay_ms(50);
+    Servo_SetAngle(2, 28);
+    system_delay_ms(200);
+    magnet_set(0);
+}
 void arm_hang()
 {
-#if SERVO_SPEED == 1
+#if SERVO_SPEED == 0
 
     magnet_set(0);
     
     Servo_SetAngle(1, 100);
     Servo_SetAngle(2, 100);
     system_delay_ms(200);
-#elif SERVO_SPEED == 0
+#elif SERVO_SPEED == 1
 
     magnet_set(0);
     Servo_SetAngle_Slow(2, 100);
@@ -378,7 +435,7 @@ uint8 five_Flag = 0;                     //是否有5类的标志位， 0-没有第5类；  1-
 char five_class = 0;                     //第五类的类别
 static uint8 five_unload_finish_Flag = 0;       //第五类卸货完成标志位
 
-uint8 false_cnt_max1 = 10;      //环岛十字拾取、交换卡片错误最大次数限制
+uint8 false_cnt_max1 = 5;      //环岛十字拾取、交换卡片错误最大次数限制
 uint8 false_cnt_max2 = 5;       //赛道两边拾取卡片错误最大次数限制
 
 //卡片记录
@@ -415,13 +472,14 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
     bool state = false;
     if (!cross_roundabout_Flag) //赛道两边
     {
+        magnet_scale = 2;
         if ('A' <= card_class && card_class <= 'E')        //大类-1
         {
             // Servo_SetAngle(3, 0);
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 0);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -429,7 +487,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(0, '1', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
@@ -437,7 +495,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 90);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -445,7 +503,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(1, '2', 1); 
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
@@ -453,7 +511,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 180);
         #if is_IR
-            if(arm_up())
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -461,12 +519,13 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(2, '3', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         return state;
     }
     else      //环岛十字
     {
+        magnet_scale = 1;
         temp_cnt++;
         
         for (uint8 i = 0; i < 4; i++)
@@ -556,6 +615,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
 //  卡片取出逻辑
 void Box_Out(char label_num, uint8 cross_roundabout_Flag)
 {
+    magnet_scale = 1;
     uint8 false_cnt = 0;    //记录放下、交换过程中的失败次数
     if (cross_roundabout_Flag)       //环岛和圆环
     {

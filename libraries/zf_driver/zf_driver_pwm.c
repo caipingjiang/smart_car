@@ -99,7 +99,7 @@ void pwm_set_duty (pwm_channel_enum pin, const uint32 duty)
 {
     uint16 temp_duty;
     // 如果是这一行报错 那你得去看看最大占空比是限定的多少 占空比写入错误
-    zf_assert(PWM_DUTY_MAX > duty);                                            // 占空比写入错误
+    zf_assert(PWM_DUTY_MAX >= duty);                                            // 占空比写入错误
 
     uint8  pwm_num;
     uint8  pwm_module;

@@ -58,7 +58,7 @@
 
 #define KEY_RELEASE_LEVEL           (GPIO_HIGH)                                 // 按键的默认状态 也就是按键释放状态的电平
 #define KEY_MAX_SHOCK_PERIOD        (10       )                                 // 按键消抖检测时长 单位毫秒 低于这个时长的信号会被认为是杂波抖动
-#define KEY_LONG_PRESS_PERIOD       (1000     )                                 // 最小长按时长 单位毫秒 高于这个时长的信号会被认为是长按动作
+#define KEY_LONG_PRESS_PERIOD       (500     )  //1000                               // 最小长按时长 单位毫秒 高于这个时长的信号会被认为是长按动作
 
 typedef enum
 {
