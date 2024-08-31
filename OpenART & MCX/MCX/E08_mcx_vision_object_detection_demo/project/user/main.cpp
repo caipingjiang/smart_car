@@ -37,7 +37,7 @@ extern "C" // mian文件是C++文件，如果需要包含C语言的头文件，就需要使用extern "C"
 {
 #endif /* __cplusplus */ 
 #include "zf_common_headfile.h"
-
+#include "zf_driver_gpio.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -89,8 +89,40 @@ int main(void)
     scc8660_init();
     // 模型初始化，模型的输出阈值修改函数中的postProcessParams.threshold参数，范围是0 - 1，默认为0.4，参数越小，越容易识别到目标
     zf_model_init();
-    while (1)
-    {	ips200_draw_line(160-2, 170, 160+2,170,RGB565_RED);
+	scc8660_set_brightness(200);	//350
+    
+	gpio_struct key1 = {GPIO4, 2u};
+	gpio_struct key2 = {GPIO4, 3u};
+	
+	gpio_init(key1, GPI, 1, PULL_UP);
+	gpio_init(key2, GPI, 1, PULL_UP);
+	
+	uint16 brightness = 250;
+	
+	while (1)
+    {	
+		if(gpio_get_level(key1) == 0)
+		{
+			brightness += 50;
+			if(brightness>=2500)
+				brightness  = 2500;
+			scc8660_set_brightness(brightness);
+			ips200_show_int(20,20,brightness);
+			system_delay_ms(100);
+		}
+		else if(gpio_get_level(key2) == 0)
+		{
+			if(brightness <=50)
+				brightness  = 50;
+			else
+				brightness -= 50;
+			scc8660_set_brightness(brightness);
+			ips200_show_int(20,20,brightness);
+			system_delay_ms(100);
+		}
+					
+		
+		//ips200_draw_line(160-2, 170, 160+2,170,RGB565_RED);
         if(scc8660_finish)
         {
             scc8660_finish = 0;

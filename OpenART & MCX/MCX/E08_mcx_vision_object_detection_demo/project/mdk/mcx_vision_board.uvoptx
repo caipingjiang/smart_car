@@ -140,7 +140,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>CMSIS_AGDI_V8M</Key>
-          <Name>-X"SEEKFREE CMSIS-DAP V2" -USF1397260872-202 -O718 -S8 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(6BA02477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO27 -FD20000000 -FC1000 -FN1 -FF0MCXN9XX_2048.FLM -FS00 -FL0200000 -FP0($$Device:MCXN947VDF$devices\MCXN947\arm\MCXN9XX_2048.FLM)</Name>
+          <Name>-X"SEEKFREE CMSIS-DAP V2" -USF-1412700933537 -O718 -S8 -C0 -P00000000 -N00("ARM CoreSight SW-DP") -D00(6BA02477) -L00(0) -TO65554 -TC10000000 -TT10000000 -TP20 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO27 -FD20000000 -FC1000 -FN1 -FF0MCXN9XX_2048.FLM -FS00 -FL0200000 -FP0($$Device:MCXN947VDF$devices\MCXN947\arm\MCXN9XX_2048.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -303,7 +303,7 @@
 
   <Group>
     <GroupName>board</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -607,7 +607,7 @@
 
   <Group>
     <GroupName>zf_devices</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
