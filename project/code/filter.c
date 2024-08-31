@@ -59,7 +59,7 @@ bool isSame(int16 newData)
         dataRecord[i] = dataRecord[i+1];
     }
     dataRecord[4] = newData;
-    if(newData == 0 && dataRecord[0]*dataRecord[1]*dataRecord[2]*dataRecord[3] == 0)
+    if((newData +dataRecord[2]+dataRecord[3] )== 0)
         return false;
     else 
         return true;
