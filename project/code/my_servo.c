@@ -482,7 +482,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 0);
         #if is_IR
-            if(arm_up())//arm_up()
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -490,7 +490,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(0, '1', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('F' <= card_class && card_class <= 'K')   //大类-2
         {
@@ -498,7 +498,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 90);
         #if is_IR
-            if(arm_up())//arm_up()
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -506,7 +506,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(1, '2', 1); 
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         else if ('L' <= card_class && card_class <= 'O')   //大类-3
         {
@@ -514,7 +514,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
             // system_delay_ms(500);
             Servo_SetAngle_Slow(3, 180);
         #if is_IR
-            if(arm_up())//arm_up()
+            if(arm_up_part1())//arm_up()
         #else
             arm_up();
         #endif
@@ -522,7 +522,7 @@ bool Box_In(char card_class, uint8 cross_roundabout_Flag)
                 Box_Record(2, '3', 1);
                 state = true;
             }
-            arm_hang_fast();
+            //arm_hang_fast();
         }
         return state;
     }
@@ -631,7 +631,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else 
@@ -646,7 +645,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
-                        arm_hang();
                     }
                     false_cnt = 0;
                 #else 
@@ -659,8 +657,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
-                }   
+                }
                 false_cnt = 0;
             #else 
                 arm_exchange(1,0);
@@ -675,13 +672,11 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
             #else
                 arm_exchange(0,1);
@@ -697,7 +692,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
-                        arm_hang();
                     }
                 #else 
                     arm_down();
@@ -710,13 +704,11 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else 
@@ -735,7 +727,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
             #else 
                 arm_down();
@@ -746,7 +737,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else 
@@ -760,7 +750,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
             #else
                 arm_down();
@@ -772,7 +761,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else 
@@ -793,7 +781,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                     while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                     {
                         false_cnt++;
-                        arm_hang();
                     }
                     false_cnt = 0;
                 #else 
@@ -817,7 +804,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else 
@@ -840,7 +826,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -863,7 +848,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -883,7 +867,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(0,1)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -898,7 +881,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -910,7 +892,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_exchange(1,0)) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -928,7 +909,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
             #else
                 arm_down();
@@ -962,7 +942,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 {
                     ips114_show_int(0,50,(int)store_list[0][9],5);
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -987,7 +966,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -1012,7 +990,6 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
                 while( (!arm_down()) && (false_cnt<false_cnt_max1) )
                 {
                     false_cnt++;
-                    arm_hang();
                 }
                 false_cnt = 0;
             #else
@@ -1025,19 +1002,7 @@ void Box_Out(char label_num, uint8 cross_roundabout_Flag)
     }    
 }
 
-//检查temp_class_arr以及five_class是否为空
-//若为空，则返回true；否则返回false
-bool check_temp_IsNull(void)
-{
-    if(five_class&&temp_class_arr[0][0]&&temp_class_arr[1][0]&&temp_class_arr[2][0]&&temp_class_arr[3][0] == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
+
 	
 	
 	
